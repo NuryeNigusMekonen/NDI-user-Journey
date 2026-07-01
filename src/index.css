@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply antialiased text-ink bg-cream font-sans;
+}
+
+.react-flow__controls-button {
+  @apply !border-line !bg-white;
+}
+
+.react-flow__controls-button:hover {
+  @apply !bg-brand-light;
+}
+
+.react-flow__node.selected {
+  z-index: 10 !important;
+}
+
+.react-flow__controls-button svg {
+  @apply !fill-navy;
+}
+
+kbd {
+  @apply inline-flex items-center justify-center min-w-[1.1rem] h-[1.1rem] px-1 rounded border border-white/15 bg-white/5 text-[9px] font-medium;
+}

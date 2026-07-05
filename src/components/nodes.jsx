@@ -4,9 +4,11 @@ import {
   BaseEdge,
   EdgeLabelRenderer,
   getSmoothStepPath,
+  MarkerType,
 } from '@xyflow/react';
 import { motion } from 'framer-motion';
 import { GitBranch, Zap } from 'lucide-react';
+import { brand, flowColors } from '../lib/theme';
 import { participants } from '../data/journeys';
 import { ActorMini } from './ActorBadge';
 
@@ -43,7 +45,7 @@ export function StepNode({ data, selected }) {
         </div>
         <p className="text-[11px] leading-snug text-ink line-clamp-3">{data.text}</p>
       </div>
-      <Handle type="source" position={Position.Right} className="!w-1.5 !h-1.5 !bg-navy !border !border-white" />
+      <Handle type="source" position={Position.Right} className="!w-1.5 !h-1.5 !bg-brand !border !border-white" />
     </motion.div>
   );
 }
@@ -59,7 +61,7 @@ export function NoteNode({ data, selected }) {
       } ${
         isSide
           ? 'bg-brand-light/80 border-brand/20 text-navy'
-          : 'bg-navy border-navy text-white'
+          : 'bg-ink border-ink text-white'
       }`}
       style={{ width: 228 }}
     >
@@ -115,11 +117,16 @@ export function JourneyEdge({ id, sourceX, sourceY, targetX, targetY, sourcePosi
         id={id}
         path={path}
         style={{
-          stroke: isBranch ? '#5658A6' : '#C8C5D6',
+          stroke: isBranch ? brand.DEFAULT : flowColors.edge,
           strokeWidth: isBranch ? 2 : 1.5,
           strokeDasharray: isBranch ? '5 4' : undefined,
         }}
-        markerEnd={isBranch ? 'url(#arrow-branch)' : 'url(#arrow-main)'}
+        markerEnd={{
+          type: MarkerType.ArrowClosed,
+          width: 16,
+          height: 16,
+          color: isBranch ? brand.DEFAULT : flowColors.edge,
+        }}
       />
       {data?.label ? (
         <EdgeLabelRenderer>

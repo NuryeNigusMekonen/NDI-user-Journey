@@ -1,5 +1,8 @@
+import { inferStepKind, inferJourneyEdgeData } from '../types/journeySemantics';
+import { resolveEdgeHandles } from '../services/FlowInference';
+
 const NODE_W = 228;
-const STEP_H = 88;
+const STEP_H = 96;
 const NOTE_H = 64;
 const BANNER_H = 52;
 
@@ -10,6 +13,7 @@ export function buildGraph(items) {
   const nid = () => `n${counter++}`;
   const eid = () => `e${counter++}`;
   let stepNum = 0;
+  let forkNum = 0;
 
   function walk(seq, preds) {
     let front = preds;
@@ -18,22 +22,29 @@ export function buildGraph(items) {
       if (item.type === 'step') {
         stepNum += 1;
         const id = nid();
+        const kind = inferStepKind(item);
         nodes.push({
           id,
           type: 'step',
-          data: { ...item, stepNum },
+          data: { ...item, stepNum, kind },
           width: NODE_W,
           height: STEP_H,
         });
         for (const p of front) {
           if (p.id) {
+            const source = nodes.find((n) => n.id === p.id);
+            const target = nodes.find((n) => n.id === id);
+            const edgeData = inferJourneyEdgeData(source, target, p.label || '');
+            const handles = resolveEdgeHandles(source, target);
             edges.push({
               id: eid(),
               source: p.id,
               target: id,
               label: p.label || '',
               type: 'journey',
-              data: { branch: !!p.label, label: p.label || '' },
+              animated: edgeData.animated,
+              data: edgeData,
+              ...handles,
             });
           }
         }
@@ -50,33 +61,44 @@ export function buildGraph(items) {
         });
         for (const p of front) {
           if (p.id) {
+            const source = nodes.find((n) => n.id === p.id);
+            const target = nodes.find((n) => n.id === id);
+            const edgeData = inferJourneyEdgeData(source, target, '');
             edges.push({
               id: eid(),
               source: p.id,
               target: id,
               type: 'journey',
-              data: { branch: false },
+              data: edgeData,
+              ...resolveEdgeHandles(source, target),
             });
           }
         }
         front = [{ id }];
       } else if (item.type === 'alt') {
+        forkNum += 1;
         const forkId = nid();
+        const branchLabels = item.branches.map((b) => b.label).filter(Boolean);
+        const forkTitle = branchLabels[0] || `Alt ${forkNum}`;
         nodes.push({
           id: forkId,
           type: 'fork',
-          data: {},
-          width: 72,
-          height: 72,
+          data: { title: forkTitle, kind: 'alt', forkNum },
+          width: 140,
+          height: 160,
         });
         for (const p of front) {
           if (p.id) {
+            const source = nodes.find((n) => n.id === p.id);
+            const target = nodes.find((n) => n.id === forkId);
+            const edgeData = inferJourneyEdgeData(source, target, '');
             edges.push({
               id: eid(),
               source: p.id,
               target: forkId,
               type: 'journey',
-              data: { branch: false },
+              data: edgeData,
+              ...resolveEdgeHandles(source, target),
             });
           }
         }

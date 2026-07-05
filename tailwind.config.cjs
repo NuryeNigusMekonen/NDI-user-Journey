@@ -4,8 +4,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        navy: { DEFAULT: '#213871', dark: '#182a52' },
-        brand: { DEFAULT: '#5658A6', light: '#EFEFF9', muted: '#C9CEEB' },
+        navy: { DEFAULT: '#1B1D28', dark: '#12131a' },
+        brand: {
+          DEFAULT: '#c8102e',
+          dark: '#a60d26',
+          active: '#c7112f',
+          light: '#fdecef',
+          muted: '#f0a0ad',
+        },
         sky: { DEFAULT: '#0E7FBF', light: '#E9F5FB' },
         amber: { DEFAULT: '#B5730A', light: '#FBF1DF' },
         slate: { DEFAULT: '#5B6472', light: '#F0F1F3' },
@@ -19,8 +25,8 @@ module.exports = {
         display: ['Fraunces', 'Georgia', 'serif'],
       },
       boxShadow: {
-        card: '0 1px 3px rgba(33,56,113,.06), 0 12px 40px rgba(33,56,113,.1)',
-        glow: '0 0 0 3px rgba(86,88,166,.2)',
+        card: '0 1px 3px rgba(27,29,40,.06), 0 12px 40px rgba(27,29,40,.1)',
+        glow: '0 0 0 3px rgba(200,16,46,.18)',
       },
     },
   },

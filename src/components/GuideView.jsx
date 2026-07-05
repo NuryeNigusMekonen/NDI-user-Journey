@@ -165,7 +165,7 @@ export default function GuideView({ journey, journeyIndex }) {
               <button
                 onClick={goNext}
                 disabled={atEnd}
-                className="inline-flex items-center gap-1 px-5 py-2.5 rounded-xl bg-navy text-white text-sm font-semibold hover:bg-navy-dark disabled:opacity-40 transition-colors"
+                className="inline-flex items-center gap-1 px-5 py-2.5 rounded-xl bg-brand text-white text-sm font-semibold hover:bg-brand-dark disabled:opacity-40 transition-colors"
               >
                 {atEnd ? 'Complete' : atBranchEnd ? 'Finish scenario' : atStart ? 'Start' : 'Continue'}
                 <ChevronRight className="w-4 h-4" />

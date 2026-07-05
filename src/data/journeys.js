@@ -53,6 +53,7 @@ export function branch(label, isElse, ...steps) {
 
 export const journeys = [
   {
+    id: 'new-lead-first-class',
     stage: 0,
     parallel: false,
     title: 'New Lead → First Class',
@@ -115,6 +116,7 @@ export const journeys = [
     ],
   },
   {
+    id: 'first-class-five-class',
     stage: 1,
     parallel: false,
     title: 'First Class → 5-Class Milestone',
@@ -182,6 +184,7 @@ export const journeys = [
     ],
   },
   {
+    id: 'inactivity-churn-prevention',
     stage: 1,
     parallel: true,
     title: 'Inactivity & Churn Prevention',
@@ -273,6 +276,7 @@ export const journeys = [
     ],
   },
   {
+    id: 'membership-conversion',
     stage: 2,
     parallel: false,
     title: 'Membership Conversion',
@@ -296,6 +300,7 @@ export const journeys = [
     ],
   },
   {
+    id: 'win-back-lapsed',
     stage: 3,
     parallel: true,
     title: 'Win-Back — Lapsed Members',

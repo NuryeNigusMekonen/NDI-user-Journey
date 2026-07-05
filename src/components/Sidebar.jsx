@@ -7,10 +7,10 @@ export default function Sidebar({ journeys, active, onSelect, onStageSelect }) {
   const fillPct = (j.stage / (stages.length - 1)) * 100;
 
   return (
-    <aside className="w-[280px] shrink-0 bg-navy flex flex-col border-r border-black/10">
+    <aside className="w-[280px] shrink-0 bg-ink flex flex-col border-r border-black/10">
       <div className="px-5 pt-7 pb-5">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-[10px] bg-gradient-to-br from-white/15 to-white/5 ring-1 ring-white/10 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-[10px] bg-brand flex items-center justify-center shadow-sm">
             <Compass className="w-[18px] h-[18px] text-white" strokeWidth={2} />
           </div>
           <div>
@@ -27,7 +27,7 @@ export default function Sidebar({ journeys, active, onSelect, onStageSelect }) {
         <div className="relative px-1">
           <div className="absolute top-2 left-3 right-3 h-0.5 bg-white/10 rounded" />
           <motion.div
-            className="absolute top-2 left-3 h-0.5 bg-brand-muted rounded"
+            className="absolute top-2 left-3 h-0.5 bg-brand rounded"
             animate={{ width: `calc(${fillPct}% - 12px)` }}
             transition={{ duration: 0.4 }}
           />
@@ -43,8 +43,8 @@ export default function Sidebar({ journeys, active, onSelect, onStageSelect }) {
                     i === j.stage
                       ? 'bg-white border-white scale-110'
                       : i < j.stage
-                        ? 'bg-brand-muted border-brand-muted'
-                        : 'border-white/25 bg-navy group-hover:border-white/50'
+                        ? 'bg-brand border-brand'
+                        : 'border-white/25 bg-ink group-hover:border-white/50'
                   }`}
                 />
                 <span
@@ -78,14 +78,14 @@ export default function Sidebar({ journeys, active, onSelect, onStageSelect }) {
               {isActive && (
                 <motion.span
                   layoutId="sidebar-active"
-                  className="absolute left-0 top-2 bottom-2 w-0.5 bg-white rounded-full"
+                  className="absolute left-0 top-2 bottom-2 w-0.5 bg-brand rounded-full"
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
               <span
                 className={`mt-0.5 w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-bold shrink-0 transition-colors border ${
                   isActive
-                    ? 'bg-white text-navy border-white'
+                    ? 'bg-white text-brand border-white'
                     : 'bg-white/10 text-white border-white/20 group-hover:bg-white/15 group-hover:border-white/30'
                 } ${x.parallel ? 'ring-1 ring-dashed ring-white/25' : ''}`}
               >

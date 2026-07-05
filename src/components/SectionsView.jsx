@@ -123,7 +123,7 @@ export default function SectionsView({ journey, journeyIndex }) {
                   onClick={() => setOpenSection(isOpen ? -1 : i)}
                   className="w-full flex items-center gap-3 px-5 py-4 text-left hover:bg-cream/50 transition-colors"
                 >
-                  <span className="w-7 h-7 rounded-lg bg-navy text-white text-xs font-bold flex items-center justify-center shrink-0">
+                  <span className="w-7 h-7 rounded-lg bg-brand text-white text-xs font-bold flex items-center justify-center shrink-0">
                     {i + 1}
                   </span>
                   <span className="font-display font-semibold text-navy text-sm flex-1 leading-snug">{section.title}</span>

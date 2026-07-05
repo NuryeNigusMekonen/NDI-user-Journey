@@ -27,7 +27,7 @@ export function StepCard({ data, stepNum, large = false }) {
       <div className={`h-1 ${colorBar[from.color]}`} />
       <div className={large ? 'px-8 py-8' : 'p-5'}>
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 rounded-full bg-navy text-white flex items-center justify-center font-display font-bold text-lg shrink-0">
+          <div className="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center font-display font-bold text-lg shrink-0">
             {stepNum}
           </div>
           <div className="min-w-0">
@@ -51,7 +51,7 @@ export function NoteCard({ data, large = false }) {
       className={`rounded-2xl border w-full ${
         isSide
           ? 'bg-brand-light border-brand/20 text-navy max-w-lg'
-          : 'bg-navy border-navy text-white max-w-xl text-center'
+          : 'bg-ink border-ink text-white max-w-xl text-center'
       } ${large ? 'px-8 py-8' : 'px-5 py-5'}`}
     >
       <p className={`leading-relaxed ${isSide ? 'text-base text-left' : 'font-display font-semibold text-xl'}`}>

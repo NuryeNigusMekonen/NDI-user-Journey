@@ -8,25 +8,30 @@ async function getElk() {
   return elk;
 }
 
-export async function layoutWithElk(nodes, edges) {
+export async function layoutWithElk(nodes, edges, direction = 'right', options = {}) {
   const layoutEngine = await getElk();
+  const dirMap = { right: 'RIGHT', left: 'LEFT', down: 'DOWN', up: 'UP' };
+  const vertical = direction === 'down' || direction === 'up';
+  const flowchart = options.flowchart === true;
+
   const graph = {
     id: 'root',
     layoutOptions: {
       'elk.algorithm': 'layered',
-      'elk.direction': 'RIGHT',
-      'elk.spacing.nodeNode': '56',
-      'elk.layered.spacing.nodeNodeBetweenLayers': '110',
-      'elk.layered.spacing.edgeNodeBetweenLayers': '48',
+      'elk.direction': dirMap[direction] || 'DOWN',
+      'elk.spacing.nodeNode': flowchart ? (vertical ? '44' : '64') : (vertical ? '36' : '56'),
+      'elk.layered.spacing.nodeNodeBetweenLayers': flowchart ? (vertical ? '88' : '120') : (vertical ? '64' : '110'),
+      'elk.layered.spacing.edgeNodeBetweenLayers': flowchart ? (vertical ? '44' : '56') : (vertical ? '36' : '48'),
       'elk.layered.nodePlacement.strategy': 'NETWORK_SIMPLEX',
       'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
-      'elk.edgeRouting': 'ORTHOGONAL',
-      'elk.padding': '[top=40,left=40,bottom=40,right=40]',
+      'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES',
+      'elk.edgeRouting': flowchart ? 'SPLINES' : 'ORTHOGONAL',
+      'elk.padding': flowchart ? '[top=48,left=56,bottom=48,right=56]' : '[top=40,left=40,bottom=40,right=40]',
     },
     children: nodes.map((n) => ({
       id: n.id,
-      width: n.width,
-      height: n.height,
+      width: n.width || n.style?.width || 200,
+      height: n.height || n.style?.height || 80,
     })),
     edges: edges.map((e) => ({
       id: e.id,

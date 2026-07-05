@@ -6,7 +6,6 @@ import {
   Panel,
   ReactFlowProvider,
   useReactFlow,
-  MarkerType,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,8 +13,8 @@ import { buildGraph } from '../lib/buildGraph';
 import { layoutWithElk } from '../lib/elkLayout';
 import { nodeTypes, edgeTypes } from './nodes';
 import { ActorLegend } from './ActorBadge';
-import MapControls from './MapControls';
 import NodeDetailPanel from './NodeDetailPanel';
+import { brand, actorColors, flowColors } from '../lib/theme';
 import { participants } from '../data/journeys';
 
 function focusOnFirstStep(nodes, setCenter, fitView) {
@@ -65,12 +64,6 @@ function FlowInner({ journey, journeyIndex }) {
           ...e,
           type: 'journey',
           animated: e.data?.branch,
-          markerEnd: {
-            type: MarkerType.ArrowClosed,
-            color: e.data?.branch ? '#5658A6' : '#C8C5D6',
-            width: 16,
-            height: 16,
-          },
         })),
       );
       setLoading(false);
@@ -93,15 +86,11 @@ function FlowInner({ journey, journeyIndex }) {
     setNodes((nds) => nds.map((n) => ({ ...n, selected: false })));
   }, []);
 
-  const focusStart = useCallback(() => {
-    focusOnFirstStep(laidNodes, setCenter, fitView);
-  }, [laidNodes, setCenter, fitView]);
-
   const minimapNodeColor = useCallback((n) => {
-    if (n.type === 'fork') return '#5658A6';
-    if (n.type === 'note') return '#213871';
+    if (n.type === 'fork') return brand.DEFAULT;
+    if (n.type === 'note') return flowColors.note;
     const c = participants[n.data?.from]?.color;
-    return { sky: '#0E7FBF', brand: '#5658A6', slate: '#5B6472', amber: '#B5730A', teal: '#0D7A6E' }[c] || '#213871';
+    return actorColors[c] || flowColors.note;
   }, []);
 
   return (
@@ -128,16 +117,7 @@ function FlowInner({ journey, journeyIndex }) {
         zoomOnScroll
         proOptions={{ hideAttribution: true }}
       >
-        <defs>
-          <marker id="arrow-main" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 Z" fill="#C8C5D6" />
-          </marker>
-          <marker id="arrow-branch" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 Z" fill="#5658A6" />
-          </marker>
-        </defs>
         <Background gap={24} size={1} color="#E8E6DF" />
-        <MapControls onFocusStart={focusStart} />
         <MiniMap
           nodeColor={minimapNodeColor}
           maskColor="rgba(250,250,248,.85)"

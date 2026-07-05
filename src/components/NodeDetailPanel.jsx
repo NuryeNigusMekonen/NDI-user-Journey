@@ -65,7 +65,7 @@ export default function NodeDetailPanel({ node, onClose }) {
               )}
 
               {node.type === 'note' && (
-                <div className={`rounded-xl px-4 py-4 ${node.data.anchor ? 'bg-brand-light text-navy' : 'bg-navy text-white'}`}>
+                <div className={`rounded-xl px-4 py-4 ${node.data.anchor ? 'bg-brand-light text-ink' : 'bg-ink text-white'}`}>
                   <p className={`leading-relaxed ${node.data.anchor ? 'text-sm' : 'font-display font-semibold text-base'}`}>
                     {node.data.text.split('\n').map((line, i) => (
                       <span key={i}>

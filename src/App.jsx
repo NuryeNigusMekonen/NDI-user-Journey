@@ -1,7 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import Sidebar, { VIEW } from './components/Sidebar';
 import AppHeader from './components/AppHeader';
-import EmbedPageHeader from './components/EmbedPageHeader';
 import HtmlEmbedView from './views/HtmlEmbedView';
 import { journeys } from './data/journeys';
 import { WORKSPACE_MODE } from './types/diagram';
@@ -17,14 +16,12 @@ const EMBED_META = {
   [VIEW.MARIANATEK_FINDINGS]: {
     file: 'marianatek-data-findings.html',
     title: 'Mariana Tek Data Analysis',
-    tagline: 'Production API analysis for Modo Yoga — modoyoga.marianatek.com · June 2026',
     journeyId: 'marianatek-data-findings',
     journeyTitle: 'Mariana Tek Data',
   },
   [VIEW.STUDIO_DEMO]: {
     file: 'studio-journey-demo.html',
     title: 'Studio Journey Demo',
-    tagline: 'Interactive SMS walkthrough with Mariana Tek booking flow',
     journeyId: 'studio-journey-demo',
     journeyTitle: 'Studio Journey Demo',
   },
@@ -130,11 +127,8 @@ export default function App() {
 
       <div className="flex-1 flex flex-col min-w-0">
         {isEmbed && embed ? (
-          <div className="flex-1 flex flex-col min-h-0 bg-[#FAFAF8]">
-            <EmbedPageHeader title={embed.title} tagline={embed.tagline} />
-            <div className="flex-1 min-h-0">
-              <HtmlEmbedView file={embed.file} title={embed.title} />
-            </div>
+          <div className="flex-1 min-h-0 bg-[#FAFAF8]">
+            <HtmlEmbedView file={embed.file} title={embed.title} />
           </div>
         ) : (
           <>

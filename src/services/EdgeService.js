@@ -25,7 +25,18 @@ export const EdgeService = {
       : inferEdgeRenderType(flowType, edgeStyle);
 
     return addEdge(
-      { ...resolved, type, data: { ...data, flowMode: 'auto' }, animated: data.animated },
+      {
+        ...resolved,
+        type,
+        data: {
+          ...data,
+          flowMode: 'auto',
+          handlesPinned: true,
+          sourceHandle: resolved.sourceHandle,
+          targetHandle: resolved.targetHandle,
+        },
+        animated: data.animated,
+      },
       edges,
     );
   },
@@ -34,7 +45,14 @@ export const EdgeService = {
     const source = nodes.find((n) => n.id === (newConnection.source || oldEdge.source));
     const target = nodes.find((n) => n.id === (newConnection.target || oldEdge.target));
     const sideHandles = resolveEdgeHandles(source, target);
-    const merged = { ...oldEdge, ...newConnection, ...sideHandles };
+    const sourceHandle = newConnection.sourceHandle ?? sideHandles.sourceHandle ?? oldEdge.sourceHandle;
+    const targetHandle = newConnection.targetHandle ?? sideHandles.targetHandle ?? oldEdge.targetHandle;
+    const merged = {
+      ...oldEdge,
+      ...newConnection,
+      sourceHandle,
+      targetHandle,
+    };
     const siblings = edges.filter((e) => e.source === merged.source && e.id !== oldEdge.id);
     const explicitFlow = oldEdge.data?.flowMode === 'auto'
       ? undefined
@@ -46,10 +64,21 @@ export const EdgeService = {
       explicitFlow,
       label: oldEdge.data?.label || '',
       sourceHandle: merged.sourceHandle,
+      targetHandle: merged.targetHandle,
     });
     return reconnectEdge(
       oldEdge,
-      { ...merged, data: { ...data, flowMode: oldEdge.data?.flowMode || 'auto' }, animated: data.animated },
+      {
+        ...merged,
+        data: {
+          ...data,
+          flowMode: oldEdge.data?.flowMode || 'auto',
+          handlesPinned: true,
+          sourceHandle,
+          targetHandle,
+        },
+        animated: data.animated,
+      },
       edges,
     );
   },

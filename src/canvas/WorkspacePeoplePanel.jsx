@@ -1,31 +1,42 @@
 import { useEffect, useState } from 'react';
 import { Eye, EyeOff, Pencil, Users, Radio } from 'lucide-react';
 import { getDisplayName, setDisplayName, needsDisplayName, displayLabel } from '../lib/guestIdentity';
+import { journeyIdsMatch } from '../lib/journeyMatch';
+import { usePresenceStore } from '../store/presenceStore';
 import { useWorkspaceStore } from '../store/workspaceStore';
 
 export default function WorkspacePeoplePanel() {
-  const api = useWorkspaceStore((s) => s.api);
+  const presenceApi = useWorkspaceStore((s) => s.presenceApi);
+  const peers = usePresenceStore((s) => s.peers);
+  const self = usePresenceStore((s) => s.self);
+  const followingId = usePresenceStore((s) => s.followingId);
+  const isLive = usePresenceStore((s) => s.isLive);
+  const connected = usePresenceStore((s) => s.connected);
+
   const [editing, setEditing] = useState(() => needsDisplayName());
   const [nameDraft, setNameDraft] = useState(getDisplayName);
+  const [myName, setMyName] = useState(() => getDisplayName());
   const [expanded, setExpanded] = useState(false);
-
-  const peers = api?.peers || [];
-  const self = api?.self;
-  const followingId = api?.followingId;
-  const isLive = api?.isLive;
 
   useEffect(() => {
     if (needsDisplayName()) setEditing(true);
   }, []);
 
+  useEffect(() => {
+    if (self?.name && self.name !== 'Guest') setMyName(self.name);
+  }, [self?.name]);
+
   const saveName = () => {
     const saved = setDisplayName(nameDraft);
-    api?.onNameChange?.(saved || nameDraft.trim());
+    const finalName = saved || nameDraft.trim();
+    setMyName(finalName);
+    presenceApi?.onNameChange?.(finalName);
     setEditing(false);
   };
 
   const online = peers.filter((p) => p.sessionId !== self?.sessionId);
-  const myLabel = displayLabel(self?.name || getDisplayName());
+  const myLabel = displayLabel(myName || self?.name);
+  const journeyId = presenceApi?.journeyId;
 
   return (
     <div className="relative flex items-center gap-2 shrink-0">
@@ -64,18 +75,30 @@ export default function WorkspacePeoplePanel() {
       >
         <Users className="w-3.5 h-3.5" />
         <span className="tabular-nums">{online.length + 1}</span>
-        {isLive ? (
+        {isLive && connected ? (
           <span className="inline-flex items-center gap-0.5 text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-medium">
             <Radio className="w-2.5 h-2.5" /> Live
+          </span>
+        ) : isLive ? (
+          <span className="text-[9px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded font-medium">
+            Connecting…
           </span>
         ) : null}
       </button>
 
       {followingId && (
-        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-brand text-white text-[10px] font-semibold">
-          <Eye className="w-3 h-3" />
-          Following {displayLabel(peers.find((p) => p.sessionId === followingId)?.name)}
-          <button type="button" onClick={() => api?.toggleFollow?.(followingId)} className="underline opacity-80 ml-0.5">Stop</button>
+        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-brand text-white text-[10px] font-semibold max-w-[200px]">
+          <Eye className="w-3 h-3 shrink-0" />
+          <span className="truncate">
+            Following {displayLabel(peers.find((p) => p.sessionId === followingId)?.name)}
+            {(() => {
+              const peer = peers.find((p) => p.sessionId === followingId);
+              const onSame = journeyIdsMatch(peer?.journeyId, journeyId);
+              if (!peer?.journeyTitle) return '';
+              return onSame ? ' · live' : ` · ${peer.journeyTitle}`;
+            })()}
+          </span>
+          <button type="button" onClick={() => presenceApi?.toggleFollow?.(followingId)} className="underline opacity-80 shrink-0">Stop</button>
         </span>
       )}
 
@@ -88,7 +111,7 @@ export default function WorkspacePeoplePanel() {
           )}
           <p className="text-[10px] text-ink-muted leading-snug mb-2 px-1">
             {isLive
-              ? 'Click Follow to watch where someone is looking on the map.'
+              ? 'Everyone on this link appears here instantly. Follow to jump to their page and sync view.'
               : 'Share this link — teammates appear here when connected.'}
           </p>
           {online.length === 0 ? (
@@ -98,11 +121,12 @@ export default function WorkspacePeoplePanel() {
               {online.map((peer) => {
                 const isFollowing = followingId === peer.sessionId;
                 const label = displayLabel(peer.name);
+                const onSamePage = journeyIdsMatch(peer.journeyId, journeyId);
                 return (
                   <button
                     key={peer.sessionId}
                     type="button"
-                    onClick={() => api?.toggleFollow?.(peer.sessionId)}
+                    onClick={() => presenceApi?.toggleFollow?.(peer.sessionId)}
                     className={`flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-left text-xs transition-colors ${
                       isFollowing ? 'bg-brand/10 text-brand' : 'hover:bg-cream'
                     }`}
@@ -110,9 +134,16 @@ export default function WorkspacePeoplePanel() {
                     <span className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0" style={{ background: peer.color }}>
                       {label[0].toUpperCase()}
                     </span>
-                    <span className="font-medium truncate flex-1">{label}</span>
-                    {peer.mode === 'edit' && <span className="text-[8px] text-ink-muted">editing</span>}
-                    {isFollowing ? <EyeOff className="w-3.5 h-3.5 opacity-60" /> : <Eye className="w-3.5 h-3.5 opacity-40" />}
+                    <span className="min-w-0 flex-1">
+                      <span className="font-medium truncate block">{label}</span>
+                      {peer.journeyTitle && (
+                        <span className={`text-[9px] truncate block ${onSamePage ? 'text-emerald-700' : 'text-ink-muted'}`}>
+                          {onSamePage ? 'On this page' : peer.journeyTitle}
+                        </span>
+                      )}
+                    </span>
+                    {peer.mode === 'edit' && <span className="text-[8px] text-ink-muted shrink-0">editing</span>}
+                    {isFollowing ? <EyeOff className="w-3.5 h-3.5 opacity-60 shrink-0" /> : <Eye className="w-3.5 h-3.5 opacity-40 shrink-0" />}
                   </button>
                 );
               })}

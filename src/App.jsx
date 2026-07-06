@@ -4,6 +4,10 @@ import AppHeader from './components/AppHeader';
 import { journeys } from './data/journeys';
 import { WORKSPACE_MODE } from './types/diagram';
 import { useDiagramStore } from './store/diagramStore';
+import { useWorkspaceStore } from './store/workspaceStore';
+import { useWorkspacePresence } from './hooks/useWorkspacePresence';
+import { getJourneyId } from './lib/journeyRegistry';
+import { resolveJourneyIndex } from './lib/journeyMatch';
 
 const EditorCanvas = lazy(() => import('./editor/EditorCanvas'));
 
@@ -18,6 +22,16 @@ export default function App() {
     setWorkspaceMode(mode);
   }, [workspaceMode]);
   const j = journeys[active];
+  const journeyId = getJourneyId(j, active);
+  const { toggleFollow, onNameChange } = useWorkspacePresence({
+    journeyId,
+    journeyTitle: j?.title,
+  });
+
+  useEffect(() => {
+    useWorkspaceStore.getState().setPresenceApi({ toggleFollow, onNameChange, journeyId });
+    return () => useWorkspaceStore.getState().setPresenceApi(null);
+  }, [toggleFollow, onNameChange, journeyId]);
 
   const go = useCallback((i) => {
     if (i < 0 || i >= journeys.length) return;
@@ -31,6 +45,16 @@ export default function App() {
       const fallback = journeys.findIndex((x) => x.stage >= stage);
       go(fallback >= 0 ? fallback : 0);
     }
+  }, [go]);
+
+  useEffect(() => {
+    useWorkspaceStore.getState().setNavigation({
+      goToJourneyId: (id) => {
+        const idx = resolveJourneyIndex(id);
+        if (idx >= 0) go(idx);
+      },
+    });
+    return () => useWorkspaceStore.getState().setNavigation(null);
   }, [go]);
 
   useEffect(() => {

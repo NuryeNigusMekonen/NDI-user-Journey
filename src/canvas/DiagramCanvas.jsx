@@ -2,7 +2,9 @@ import {
   useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 import { ensureDisplayName, displayLabel } from '../lib/guestIdentity';
-import { usePresence } from '../hooks/usePresence';
+import { useFollowSync } from '../hooks/useFollowSync';
+import { journeyIdsMatch } from '../lib/journeyMatch';
+import { usePresenceStore } from '../store/presenceStore';
 import { useAutoSave } from '../hooks/useAutoSave';
 import { useBoardSync } from '../hooks/useBoardSync';
 import {
@@ -15,7 +17,7 @@ import { buildGraph } from '../lib/buildGraph';
 import { layoutWithElk } from '../lib/elkLayout';
 import { getJourneyId, loadJourneyBoard } from '../lib/journeyRegistry';
 import { setCommentComposing } from '../lib/commentSyncGuard';
-import { normalizeBoardEdges } from '../services/FlowInference';
+import { normalizeBoardEdges, prepareLoadedEdges } from '../services/FlowInference';
 import { resolveMermaidBoard } from '../lib/bootstrapMermaidBoard';
 import { nodeTypes } from '../nodes';
 import { edgeTypes } from '../edges';
@@ -195,15 +197,28 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
     workspaceMode,
     loading,
     onReload: (saved) => {
+      if (usePresenceStore.getState().followingId) return;
       if (saved.viewport) rfSetViewport(saved.viewport);
     },
   });
 
   const setViewport = useCallback((vp, opts) => rfSetViewport(vp, opts), [rfSetViewport]);
 
-  const {
-    peers, self, followingId, toggleFollow, broadcastViewport, broadcastCursor, isLive,
-  } = usePresence(journeyId, { setViewport, getViewport });
+  const peers = usePresenceStore((s) => s.peers);
+  const self = usePresenceStore((s) => s.self);
+  const followingId = usePresenceStore((s) => s.followingId);
+
+  const { broadcastViewport, broadcastCursor, flushPendingViewport } = useFollowSync({
+    journeyId,
+    setViewport,
+    getViewport,
+  });
+
+  useEffect(() => {
+    if (self?.name && self.name !== 'Guest') {
+      setAuthorName(displayLabel(self.name));
+    }
+  }, [self?.name]);
 
   useEffect(() => {
     broadcastViewport(viewport);
@@ -216,8 +231,8 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
 
   useEffect(() => {
     useDiagramStore.getState().setWorkspaceMode(workspaceMode);
-    PresenceService.get(journeyId).track({ mode: workspaceMode === WORKSPACE_MODE.EDIT ? 'edit' : 'view' });
-  }, [workspaceMode, journeyId]);
+    PresenceService.get().track({ mode: workspaceMode === WORKSPACE_MODE.EDIT ? 'edit' : 'view' });
+  }, [workspaceMode]);
 
   useEffect(() => {
     let cancelled = false;
@@ -249,17 +264,19 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
           annotations: saved.annotations || [],
         };
 
-        const normalize = (nodes, edges) => normalizeBoardEdges(
+        const typedEdges = (edges) => prepareLoadedEdges(edges, edgeStyle);
+        const layoutEdges = (nodes, edges) => normalizeBoardEdges(
           nodes,
-          edges.map((e) => ({ ...e, type: e.type || edgeStyle })),
+          typedEdges(edges),
           'down',
           mermaidSource,
+          { preserveSaved: false },
         );
 
         if (source === 'saved') {
           s.loadBoard({
             nodes: boardNodes,
-            edges: normalize(boardNodes, boardEdges),
+            edges: typedEdges(boardEdges),
             ...overlayPayload,
             edgeStyle,
             viewport: saved.viewport,
@@ -269,9 +286,9 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
         } else {
           s.loadBoard({
             nodes: boardNodes,
-            edges: normalize(boardNodes, boardEdges).map((e) => ({
+            edges: layoutEdges(boardNodes, boardEdges).map((e) => ({
               ...e,
-              type: edgeStyle,
+              type: e.type || edgeStyle,
               data: { ...e.data, label: e.data?.label },
             })),
             ...overlayPayload,
@@ -280,14 +297,19 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
           if (saved.boardId) s.setBoardMeta({ boardId: saved.boardId, journeyId });
         }
 
-        if (mermaidSource) {
+        const isFollowing = !!usePresenceStore.getState().followingId;
+
+        if (mermaidSource && !isFollowing) {
           setTimeout(() => {
             if (!cancelled) fitView({ padding: 0.18, duration: 350 });
           }, 120);
-        } else if (source === 'generated') {
+        } else if (source === 'generated' && !isFollowing) {
           setTimeout(() => {
             if (!cancelled) focusFirstStep(boardNodes, setCenter, fitView);
           }, 100);
+        } else if (isFollowing && !cancelled) {
+          setTimeout(() => flushPendingViewport(), 80);
+          setTimeout(() => flushPendingViewport(), 300);
         }
 
         if (resolved.bootstrapped && !cancelled) {
@@ -392,7 +414,7 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
   const onReconnect = useCallback((old, conn) => {
     if (!isEdit) return;
     const { edges: e, nodes: n } = useDiagramStore.getState();
-    useDiagramStore.getState().setEdges(EdgeService.reconnect(old, conn, e, n));
+    useDiagramStore.getState().setEdges(EdgeService.reconnect(old, conn, e, n), true);
   }, [isEdit]);
 
   const onSelectionChange = useCallback(({ nodes: sel, edges: selE }) => {
@@ -490,20 +512,11 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
       saveStatus,
       codePanelOpen,
       toggleCodePanel: () => setCodePanelOpen((v) => !v),
-      peers,
-      self,
-      followingId,
-      toggleFollow,
-      onNameChange: (name) => {
-        setAuthorName(displayLabel(name));
-        PresenceService.get(journeyId).setName(name);
-      },
-      isLive,
     });
     return () => useWorkspaceStore.getState().unregister();
   }, [
     zoomIn, zoomOut, fitView, handleSaveChanges, handleCancelChanges, saveStatus,
-    codePanelOpen, peers, self, followingId, toggleFollow, isLive, journeyId,
+    codePanelOpen,
   ]);
 
   const deleteSelection = useCallback(() => {
@@ -586,6 +599,11 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
   );
   const hasSelection = selection.nodeIds.length > 0 || selection.edgeIds.length > 0;
 
+  const cursorPeers = useMemo(
+    () => peers.filter((p) => p.journeyId === journeyId),
+    [peers, journeyId],
+  );
+
   const defaultEdgeOptions = useMemo(() => ({ type: edgeStyle }), [edgeStyle]);
 
   const canLayoutNodes = isDiagram && activeTool === TOOL.POINTER && !spacePan && !isDrawOverlay;
@@ -654,7 +672,7 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
       )}
 
       <AlignmentGuides guides={guides} viewport={viewport} />
-      <PresenceOverlay peers={peers} self={self} viewport={viewport} followingId={followingId} />
+      <PresenceOverlay peers={cursorPeers} self={self} viewport={viewport} followingId={followingId} />
 
       <ReactFlow
         className={cursorClass || undefined}
@@ -678,6 +696,7 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
         onNodeMouseEnter={onNodeMouseEnter}
         onNodeMouseLeave={onNodeMouseLeave}
         onPaneClick={onPaneClick}
+        onMove={(_, vp) => broadcastViewport(vp)}
         onMoveEnd={(_, vp) => {
           useDiagramStore.getState().setViewport(vp);
           broadcastViewport(vp);
@@ -820,8 +839,9 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
 }
 
 export default function DiagramCanvas(props) {
+  const journeyId = getJourneyId(props.journey, props.journeyIndex);
   return (
-    <ReactFlowProvider>
+    <ReactFlowProvider key={journeyId}>
       <CanvasInner {...props} />
     </ReactFlowProvider>
   );

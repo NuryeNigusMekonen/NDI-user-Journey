@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useDiagramStore } from '../store/diagramStore';
 import { PersistenceService } from '../services/PersistenceService';
-import { normalizeBoardEdges } from '../services/FlowInference';
+import { prepareLoadedEdges } from '../services/FlowInference';
 import { WORKSPACE_MODE } from '../types/diagram';
 import { resolveMermaidBoard } from '../lib/bootstrapMermaidBoard';
 import {
@@ -54,11 +54,9 @@ export function useBoardSync({ journeyId, journey, workspaceMode, loading, onRel
 
         store.loadBoard({
           nodes: resolved.nodes,
-          edges: normalizeBoardEdges(
-            resolved.nodes,
+          edges: prepareLoadedEdges(
             resolved.edges.map((e) => ({ ...e, type: e.type || edgeStyle })),
-            'down',
-            resolved.mermaidSource,
+            edgeStyle,
           ),
           comments: mergedComments,
           annotations: saved.annotations || [],

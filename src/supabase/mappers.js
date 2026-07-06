@@ -36,6 +36,9 @@ export function fromNodeRow(row) {
 }
 
 export function toEdgeRow(boardId, edge) {
+  const sourceHandle = edge.sourceHandle ?? edge.data?.sourceHandle ?? null;
+  const targetHandle = edge.targetHandle ?? edge.data?.targetHandle ?? null;
+  const handlesPinned = !!(edge.data?.handlesPinned || (sourceHandle && targetHandle));
   return {
     board_id: boardId,
     rf_id: edge.id,
@@ -43,18 +46,35 @@ export function toEdgeRow(boardId, edge) {
     target_id: edge.target,
     type: edge.type || 'smoothstep',
     label: edge.data?.label || edge.label || null,
-    data: edge.data || {},
+    data: {
+      ...(edge.data || {}),
+      sourceHandle,
+      targetHandle,
+      handlesPinned,
+    },
   };
 }
 
 export function fromEdgeRow(row) {
-  return {
+  const data = row.data || {};
+  const sourceHandle = data.sourceHandle ?? null;
+  const targetHandle = data.targetHandle ?? null;
+  const edge = {
     id: row.rf_id,
     source: row.source_id,
     target: row.target_id,
     type: row.type || 'smoothstep',
-    data: { ...row.data, label: row.label || row.data?.label },
+    data: {
+      ...data,
+      label: row.label || data.label,
+      handlesPinned: !!data.handlesPinned,
+      sourceHandle,
+      targetHandle,
+    },
   };
+  if (sourceHandle) edge.sourceHandle = sourceHandle;
+  if (targetHandle) edge.targetHandle = targetHandle;
+  return edge;
 }
 
 export function toCommentRow(boardId, thread) {

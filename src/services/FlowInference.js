@@ -79,10 +79,17 @@ export function resolveEdgeHandles(source, target, { sourceX, targetX } = {}) {
   return {};
 }
 
+function edgeHandlesLocked(edge) {
+  return !!(edge.data?.handlesPinned || (edge.sourceHandle && edge.targetHandle));
+}
+
 /** Re-apply side handles after layout or when loading saved boards */
-export function normalizeJourneyEdgeHandles(nodes, edges) {
+export function normalizeJourneyEdgeHandles(nodes, edges, { preserveSaved = false } = {}) {
   const byId = new Map(nodes.map((n) => [n.id, n]));
   return edges.map((edge) => {
+    if (preserveSaved && edgeHandlesLocked(edge)) {
+      return edge;
+    }
     const source = byId.get(edge.source);
     const target = byId.get(edge.target);
     const handles = resolveEdgeHandles(source, target);
@@ -159,7 +166,7 @@ function branchHandleForDecision(source, target, layout, branchIndex) {
 }
 
 /** Re-apply TD/LR handles after ELK layout — journey pairs keep horizontal handles */
-export function normalizeFlowchartEdgeHandles(nodes, edges, layout = 'down') {
+export function normalizeFlowchartEdgeHandles(nodes, edges, layout = 'down', { preserveSaved = false } = {}) {
   const byId = new Map(nodes.map((n) => [n.id, n]));
   const bySource = new Map();
 
@@ -186,6 +193,10 @@ export function normalizeFlowchartEdgeHandles(nodes, edges, layout = 'down') {
   });
 
   return edges.map((edge) => {
+    if (preserveSaved && edgeHandlesLocked(edge)) {
+      return edge;
+    }
+
     const source = byId.get(edge.source);
     const target = byId.get(edge.target);
     if (!source || !target) return edge;
@@ -211,13 +222,32 @@ function isFlowchartBoard(nodes) {
   return nodes.some((n) => n.data?.flowchart || n.data?.mermaidId || n.id?.startsWith('mmd-'));
 }
 
-/** Pick correct handle routing after load — flowchart vs journey swimlane */
-export function normalizeBoardEdges(nodes, edges, layout = 'down', mermaidSource = null) {
+/** Use saved connector ports as-is — only infer handles for freshly generated boards */
+export function prepareLoadedEdges(edges, edgeStyle = 'smoothstep') {
+  return (edges || []).map((edge) => {
+    const sourceHandle = edge.sourceHandle ?? edge.data?.sourceHandle ?? null;
+    const targetHandle = edge.targetHandle ?? edge.data?.targetHandle ?? null;
+    return {
+      ...edge,
+      type: edge.type || edgeStyle,
+      ...(sourceHandle ? { sourceHandle } : {}),
+      ...(targetHandle ? { targetHandle } : {}),
+      data: {
+        ...(edge.data || {}),
+        ...(sourceHandle ? { sourceHandle } : {}),
+        ...(targetHandle ? { targetHandle } : {}),
+      },
+    };
+  });
+}
+
+/** Pick correct handle routing after layout — flowchart vs journey swimlane */
+export function normalizeBoardEdges(nodes, edges, layout = 'down', mermaidSource = null, options = {}) {
+  const preserveSaved = options.preserveSaved !== false;
   if (isFlowchartBoard(nodes)) {
     let dir = layout;
     if (mermaidSource) {
       try {
-        // lazy import avoided — inline direction sniff
         const m = mermaidSource.trim().match(/^(?:flowchart|graph)\s+(TD|TB|BT|LR|RL|DOWN|UP)/i);
         if (m) {
           const d = m[1].toUpperCase();
@@ -228,9 +258,9 @@ export function normalizeBoardEdges(nodes, edges, layout = 'down', mermaidSource
         }
       } catch { /* keep layout */ }
     }
-    return normalizeFlowchartEdgeHandles(nodes, edges, dir);
+    return normalizeFlowchartEdgeHandles(nodes, edges, dir, { preserveSaved });
   }
-  return normalizeJourneyEdgeHandles(nodes, edges);
+  return normalizeJourneyEdgeHandles(nodes, edges, { preserveSaved });
 }
 
 export function branchIndexFromHandle(sourceHandle, siblings = []) {
@@ -287,6 +317,7 @@ export function buildEdgeData({
   explicitFlow,
   label = '',
   sourceHandle,
+  targetHandle,
 }) {
   const flowType = inferFlowType(source, target, { explicitFlow });
   const branchIndex = branchIndexFromHandle(sourceHandle, siblings);
@@ -301,6 +332,7 @@ export function buildEdgeData({
     branch: isConditional || isJourney,
     branchIndex,
     sourceHandle: sourceHandle || null,
+    targetHandle: targetHandle || null,
     branchColor: isConditional ? BRANCH_COLORS[branchIndex % BRANCH_COLORS.length] : null,
     animated,
   };

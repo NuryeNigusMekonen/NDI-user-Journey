@@ -12,6 +12,7 @@ export default function WorkspacePeoplePanel() {
   const followingId = usePresenceStore((s) => s.followingId);
   const isLive = usePresenceStore((s) => s.isLive);
   const connected = usePresenceStore((s) => s.connected);
+  const remoteMode = usePresenceStore((s) => s.remoteMode);
 
   const [editing, setEditing] = useState(() => needsDisplayName());
   const [nameDraft, setNameDraft] = useState(getDisplayName);
@@ -34,7 +35,7 @@ export default function WorkspacePeoplePanel() {
     setEditing(false);
   };
 
-  const online = peers.filter((p) => p.sessionId !== self?.sessionId);
+  const online = peers;
   const myLabel = displayLabel(myName || self?.name);
   const journeyId = presenceApi?.journeyId;
 
@@ -110,9 +111,13 @@ export default function WorkspacePeoplePanel() {
             </p>
           )}
           <p className="text-[10px] text-ink-muted leading-snug mb-2 px-1">
-            {isLive
-              ? 'Everyone on this link appears here instantly. Follow to jump to their page and sync view.'
-              : 'Share this link — teammates appear here when connected.'}
+            {remoteMode === 'db'
+              ? 'Synced across browsers and devices. Follow to jump to their page.'
+              : remoteMode === 'realtime'
+                ? 'Synced via realtime. Open the same URL in each browser.'
+                : isLive
+                  ? 'Connecting to server… If this stays empty, run the latest supabase/schema.sql in Supabase.'
+                  : 'Configure Supabase in .env for cross-browser presence.'}
           </p>
           {online.length === 0 ? (
             <p className="text-xs text-ink-muted px-1 py-1">No one else here yet.</p>

@@ -95,18 +95,14 @@ export function useFollowSync({ journeyId, setViewport, getViewport }) {
 
   useEffect(() => {
     const service = PresenceService.get();
-    if (!service.connected) return;
     const vp = getViewport?.();
-    service.track({
-      journeyId,
-      ...(vp ? { viewport: vp } : {}),
-    });
+    service.track({ journeyId, ...(vp ? { viewport: vp } : {}) });
   }, [journeyId, getViewport]);
 
   const broadcastViewport = useCallback((vp) => {
     if (suppressBroadcast.current || usePresenceStore.getState().followingId) return;
     if (!vp) return;
-    PresenceService.get().track({ viewport: vp });
+    PresenceService.get().broadcastViewport(vp);
   }, []);
 
   const broadcastCursor = useCallback((cursor) => {

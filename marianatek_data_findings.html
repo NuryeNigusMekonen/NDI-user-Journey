@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mariana Tek &middot; Data Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAFAF8;--cream:#F7F6F2;--paper:#FFFFFF;
+  --ink:#1B1D28;--ink-muted:#5A5E6C;--line:#E2E0D8;
+  --brand:#c8102e;--brand-deep:#a60d26;--brand-light:#fdecef;
+  --neutral:#C2B4A1;--gold-tint:#FBF1DF;
+  --shadow:0 1px 3px rgba(27,29,40,.06),0 12px 40px rgba(27,29,40,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{
+  font-family:'DM Sans',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);line-height:1.5;min-height:100vh;
+}
+.wrap{width:100%;min-height:100vh;display:flex;flex-direction:column}
+
+.tabs{
+  display:flex;gap:2px;flex-wrap:wrap;
+  background:var(--paper);border-bottom:1px solid var(--line);
+  padding:0 24px;position:sticky;top:0;z-index:10;
+}
+.tab{
+  position:relative;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;border:none;background:transparent;
+  color:var(--ink-muted);padding:14px 16px 15px;transition:color .15s;white-space:nowrap;
+}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--ink);font-weight:600}
+.tab[aria-selected="true"]::after{
+  content:"";position:absolute;left:16px;right:16px;bottom:0;height:2px;
+  background:var(--brand);border-radius:2px 2px 0 0;
+}
+
+.content{flex:1;padding:24px 28px 48px;width:100%}
+
+.card{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow);margin-bottom:16px;break-inside:avoid}
+.card h3{font-family:'Fraunces',serif;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--brand-deep);display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.card h3 .num{width:20px;height:20px;border-radius:50%;background:var(--brand-light);color:var(--brand-deep);font-family:'DM Sans';font-size:11px;font-weight:800;display:grid;place-items:center;flex-shrink:0}
+
+.grid{display:grid;gap:16px}
+.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.span-2{grid-column:span 2}
+.span-3{grid-column:span 3}
+@media(max-width:1100px){.cols-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.cols-2,.cols-3,.cols-4{grid-template-columns:1fr}.span-2,.span-3{grid-column:auto}}
+
+.stat{background:var(--cream);border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center}
+.stat-val{font-family:'Fraunces',serif;font-size:28px;font-weight:600;line-height:1;color:var(--brand-deep)}
+.stat-label{font-size:10px;color:var(--ink-muted);margin-top:4px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+
+.row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px;align-items:baseline}
+.row:last-child{border-bottom:none}
+.row .k{color:var(--ink-muted);font-weight:500}
+.row .v{font-weight:600;text-align:right}
+
+.bar{margin:8px 0}
+.bar .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;gap:8px}
+.bar .top .lab{color:var(--ink-muted);font-weight:600}
+.bar .top .val{font-weight:700;flex-shrink:0}
+.bar .track{height:8px;background:var(--cream);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
+.bar .fill{height:100%;border-radius:6px;background:var(--brand);transition:width .9s cubic-bezier(.2,.8,.2,1)}
+.bar .fill.gold{background:var(--neutral)}
+.bar .fill.warm{background:#D4A017}
+.bar .fill.green{background:#3B8A3E}
+.bar .fill.red{background:var(--brand)}
+
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.pill.green{background:#E8F5E9;color:#2E7D32}
+.pill.orange{background:var(--gold-tint);color:#8C6A1E}
+.pill.red{background:var(--brand-light);color:var(--brand)}
+.pill.gray{background:var(--cream);color:var(--ink-muted)}
+.pill.blue{background:#E3F2FD;color:#1565C0}
+
+.callout{font-size:13px;line-height:1.6;background:var(--cream);border-left:3px solid var(--neutral);padding:12px 14px;border-radius:0 10px 10px 0;color:var(--ink)}
+.callout.insight{background:var(--brand-light);border-color:var(--brand)}
+.callout b{font-weight:700}
+
+.src{font-size:9px;font-weight:800;letter-spacing:.06em;padding:2px 6px;border-radius:5px;text-transform:uppercase;vertical-align:middle}
+.src-mt{background:var(--brand-light);color:var(--brand-deep)}
+.src-comp{background:var(--cream);color:var(--ink-muted)}
+.src-sample{background:var(--gold-tint);color:#8C6A1E}
+
+table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0}
+th{text-align:left;padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-muted);border-bottom:1px solid var(--line);background:var(--cream)}
+td{padding:8px 10px;border-bottom:1px solid var(--line)}
+
+.region-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.region-card{background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.region-name{font-size:12px;font-weight:700;margin-bottom:4px}
+.region-studios{font-size:10px;color:var(--ink-muted);line-height:1.55}
+
+.panel{display:none}
+.panel.active{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.note-foot{font-size:11px;color:var(--ink-muted);margin-top:8px;line-height:1.55}
+.meta-strip{
+  display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:20px;
+  font-size:12px;color:var(--ink-muted);
+}
+.meta-strip b{color:var(--ink);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="tabs" role="tablist">
+  <button class="tab" role="tab" aria-selected="true" data-panel="overview">Overview</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="studios">Studios</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="members">Members</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="intros">Intro Offers</button>
+  <button class="tab" role="tab" aria-selected="false" data-panel="programs">Programs</button>
+</div>
+
+<div class="content">
+
+<div class="meta-strip">
+  <span>Source: <b>Mariana Tek Production API</b></span>
+  <span>5K sample per entity · <b>June 2026</b></span>
+</div>
+
+<!-- ═══════════════ OVERVIEW ═══════════════ -->
+<div class="panel active" id="panel-overview">
+
+<div class="grid cols-4" style="margin-bottom:20px">
+  <div class="stat"><div class="stat-val">57</div><div class="stat-label">Studios</div></div>
+  <div class="stat"><div class="stat-val">1.4M</div><div class="stat-label">Members</div></div>
+  <div class="stat"><div class="stat-val">30.4M</div><div class="stat-label">Bookings</div></div>
+  <div class="stat"><div class="stat-val">288</div><div class="stat-label">Active Programs</div></div>
+  <div class="stat"><div class="stat-val">280</div><div class="stat-label">Membership Plans</div></div>
+  <div class="stat"><div class="stat-val">1,330</div><div class="stat-label">Active Instructors</div></div>
+  <div class="stat"><div class="stat-val">2.2M</div><div class="stat-label">Orders</div></div>
+  <div class="stat"><div class="stat-val">19</div><div class="stat-label">Regions</div></div>
+</div>
+
+<div class="grid cols-2">
+
+<div class="card">
+  <h3><span class="num">1</span> Network at a glance <span class="src src-mt">MT</span></h3>
+  <div class="row"><span class="k">Total studios</span><span class="v">57</span></div>
+  <div class="row"><span class="k">Canadian studios (CAD)</span><span class="v">42</span></div>
+  <div class="row"><span class="k">US studios (USD)</span><span class="v">15</span></div>
+  <div class="row"><span class="k">Regions</span><span class="v">19</span></div>
+  <div class="row"><span class="k">Timezones</span><span class="v">11</span></div>
+  <div class="row"><span class="k">Classrooms</span><span class="v">390</span></div>
+</div>
+
+<div class="card">
+  <h3><span class="num">2</span> Key finding <span class="src src-comp">COMPUTED</span></h3>
+  <div class="callout insight">
+    <b>74.7% of members have attended 5 or fewer classes.</b> This is the critical conversion window where the AI concierge operates. Only 5.7% become regulars (50+ classes). The biggest opportunity is converting the 58.3% in the 1&ndash;5 class range into committed members.
+  </div>
+  <div style="margin-top:12px">
+    <div class="row"><span class="k">Never attended</span><span class="v"><span class="pill red">16.4%</span> ~228K</span></div>
+    <div class="row"><span class="k">1&ndash;5 classes (intro window)</span><span class="v"><span class="pill orange">58.3%</span> ~808K</span></div>
+    <div class="row"><span class="k">6+ classes (building habit)</span><span class="v"><span class="pill green">25.3%</span> ~351K</span></div>
+  </div>
+</div>
+
+<div class="card span-2">
+  <h3><span class="num">3</span> The member funnel <span class="src src-sample">5K SAMPLE</span></h3>
+<div class="bar"><div class="top"><span class="lab">Never attended (0 classes)</span><span class="val">821 (16.4%)</span></div><div class="track"><div class="fill red" style="width:16.42%" data-w="16.42"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">Intro window (1-5 classes)</span><span class="val">2,916 (58.3%)</span></div><div class="track"><div class="fill" style="width:58.32000000000001%;background:#D4A017" data-w="58.32000000000001"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">Building habit (6-20)</span><span class="val">677 (13.5%)</span></div><div class="track"><div class="fill" style="width:13.54%;background:#E8A838" data-w="13.54"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">Regular (21-50)</span><span class="val">301 (6.0%)</span></div><div class="track"><div class="fill" style="width:6.02%;background:#5B9A3E" data-w="6.02"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">Committed (51-100)</span><span class="val">130 (2.6%)</span></div><div class="track"><div class="fill" style="width:3%;background:#3B8A3E" data-w="3"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">Loyal core (100+)</span><span class="val">155 (3.1%)</span></div><div class="track"><div class="fill" style="width:3.1%;background:#2E7D32" data-w="3.1"></div></div></div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════ STUDIOS ═══════════════ -->
+<div class="panel" id="panel-studios">
+
+<div class="card">
+  <h3><span class="num">1</span> Studios by region <span class="src src-mt">MT</span></h3>
+  <div class="region-grid">
+<div class="region-card"><div class="region-name">Ontario (26)</div><div class="region-studios">Aurora, Barrie, Bayview Village (Toronto), Bloor West (Toronto), Brampton, Brant, Brooklin, Burlington, Danforth (Toronto), Dundas, Erin Mills, Etobicoke, Grand River, Lawrence Park (Toronto), Maple, Milton, Newmarket, Orleans, Queen West (Toronto), Scarborough, St Clair West (Toronto), Stoney Creek, Stratford, Thunder Bay, Uptown (Toronto), Waterloo West</div></div>
+<div class="region-card"><div class="region-name">British Columbia (5)</div><div class="region-studios">East Vancouver, Nanaimo, North Vancouver, Olympic Village, Vancouver</div></div>
+<div class="region-card"><div class="region-name">Manitoba (3)</div><div class="region-studios">Kildonan, Winnipeg - Donald, Winnipeg - Waverley</div></div>
+<div class="region-card"><div class="region-name">Los Angeles (3)</div><div class="region-studios">Echo Park, La Brea, Venice</div></div>
+<div class="region-card"><div class="region-name">Quebec (3)</div><div class="region-studios">Montreal, Vaudreuil, West Island</div></div>
+<div class="region-card"><div class="region-name">Texas (2)</div><div class="region-studios">Austin, Houston</div></div>
+<div class="region-card"><div class="region-name">New York (2)</div><div class="region-studios">West Village, Williamsburg</div></div>
+<div class="region-card"><div class="region-name">Ohio (2)</div><div class="region-studios">Columbus - Clintonville, Columbus - Grandview</div></div>
+<div class="region-card"><div class="region-name">Newfoundland (1)</div><div class="region-studios">St. John's</div></div>
+<div class="region-card"><div class="region-name">Washington (1)</div><div class="region-studios">Seattle</div></div>
+<div class="region-card"><div class="region-name">Nevada (1)</div><div class="region-studios">Las Vegas</div></div>
+<div class="region-card"><div class="region-name">Minnesota (1)</div><div class="region-studios">Minneapolis</div></div>
+<div class="region-card"><div class="region-name">Oregon (1)</div><div class="region-studios">Portland</div></div>
+<div class="region-card"><div class="region-name">California (1)</div><div class="region-studios">San Diego</div></div>
+<div class="region-card"><div class="region-name">Prince Edward Island (1)</div><div class="region-studios">Charlottetown</div></div>
+<div class="region-card"><div class="region-name">Florida (1)</div><div class="region-studios">Miami</div></div>
+<div class="region-card"><div class="region-name">Saskatchewan (1)</div><div class="region-studios">Saskatoon</div></div>
+<div class="region-card"><div class="region-name">Modo Yoga International (1)</div><div class="region-studios">Modo Yoga International</div></div>
+<div class="region-card"><div class="region-name">Alberta (1)</div><div class="region-studios">Sherwood Park</div></div>
+</div>
+  <div class="note-foot">Ontario dominates with 26 of 57 studios. 42 Canadian (CAD), 15 US (USD).</div>
+</div>
+
+<div class="grid cols-2">
+<div class="card">
+  <h3><span class="num">2</span> Studio configuration <span class="src src-mt">MT</span></h3>
+  <div class="row"><span class="k">Classrooms</span><span class="v">390</span></div>
+  <div class="row"><span class="k">Avg classrooms per studio</span><span class="v">6.8</span></div>
+  <div class="row"><span class="k">Membership plans (total)</span><span class="v">528</span></div>
+  <div class="row"><span class="k">Membership plans (active)</span><span class="v">280</span></div>
+  <div class="row"><span class="k">Credit types (total)</span><span class="v">810</span></div>
+  <div class="row"><span class="k">Discount rules</span><span class="v">250+</span></div>
+</div>
+
+<div class="card">
+  <h3><span class="num">3</span> Observation <span class="src src-comp">COMPUTED</span></h3>
+  <div class="callout insight">
+    <b>Every studio has its own plans.</b> With 280 active membership plans across 57 studios, each studio averages ~4 unique plans. Naming is highly localized (e.g. &ldquo;H - MEMBERSHIP : UNLIMITED AUTORENEW - Winnipeg&rdquo;). The AI must reference the correct plan names per studio.
+  </div>
+  <div class="callout" style="margin-top:8px">
+    <b>Program naming is inconsistent.</b> 3,719 class types exist but only 288 are active. Multiple names refer to the same format (&ldquo;Modo Yoga - 60 min&rdquo;, &ldquo;Modo 60&rdquo;, &ldquo;Historical Class60&rdquo;). The knowledge base should normalize these.
+  </div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════ MEMBERS ═══════════════ -->
+<div class="panel" id="panel-members">
+
+<div class="grid cols-2">
+
+<div class="card">
+  <h3><span class="num">1</span> Member reachability <span class="src src-sample">5K SAMPLE</span></h3>
+  <div class="bar"><div class="top"><span class="lab">Email address</span><span class="val">100%</span></div><div class="track"><div class="fill green" data-w="100"></div></div></div>
+  <div class="bar"><div class="top"><span class="lab">Phone number</span><span class="val">98%</span></div><div class="track"><div class="fill green" data-w="97.89999999999999"></div></div></div>
+  <div class="bar"><div class="top"><span class="lab">Email opt-in</span><span class="val">44%</span></div><div class="track"><div class="fill warm" data-w="44.34"></div></div></div>
+  <div class="bar"><div class="top"><span class="lab">SMS opt-in</span><span class="val">7%</span></div><div class="track"><div class="fill red" data-w="7.06"></div></div></div>
+  <div class="bar"><div class="top"><span class="lab">Birth date</span><span class="val">73%</span></div><div class="track"><div class="fill" data-w="73.42"></div></div></div>
+</div>
+
+<div class="card">
+  <h3><span class="num">2</span> Reachability insights <span class="src src-comp">COMPUTED</span></h3>
+  <div class="callout insight">
+    <b>SMS is viable in production</b> &mdash; 98% have phone numbers (vs 3% in sandbox). But only 7% have opted in to SMS marketing. An SMS consent campaign could unlock the channel for the AI concierge.
+  </div>
+  <div style="margin-top:12px">
+    <div class="row"><span class="k">Gender data</span><span class="v"><span class="pill red">0%</span> Not collected</span></div>
+    <div class="row"><span class="k">City / postal code</span><span class="v"><span class="pill orange">24&ndash;38%</span> Partial</span></div>
+    <div class="row"><span class="k">Birthday campaigns</span><span class="v"><span class="pill green">73%</span> Feasible</span></div>
+    <div class="row"><span class="k">Geo-targeting</span><span class="v"><span class="pill orange">Limited</span></span></div>
+  </div>
+</div>
+
+<div class="card span-2">
+  <h3><span class="num">3</span> Visit distribution <span class="src src-sample">5K SAMPLE</span></h3>
+  <table>
+    <tr><th>Segment</th><th>Members</th><th>Share</th><th>Estimated total (1.4M)</th><th>AI Journey</th></tr>
+    <tr><td>Never attended</td><td>821</td><td>16.4%</td><td>~228K</td><td><span class="pill red">J1: Rescue</span></td></tr>
+    <tr><td>1&ndash;5 classes</td><td>2,916</td><td>58.3%</td><td>~808K</td><td><span class="pill orange">J2: Habit building</span></td></tr>
+    <tr><td>6&ndash;20 classes</td><td>677</td><td>13.5%</td><td>~187K</td><td><span class="pill blue">J4: Conversion</span></td></tr>
+    <tr><td>21&ndash;50 classes</td><td>301</td><td>6.0%</td><td>~83K</td><td><span class="pill green">Retained</span></td></tr>
+    <tr><td>51&ndash;100 classes</td><td>130</td><td>2.6%</td><td>~36K</td><td><span class="pill green">Loyal</span></td></tr>
+    <tr><td>100+ classes</td><td>155</td><td>3.1%</td><td>~43K</td><td><span class="pill green">Core</span></td></tr>
+  </table>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════ INTRO OFFERS ═══════════════ -->
+<div class="panel" id="panel-intros">
+
+<div class="grid cols-3" style="margin-bottom:16px">
+  <div class="stat"><div class="stat-val">2,082</div><div class="stat-label">Intro Offers (sample)</div></div>
+  <div class="stat"><div class="stat-val">2,918</div><div class="stat-label">Regular Memberships</div></div>
+  <div class="stat"><div class="stat-val">42%</div><div class="stat-label">Intro Offer Rate</div></div>
+</div>
+
+<div class="grid cols-2">
+
+<div class="card">
+  <h3><span class="num">1</span> Intro offer status <span class="src src-sample">5K SAMPLE</span></h3>
+<div class="bar"><div class="top"><span class="lab">done</span><span class="val">972 (46.7%)</span></div><div class="track"><div class="fill " data-w="46.68587896253602"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">active</span><span class="val">763 (36.6%)</span></div><div class="track"><div class="fill green" data-w="36.64745437079731"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">pending_customer_activation</span><span class="val">186 (8.9%)</span></div><div class="track"><div class="fill warm" data-w="8.93371757925072"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">pending_start_date</span><span class="val">81 (3.9%)</span></div><div class="track"><div class="fill warm" data-w="3.890489913544669"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">terminated</span><span class="val">62 (3.0%)</span></div><div class="track"><div class="fill red" data-w="3"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">ding_failure</span><span class="val">12 (0.6%)</span></div><div class="track"><div class="fill red" data-w="3"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">frozen</span><span class="val">6 (0.3%)</span></div><div class="track"><div class="fill gold" data-w="3"></div></div></div>
+
+  <div class="callout insight" style="margin-top:12px">
+    <b>972 expired</b> without converting vs <b>763 currently active</b>. The AI's core job: convert the active ones before they expire.
+  </div>
+</div>
+
+<div class="card">
+  <h3><span class="num">2</span> Intro pass durations <span class="src src-sample">5K SAMPLE</span></h3>
+  <table>
+    <tr><th>Duration</th><th>Count</th><th>Share</th></tr>
+<tr><td>1 MO</td><td>915</td><td>43.9%</td></tr>
+<tr><td>30 DY</td><td>524</td><td>25.2%</td></tr>
+<tr><td>2 WK</td><td>353</td><td>17.0%</td></tr>
+<tr><td>3 WK</td><td>171</td><td>8.2%</td></tr>
+<tr><td>14 DY</td><td>64</td><td>3.1%</td></tr>
+<tr><td>4 WK</td><td>38</td><td>1.8%</td></tr>
+<tr><td>7 DY</td><td>8</td><td>0.4%</td></tr>
+<tr><td>60 DY</td><td>6</td><td>0.3%</td></tr>
+</table>
+</div>
+
+<div class="card span-2">
+  <h3><span class="num">3</span> Most popular intro plans <span class="src src-sample">5K SAMPLE</span></h3>
+  <table>
+    <tr><th>Plan Name</th><th>Count</th></tr>
+<tr><td>Intro Month - Modo Vancouver - Membership</td><td>248</td></tr>
+<tr><td>A - INTRO MONTH $66 - WPG</td><td>235</td></tr>
+<tr><td>One Month Intro Offer w/ 2 Reformer Credits-EM</td><td>146</td></tr>
+<tr><td>A - SUMMER COMEBACK MONTH - $30 - WPG</td><td>144</td></tr>
+<tr><td>A - GUEST FIRST MONTH $31 - WPG</td><td>137</td></tr>
+<tr><td>Spécial INTRO | 3 semaines illimitées - West Island</td><td>126</td></tr>
+<tr><td>Intro Month Pass - St. John's</td><td>107</td></tr>
+<tr><td>2 Week Intro Pass - Nanaimo</td><td>78</td></tr>
+<tr><td>$39 Two Weeks Unlimited - Columbus</td><td>73</td></tr>
+<tr><td>$59 Intro Month - Columbus</td><td>69</td></tr>
+</table>
+  <div class="note-foot">Each studio creates its own intro offer names &mdash; the knowledge base must map these per studio.</div>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════ PROGRAMS ═══════════════ -->
+<div class="panel" id="panel-programs">
+
+<div class="grid cols-3" style="margin-bottom:16px">
+  <div class="stat"><div class="stat-val">3719</div><div class="stat-label">Total Class Types</div></div>
+  <div class="stat"><div class="stat-val">288</div><div class="stat-label">Active (Upcoming)</div></div>
+  <div class="stat"><div class="stat-val">3,431</div><div class="stat-label">Inactive / Historical</div></div>
+</div>
+
+<div class="card">
+  <h3><span class="num">1</span> Top active programs <span class="src src-mt">MT</span></h3>
+  <table>
+    <tr><th>Program</th><th>Duration</th><th>Upcoming Classes</th><th>Historical Classes</th></tr>
+<tr><td>Modo Yoga - 60 min</td><td>60 min</td><td>3,132</td><td>47,096</td></tr>
+<tr><td>Modo Flow - 60 min</td><td>60 min</td><td>2,783</td><td>41,093</td></tr>
+<tr><td>Modo Yoga with Music - 60 min</td><td>60 min</td><td>772</td><td>9,344</td></tr>
+<tr><td>Yin - 60 min</td><td>60 min</td><td>604</td><td>8,203</td></tr>
+<tr><td>Modo + Yin - 60 min</td><td>60 min</td><td>533</td><td>6,906</td></tr>
+<tr><td>Vinyasa - 60 min</td><td>60 min</td><td>494</td><td>6,382</td></tr>
+<tr><td>Bain froid/cold plunge - Vaudreuil</td><td>30 min</td><td>492</td><td>670</td></tr>
+<tr><td>Modo Freestyle - 60 min</td><td>60 min</td><td>449</td><td>8,779</td></tr>
+<tr><td>Barre Classic</td><td>50 min</td><td>441</td><td>464</td></tr>
+<tr><td>Barre - 60 min</td><td>60 min</td><td>369</td><td>5,350</td></tr>
+<tr><td>Modo Flow (FR) - 60 min</td><td>60 min</td><td>306</td><td>3,726</td></tr>
+<tr><td>Modo Yoga - 45 min</td><td>45 min</td><td>293</td><td>4,050</td></tr>
+</table>
+</div>
+
+<div class="card">
+  <h3><span class="num">2</span> Duration distribution <span class="src src-mt">MT</span></h3>
+<div class="bar"><div class="top"><span class="lab">60 min</span><span class="val">1,367 (37.6%)</span></div><div class="track"><div class="fill" data-w="37.58592246356888" style="width:37.58592246356888%"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">90 min</span><span class="val">587 (16.1%)</span></div><div class="track"><div class="fill" data-w="16.139675556777565" style="width:16.139675556777565%"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">75 min</span><span class="val">536 (14.7%)</span></div><div class="track"><div class="fill" data-w="14.737420951333515" style="width:14.737420951333515%"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">120 min</span><span class="val">409 (11.2%)</span></div><div class="track"><div class="fill" data-w="11.245532031894419" style="width:11.245532031894419%"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">>120 min</span><span class="val">334 (9.2%)</span></div><div class="track"><div class="fill" data-w="9.183392906241409" style="width:9.183392906241409%"></div></div></div>
+<div class="bar"><div class="top"><span class="lab">45 min</span><span class="val">252 (6.9%)</span></div><div class="track"><div class="fill" data-w="6.928787462194117" style="width:6.928787462194117%"></div></div></div>
+<div class="bar"><div class="top"><span class="lab"><45 min</span><span class="val">152 (4.2%)</span></div><div class="track"><div class="fill" data-w="4.179268627990101" style="width:4.179268627990101%"></div></div></div>
+
+  <div class="callout" style="margin-top:12px">
+    60-minute classes dominate. The AI should default to recommending 60-min sessions unless the member has shown a preference for longer or shorter formats.
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<div class="note-foot" style="margin-top:30px;padding-top:20px;border-top:1px solid var(--line)">
+  Data sourced from <b>Modo Yoga production Mariana Tek API</b>. Large tables (users, reservations, orders, membership_instances, credit_transactions) are 5K samples; small tables (locations, programs, memberships, etc.) are complete. Sandbox and production data structures are confirmed identical (18/18 endpoints verified).
+</div>
+
+</div>
+</div>
+
+<script>
+const tabs = document.querySelectorAll('.tab');
+tabs.forEach(t => t.addEventListener('click', () => {
+  tabs.forEach(x => x.setAttribute('aria-selected','false'));
+  t.setAttribute('aria-selected','true');
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-' + t.dataset.panel).classList.add('active');
+  // Animate bars
+  document.querySelectorAll('.panel.active .bar .fill').forEach(f => {
+    const w = f.dataset.w || f.style.width;
+    f.style.width = '0';
+    requestAnimationFrame(() => setTimeout(() => f.style.width = (typeof w === 'string' && w.includes('%')) ? w : w + '%', 60));
+  });
+}));
+</script>
+
+</body>
+</html>

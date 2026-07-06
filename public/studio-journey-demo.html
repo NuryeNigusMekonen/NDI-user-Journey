@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Modo Compass · Journey Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#C41F3A;--brand-d:#A60D24;--brand-active:#A60D24;
+  --ink:#1A0808;--name:#1A0808;--sub:#5c5c5c;--body:#525866;--soft:#a3a3a3;--meta:#717784;
+  --white:#ffffff;--weak:#f7f7f7;--dark:#1A0808;
+  --stroke:#e1e4ea;--stroke-soft:#ebebeb;
+  --green:#1fc16b;--green-d:#178c4e;--blue:#335cff;
+  --shadow-sm:0 1px 2px rgba(26,8,8,.05);
+  --shadow:0 2px 4px rgba(26,8,8,.05),0 14px 30px -18px rgba(26,8,8,.22);
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;color:var(--body);line-height:1.5;min-height:100vh;background:var(--weak);padding:24px 20px 44px}
+.wrap{max-width:1160px;margin:0 auto}
+
+/* masthead */
+.masthead{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .logo{width:38px;height:38px;flex-shrink:0;display:block;line-height:0}
+.brand h1{font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--name);line-height:1.05}
+.brand .sub{font-size:11px;color:var(--soft);font-weight:500;margin-top:3px}
+.masthead-meta{font-family:var(--mono);font-size:11px;color:var(--meta);text-align:right;line-height:1.6}
+.masthead-meta b{color:var(--body);font-weight:500}
+
+/* journey tabs */
+.jtabs{display:flex;gap:2px;border-bottom:1px solid var(--stroke);margin-bottom:20px}
+.jtab{position:relative;font-family:inherit;font-size:14px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--body);padding:11px 16px 13px;text-align:left;transition:color .15s}
+.jtab:hover{color:var(--name)}
+.jtab small{display:block;font-size:11px;font-weight:400;color:var(--soft);margin-top:3px}
+.jtab[aria-selected="true"]{font-weight:600;color:var(--name)}
+.jtab[aria-selected="true"] small{color:var(--sub)}
+.jtab[aria-selected="true"]::after{content:"";position:absolute;left:16px;right:16px;bottom:-1px;height:2px;background:var(--brand);border-radius:2px 2px 0 0}
+
+/* stage layout */
+.stage{display:grid;grid-template-columns:372px 1fr;gap:20px;align-items:start}
+@media(max-width:860px){.stage{grid-template-columns:1fr}}
+
+/* scenario banner */
+.scenario{font-size:12px;color:var(--body);margin:0 0 10px 2px;display:flex;align-items:center;gap:8px}
+.scenario .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px #e0faec}
+.scenario b{color:var(--name);font-weight:600}
+
+/* phone */
+.phone-col{position:relative}
+.phone{background:var(--dark);border-radius:38px;padding:10px;box-shadow:var(--shadow);width:100%;max-width:372px;margin:0 auto}
+.screen{background:var(--weak);border-radius:30px;overflow:hidden;display:flex;flex-direction:column;height:600px;position:relative}
+.statusbar{display:flex;justify-content:space-between;align-items:center;padding:9px 20px 4px;font-family:var(--mono);font-size:12px;font-weight:500;color:var(--name);background:var(--white)}
+.statusbar .r{display:flex;gap:5px;align-items:center;font-size:10px}
+.chat-head{display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 12px 10px;background:var(--white);border-bottom:1px solid var(--stroke-soft)}
+.sms-id{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--name);letter-spacing:.06em}
+.thread{flex:1;overflow-y:auto;padding:14px 13px 8px;display:flex;flex-direction:column;gap:2px;scroll-behavior:smooth;background:var(--weak)}
+.thread::-webkit-scrollbar{width:0}
+.row{display:flex;margin-top:8px;animation:pop .3s cubic-bezier(.2,.8,.3,1)}
+.row.ai{justify-content:flex-start}
+.row.member{justify-content:flex-end}
+.row.system{justify-content:center}
+@keyframes pop{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.bub{max-width:80%;padding:9px 13px;font-size:13px;line-height:1.45;white-space:pre-line;border-radius:16px;position:relative}
+.ai .bub{background:var(--white);color:var(--name);border:1px solid var(--stroke);border-bottom-left-radius:5px}
+.member .bub{background:var(--brand);color:#fff;border-bottom-right-radius:5px}
+.system .bub{background:transparent;color:var(--soft);font-family:var(--mono);font-size:10px;font-weight:500;text-align:center;max-width:92%;padding:3px 10px}
+.system .bub.alert{background:#feebed;color:#c8102e;border-radius:6px;padding:5px 11px}
+.system .bub.good{background:#e0faec;color:#178c4e;border-radius:6px;padding:5px 11px}
+/* inline tappable link inside an SMS message */
+.msglink{color:var(--blue);text-decoration:underline;text-underline-offset:2px;cursor:pointer;font-weight:500;word-break:break-word}
+.msglink:hover{color:#1f3bad}
+.linkcard{margin-top:8px;background:var(--white);border:1px solid var(--stroke);border-radius:10px;padding:9px 12px;font-size:12px;font-weight:600;color:var(--brand);display:flex;align-items:center;gap:7px}
+.linkcard::after{content:"→";margin-left:auto;font-size:14px}
+.typing .bub{background:var(--white);border:1px solid var(--stroke);border-bottom-left-radius:5px;padding:12px 14px}
+.typing span{display:inline-block;width:6px;height:6px;border-radius:50%;background:#c4c4c4;margin:0 2px;animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+/* phone footer */
+.pfoot{padding:9px 12px 13px;background:var(--white);border-top:1px solid var(--stroke-soft);min-height:56px}
+.fakebar{display:flex;align-items:center;gap:8px;background:var(--weak);border:1px solid var(--stroke);border-radius:20px;padding:8px 8px 8px 14px;color:var(--soft);font-size:13px}
+.fakebar .send{margin-left:auto;width:26px;height:26px;border-radius:50%;background:var(--stroke);display:grid;place-items:center;color:#fff;font-size:12px}
+
+/* Mariana Tek pop-up — opens on top of the whole demo */
+.mt-overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:24px;background:rgba(26,8,8,.55);opacity:0;visibility:hidden;transition:opacity .2s ease}
+.mt-overlay.open{opacity:1;visibility:visible}
+.mt-modal{width:100%;max-width:440px;max-height:88vh;background:var(--white);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 70px -20px rgba(0,0,0,.55);transform:translateY(12px) scale(.985);transition:transform .25s ease}
+.mt-overlay.open .mt-modal{transform:none}
+.mt-top{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--stroke-soft);flex-shrink:0}
+.mt-brand{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--name)}
+.mt-logo{display:block;flex-shrink:0}
+.mt-pw{margin-left:auto;font-family:var(--mono);font-size:9px;color:var(--soft);text-transform:uppercase;letter-spacing:.05em}
+.mt-close{width:27px;height:27px;border-radius:7px;border:1px solid var(--stroke);background:var(--white);color:var(--body);font-size:13px;cursor:pointer;display:grid;place-items:center;flex-shrink:0;transition:.15s}
+.mt-close:hover{background:var(--weak);color:var(--name)}
+.mt-body{flex:1;overflow-y:auto;padding:18px 16px}
+.mt-h{font-size:18px;font-weight:700;color:var(--name);letter-spacing:-.01em}
+.mt-date{font-size:12px;color:var(--soft);margin-bottom:14px}
+.mt-slot{display:flex;align-items:center;gap:12px;padding:13px;border:1px solid var(--stroke);border-radius:10px;margin-bottom:9px}
+.mt-time{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--name);width:64px;flex-shrink:0}
+.mt-info{flex:1;min-width:0}
+.mt-cls{font-size:13.5px;font-weight:600;color:var(--name)}
+.mt-meta{font-size:11.5px;color:var(--soft);margin-top:2px}
+.mt-reserve{font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;background:var(--brand);color:#fff;border:none;padding:9px 16px;border-radius:8px;flex-shrink:0;transition:.15s}
+.mt-reserve:hover{background:var(--brand-d)}
+.mt-plan{border:1px solid var(--stroke);border-radius:12px;padding:18px;margin-bottom:14px}
+.mt-plan-name{font-size:15px;font-weight:700;color:var(--name)}
+.mt-plan-price{font-family:var(--mono);font-size:30px;font-weight:700;color:var(--name);margin:4px 0 12px}
+.mt-plan-price span{font-size:14px;font-weight:400;color:var(--soft)}
+.mt-perks{list-style:none;display:flex;flex-direction:column;gap:8px}
+.mt-perks li{font-size:12.5px;color:var(--body);padding-left:21px;position:relative}
+.mt-perks li::before{content:"✓";position:absolute;left:0;color:var(--green-d);font-weight:700}
+.mt-card{font-family:var(--mono);font-size:13px;color:var(--meta);background:var(--weak);border:1px solid var(--stroke);border-radius:8px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.mt-pay{width:100%;padding:13px}
+.mt-foot{padding:11px 16px;border-top:1px solid var(--stroke-soft);font-family:var(--mono);font-size:9px;color:var(--soft);text-align:center;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0}
+
+/* behind panel */
+.behind{background:var(--white);border:1px solid var(--stroke);border-radius:12px;box-shadow:var(--shadow-sm);padding:0;overflow:hidden;min-height:600px;display:flex;flex-direction:column}
+.compass-bar{display:flex;align-items:center;gap:9px;padding:13px 20px;border-bottom:1px solid var(--stroke-soft);background:var(--white)}
+.compass-bar .cmark{width:24px;height:24px;display:grid;place-items:center;flex-shrink:0;line-height:0}
+.compass-bar .cname{font-size:15px;font-weight:700;color:var(--name);letter-spacing:-.01em}
+.behind-top{padding:15px 20px 14px;border-bottom:1px solid var(--stroke-soft)}
+.behind-eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--soft);font-weight:600}
+.behind-step{font-size:18px;font-weight:700;letter-spacing:-.02em;color:var(--name);margin-top:6px}
+.behind-body{padding:16px 20px;display:flex;flex-direction:column;gap:15px;flex:1}
+.bsec .lab{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--soft);font-weight:600;margin-bottom:5px}
+.bsec .val{font-size:13px;color:var(--body);line-height:1.55}
+.bsec .val code{font-family:var(--mono);font-size:11px;background:var(--weak);color:var(--meta);border:1px solid var(--stroke-soft);padding:1px 6px;border-radius:4px;display:inline-block;margin:2px 3px 0 0}
+.prod{margin-top:auto;background:var(--weak);border:1px solid var(--stroke);border-left:3px solid var(--brand);border-radius:8px;padding:12px 15px}
+.prod .lab{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--brand);font-weight:700;margin-bottom:5px}
+.prod .val{font-size:12.5px;color:var(--body);line-height:1.5}
+.prod .val b{color:var(--name);font-weight:700}
+/* ops card */
+.opscard{background:var(--weak);border:1px solid var(--stroke);border-radius:10px;padding:13px 15px;margin-bottom:2px}
+.opscard-h{font-family:var(--mono);font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--meta);font-weight:600;margin-bottom:10px}
+.briefrow{display:flex;gap:10px;align-items:center;margin-bottom:9px}
+.briefrow .av{width:34px;height:34px;border-radius:50%;background:#fbe3e7;color:var(--brand);display:grid;place-items:center;font-weight:700;font-size:13px;flex-shrink:0}
+.bn{font-size:13px;font-weight:600;color:var(--name)}
+.bn .tag{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:#fbe3e7;color:var(--brand);padding:2px 6px;border-radius:6px;margin-left:6px;vertical-align:middle}
+.bd{font-family:var(--mono);font-size:10.5px;color:var(--soft);margin-top:2px}
+.brief-line{font-size:11.5px;color:var(--body);padding:4px 0;border-top:1px solid var(--stroke-soft)}
+.brief-line b{color:var(--name);font-weight:600}
+.brief-script{font-size:11.5px;font-style:italic;color:var(--body);background:var(--white);border:1px solid var(--stroke-soft);border-radius:8px;padding:9px 11px;margin-top:8px;line-height:1.5}
+.convtbl{width:100%;border-collapse:collapse;font-size:11.5px}
+.convtbl td{padding:6px 4px;border-bottom:1px solid var(--stroke-soft);vertical-align:top}
+.convtbl tr:last-child td{border-bottom:none}
+.convtbl td:first-child{color:var(--soft);width:44%}
+.convtbl td:last-child{font-weight:600;color:var(--name);text-align:right;font-family:var(--mono)}
+
+/* controls */
+.controls{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:20px}
+.navbtn{font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:1px solid #cacfd8;background:var(--white);color:var(--body);padding:10px 18px;border-radius:8px;transition:.15s}
+.navbtn:hover:not(:disabled){border-color:#b3b9c4;color:var(--name)}
+.navbtn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.navbtn.primary:hover:not(:disabled){background:var(--brand-d);border-color:var(--brand-d)}
+.navbtn:disabled{opacity:.45;cursor:default}
+.dots{display:flex;gap:7px;align-items:center}
+.dot-step{width:8px;height:8px;border-radius:50%;background:var(--stroke);border:none;cursor:pointer;transition:.15s;padding:0}
+.dot-step.done{background:#e6a3ad}
+.dot-step.active{background:var(--brand);transform:scale(1.35)}
+.stepmeta{text-align:center;font-size:12px;color:var(--soft);margin-top:10px}
+.stepmeta b{color:var(--name);font-weight:600}
+.restart{font-family:inherit;font-size:11px;font-weight:500;cursor:pointer;background:transparent;border:none;color:var(--soft);text-decoration:underline;text-underline-offset:2px;margin-left:4px}
+.hint{text-align:center;font-size:11px;color:var(--soft);margin-top:14px}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="modo-mark" viewBox="0 0 120 120"><circle cx="60" cy="60" r="60" fill="#C41F3A"/><g transform="matrix(1.65 0 0 1.65 -39 -39)"><path d="M 59.97 37.1 C 59.94 37.19 59.88 37.9 59.85 38.67 C 59.8 40 59.48 42.56 59.27 43.38 C 59.22 43.58 59.1 44.05 59.01 44.42 C 58.41 46.98 57.36 49.5 56.08 51.36 C 55.17 52.71 54.23 54.06 54.07 54.25 C 53.98 54.38 52.56 56.19 52.08 56.81 C 51.96 56.97 50.81 58.63 50.49 59.11 C 48.34 62.32 46.91 65.15 46.36 67.27 C 46.15 68.05 45.89 70.18 45.89 71.08 C 45.89 71.99 46.15 74.04 46.41 75.12 C 46.81 76.79 47.6 78.56 48.54 79.81 C 49.34 80.9 51.81 83.06 52.02 82.85 C 52.05 82.82 51.89 82.58 51.66 82.32 C 50.98 81.55 50.02 80.09 49.52 79.07 C 49.06 78.15 48.5 76.51 48.3 75.58 C 47.84 73.38 48.22 69.94 49.24 66.85 C 49.7 65.47 51.45 62.24 52.28 61.2 C 52.72 60.66 54.12 58.96 54.4 58.64 C 55.22 57.67 56.78 56.25 57.29 55.99 C 57.93 55.67 58.21 55.65 58.69 55.87 C 59.1 56.07 59.27 56.4 59.27 57 C 59.26 57.5 59.31 57.34 57.98 60.59 C 56.78 63.54 56.6 64.31 56.69 66.25 C 56.73 67.31 56.79 67.74 57 68.33 C 57.27 69.11 57.54 69.66 57.78 69.91 C 57.85 69.98 57.91 70.09 57.91 70.14 C 57.91 70.33 59.26 71.56 59.97 72.03 C 61.21 72.84 61.74 73.01 63.08 73.01 C 63.94 73.02 64.38 72.96 64.81 72.82 C 66.18 72.35 67.18 71.7 68.57 70.36 C 69.45 69.51 69.61 69.41 69.94 69.41 C 71.18 69.41 71.92 72.16 71.46 75 C 71.07 77.32 69.76 80.11 68.02 82.35 C 67.74 82.72 67.53 83.03 67.56 83.06 C 67.59 83.1 68.03 82.85 68.52 82.53 C 69.58 81.82 70.83 80.62 71.54 79.62 C 72.65 78.07 73.57 75.84 73.98 73.75 C 74.21 72.52 74.24 68.3 74.02 67.11 C 73.47 64.05 71.56 60.55 68.58 57.14 C 67.98 56.43 67.9 56.41 67.99 56.98 C 68.47 60.21 68.52 62.44 68.14 63.89 C 67.77 65.35 67.15 66.69 66.42 67.64 C 65.61 68.7 64.73 69.21 63.59 69.28 C 62.09 69.38 61.16 68.66 60.51 66.9 C 60.29 66.3 60.26 66.04 60.26 64.76 C 60.26 63.51 60.3 63.18 60.5 62.56 C 60.8 61.66 61.12 61.09 61.83 60.21 C 63.72 57.84 64.81 55.78 65.3 53.6 C 65.54 52.49 65.54 49.34 65.29 47.87 C 64.96 45.89 64.41 44.1 63.65 42.46 C 63.42 41.98 63.24 41.57 63.24 41.55 C 63.24 41.43 62.23 39.78 61.65 38.98 C 60.7 37.65 60.03 36.9 59.97 37.1 Z" fill="#fff"/></g></symbol></svg>
+
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="brand">
+      <div class="logo"><svg width="38" height="38"><use href="#modo-mark"></use></svg></div>
+      <div><h1>Modo Compass</h1><div class="sub">Studio Lead Membership Engine Journey Demo</div></div>
+    </div>
+    <div class="masthead-meta"><div>Modo Yoga · Modo Mondo</div></div>
+  </div>
+
+  <div class="jtabs" role="tablist">
+    <button class="jtab" role="tab" aria-selected="true" data-j="j1">Journey 1<small>New Lead → First Class</small></button>
+    <button class="jtab" role="tab" aria-selected="false" data-j="j2">Journey 2<small>Membership Conversion</small></button>
+  </div>
+
+  <div class="stage">
+    <div class="phone-col">
+      <div class="scenario"><span class="dot"></span><span id="scenario"></span></div>
+      <div class="phone">
+        <div class="screen">
+          <div class="statusbar"><span id="clock">7:02</span><span class="r">5G &nbsp; <span style="font-weight:800">100%</span> ▰</span></div>
+          <div class="chat-head"><div class="sms-id">SMS</div></div>
+          <div class="thread" id="thread"></div>
+          <div class="pfoot" id="pfoot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="behind">
+      <div class="compass-bar">
+        <span class="cmark"><svg width="24" height="24"><use href="#modo-mark"></use></svg></span>
+        <span class="cname">Modo Compass</span>
+      </div>
+      <div class="behind-top">
+        <div class="behind-eyebrow"><span id="eyebrow">Behind the scenes</span></div>
+        <div class="behind-step" id="stepName"></div>
+      </div>
+      <div class="behind-body" id="behindBody"></div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="navbtn" id="prevBtn">‹ Back</button>
+    <div class="dots" id="dots"></div>
+    <button class="navbtn primary" id="nextBtn">Next ›</button>
+  </div>
+  <div class="stepmeta"><span id="stepMeta"></span> <button class="restart" id="restartBtn">restart</button></div>
+  <div class="hint">Tip: use ← → arrow keys to navigate. When a message has a link, tap it to open the Mariana Tek page.</div>
+
+</div>
+
+<div class="mt-overlay" id="mt" aria-hidden="true"><div class="mt-modal" id="mtModal"></div></div>
+
+<script>
+/* ───────────────── content ───────────────── */
+const DATA = {
+  j1: {
+    name: "New Lead → First Class",
+    scenario: "<b>Sarah M.</b> · first-time visitor, just found Modo Yoga",
+    clock: "7:02",
+    scenes: [
+      { step:"Welcome",
+        pre:[
+          {from:"system", text:"Sarah created an account on modoyoga.com"},
+          {from:"ai", text:"Hi Sarah! 👋 It's Modo Yoga, so glad you found us. What's drawing you to the mat right now, and is there anything holding you back?"},
+          {from:"member", text:"Hi! Honestly, stress relief + flexibility. A little nervous I'm not bendy enough 😅"},
+          {from:"ai", text:"That's the most common worry, and the least true 🌿 Flexibility is something class gives you, not something you need first. You're exactly in the right place."}
+        ],
+        behind:{ trigger:"Account created, Mariana Tek fires a webhook.",
+          does:"Sends a warm welcome within minutes and asks about goals & hesitations, so everything after is personalized.",
+          prod:"Transactional SMS reaches <b>97%</b> of members, vs only 7% for marketing. The welcome is classified transactional, so it actually lands." } },
+
+      { step:"Personalized intro offer",
+        pre:[
+          {from:"ai", text:"Want to make starting easy? Our 2-week intro is unlimited classes for $40, the best way to find your rhythm."},
+          {from:"member", text:"Yes please!"},
+          {from:"ai", text:"Love it 🙌 Here's your secure checkout, it opens right in Mariana Tek:", mtlink:"modoyoga.marianatek.com/intro"}
+        ],
+        mt:{ kind:"checkout", title:"Checkout",
+          plan:{ name:"2-Week Unlimited Intro", price:"$40", per:" / 2 weeks", perks:["Unlimited classes for 14 days","Every class at Modo Mondo","No commitment, cancel anytime"] },
+          confirm:[ {from:"system", text:"💳 Payment confirmed · 2-week unlimited", style:"good"} ] },
+        behind:{ trigger:"Sarah replied with intent → Compass recommends the right plan.",
+          does:"Sends a personalized intro with a checkout link that opens straight in Mariana Tek, no app to install, no friction.",
+          prod:"<b>280</b> active plans across 57 studios. Most common intros: 1-month 44%, 30-day 25%, 2-week 17%." } },
+
+      { step:"Purchase detected",
+        pre:[
+          {from:"ai", text:"You're all set, Sarah! 🎉 Your two weeks of unlimited classes start today. Now the fun part, let's get your first class on the calendar."}
+        ],
+        behind:{ trigger:"Purchase → Mariana Tek records the purchase.",
+          does:"Detects the purchase instantly and moves straight to booking, no dead air, no waiting.",
+          prod:"<b>186</b> members in the sample bought an intro but never booked a class. Closing that gap is the whole game." } },
+
+      { step:"Booking via Mariana Tek",
+        pre:[ {from:"ai", text:"Here's tomorrow's schedule at Modo Mondo 🗓 Tap to grab your first-class spot:", mtlink:"modoyoga.marianatek.com/book"} ],
+        mt:{ kind:"book", title:"Book a class", date:"Tomorrow · Wed · Modo Mondo",
+          slots:[
+            { time:"7:00 AM", cls:"Hot Flow", who:"Martha", spots:"6 spots",
+              confirm:[{from:"ai", text:"Booked! ☀️ 7:00 AM Hot Flow with Martha, tomorrow. Martha is the warmest human, you'll feel right at home. I'll send a reminder the morning of."}] },
+            { time:"5:30 PM", cls:"Deep Stretch", who:"Liam", spots:"9 spots",
+              confirm:[{from:"ai", text:"Booked! 🌙 5:30 PM Deep Stretch with Liam, tomorrow. A perfect, gentle way to ease in. I'll send a reminder beforehand."}] }
+          ] },
+        behind:{ trigger:"Compass sends a booking link → tapping it opens the Modo Mondo schedule in Mariana Tek.",
+          does:"Drops a deep link to the live schedule. Sarah books in Mariana Tek, the same app she'll use for every class after this.",
+          prod:"Booked against live availability in Mariana Tek, the same schedule the front desk runs on." } },
+
+      { step:"Studio Manager briefing",
+        pre:[ {from:"system", text:"The next morning, at the front desk"} ],
+        ops:`<div class="opscard">
+          <div class="opscard-h">Front-desk briefing · Modo Mondo · today</div>
+          <div class="briefrow"><div class="av">S</div><div><div class="bn">Sarah M. <span class="tag">First visit</span></div><div class="bd">7:00 AM · Hot Flow · 2-week intro</div></div></div>
+          <div class="brief-line"><b>Goals:</b> stress relief, flexibility, a little nervous</div>
+          <div class="brief-script">“Hi Sarah! So glad you’re here, Martha will take great care of you. First time? Grab a spot near the door if you’d like.”</div>
+        </div>`,
+        behind:{ trigger:"Daily briefing, generated every morning before classes.",
+          does:"Hands the front desk a ready-to-read profile and a personalized greeting script, so staff greet every first-timer by name.",
+          prod:"The personal touches, the goals and the greeting script, come from Compass. Mariana Tek stores the booking, not the human context." } },
+
+      { step:"Reminder → no-show → recovery",
+        pre:[
+          {from:"ai", text:"Morning, Sarah! ☀️ Reminder: Hot Flow with Martha at 7:00 AM today. Arrive 10 minutes early, water and a mat are all you need."},
+          {from:"system", text:"⚠️ 7:05 AM · Sarah didn't check in (no-show)", style:"alert"},
+          {from:"ai", text:"Hey Sarah, looks like this morning got away from you. Life happens, truly 💛 No charge, here's the schedule whenever you're ready to rebook:", mtlink:"modoyoga.marianatek.com/book"}
+        ],
+        mt:{ kind:"book", title:"Reschedule", date:"Today & tomorrow · Modo Mondo",
+          slots:[
+            { time:"5:30 PM", cls:"Deep Stretch", who:"Liam", spots:"Tonight",
+              confirm:[{from:"ai", text:"Done! 🌙 5:30 PM Deep Stretch with Liam tonight. Gentle and grounding, exactly right after a hectic morning. You've got this."}] },
+            { time:"7:00 AM", cls:"Hot Flow", who:"Martha", spots:"Tomorrow",
+              confirm:[{from:"ai", text:"Booked! ☀️ 7:00 AM with Martha again tomorrow. I believe in you, see you on the mat."}] }
+          ] },
+        behind:{ trigger:"No-show detected via Mariana Tek webhook → recovery within 15 minutes.",
+          does:"Reaches out the moment a first-timer slips, with warmth and a reschedule link, before they drift away for good.",
+          prod:"6.7% of bookings cancel; <b>Late Cancel and No Show are the #1 and #2 charge items</b> in production. This one play protects first-class attendance, the strongest predictor of staying." } },
+
+      { step:"Attended → next booking",
+        pre:[
+          {from:"system", text:"✓ Sarah checked in · Deep Stretch with Liam", style:"good"},
+          {from:"ai", text:"You came back AND showed up 👏 How did it feel?"},
+          {from:"member", text:"Honestly? Amazing. So calm afterward."},
+          {from:"ai", text:"That's the Modo magic 🌿 Want to lock in your next one while the feeling's fresh? I'll text you the schedule for Thursday."},
+          {from:"member", text:"Yes! 😄"}
+        ],
+        behind:{ trigger:"Check-in recorded → her class count goes up.",
+          does:"Closes the loop on a great first visit and immediately plants the next one, how a one-time visit becomes a habit.",
+          prod:"Only <b>13.5%</b> of members get past 5 classes. Every nudge in the first two weeks compounds, and flows straight into the conversion journey →" } }
+    ]
+  },
+
+  j2: {
+    name: "Membership Conversion",
+    scenario: "<b>Sarah M.</b> · two weeks in, just finished her 5th class on the intro",
+    clock: "6:48",
+    scenes: [
+      { step:"5-class milestone",
+        pre:[
+          {from:"system", text:"🎉 Sarah just checked in · that's class #5", style:"good"},
+          {from:"ai", text:"Sarah! That's 5 classes in two weeks 🔥 You've gone from \"not bendy enough\" to a genuine regular. I'm so proud of you."},
+          {from:"member", text:"I'm kind of obsessed now 😅"}
+        ],
+        behind:{ trigger:"Her class count hits 5 → milestone reached.",
+          does:"Celebrates the moment and opens the conversion conversation at the point of peak enthusiasm.",
+          prod:"<b>42%</b> of memberships start as an intro. The 5-class mark is the sweet spot to convert." } },
+
+      { step:"Personalized recommendation",
+        pre:[
+          {from:"ai", text:"Real talk: at the rate you're going (~3× a week 📈), a membership just makes sense. You'd save real money and never think about passes again."},
+          {from:"member", text:"I was actually wondering about that"}
+        ],
+        behind:{ trigger:"Visit frequency ≥ 8/month → recommend Unlimited (under 8 → limited).",
+          does:"Recommends the right tier from how Sarah actually trains, not a generic upsell.",
+          prod:"Tier is chosen from real attendance: <b>&lt; 8 visits/mo → limited, ≥ 8 → unlimited.</b>" } },
+
+      { step:"Market-specific math",
+        pre:[
+          {from:"ai", text:"Here's the Modo Mondo math 📊\n• 10-class pack: $250 → $25/class\n• Unlimited: $160/mo → about $12/class at your pace\nYou'd basically be paying half."},
+          {from:"member", text:"ok that's a no-brainer 😂"}
+        ],
+        behind:{ trigger:"Studio market = NYC → lead with the credit-pack comparison.",
+          does:"Tailors the pitch to the market. NYC members lean on credit packs, so Compass frames membership against pack pricing. (Canada leads with \"continue at the membership rate.\")",
+          prod:"<b>New step from production:</b> NYC leans credits, Canada leans memberships, the same pitch doesn't work in both markets." } },
+
+      { step:"Checkout via Mariana Tek",
+        pre:[ {from:"ai", text:"Want me to switch you over? Tap to activate, your intro rolls straight into Unlimited:", mtlink:"modoyoga.marianatek.com/membership"} ],
+        mt:{ kind:"checkout", title:"Membership",
+          plan:{ name:"Unlimited Membership", price:"$160", per:" / month", perks:["Unlimited classes at Modo Mondo","Free mat & towel service","Member-only events & community"] },
+          confirm:[ {from:"system", text:"💳 Payment confirmed · Unlimited membership", style:"good"} ] },
+        behind:{ trigger:"Sarah taps the link → Mariana Tek checkout → a new membership is created.",
+          does:"Sends a checkout link; Sarah confirms in Mariana Tek (Stripe / MT Web). No redirects, no re-entering card details.",
+          prod:"Direct Mariana Tek checkout, the lowest-friction path from intent to member." } },
+
+      { step:"Activation & onboarding",
+        pre:[
+          {from:"ai", text:"Welcome to the Modo family, Sarah 🎉 You're officially Unlimited, and don't worry, I'll retire the intro nudges 😉"},
+          {from:"ai", text:"To get you started: I've saved Martha's Thursday Hot Flow to your favorites, and our Modo Mondo community is here whenever you want it 🌿", link:"Join the Modo Mondo community"},
+          {from:"member", text:"This is the best. Thank you 🙏"}
+        ],
+        behind:{ trigger:"Purchase → pipeline set to “Membership Activated.”",
+          does:"Flips Sarah to member, suppresses all intro-phase messages instantly, and starts the new-member onboarding sequence.",
+          prod:"Activation cleanly hands off from \"convert\" mode to \"onboard & retain\" mode, no crossed wires, no stray intro texts." } },
+
+      { step:"Conversion logged",
+        pre:[ {from:"system", text:"✓ Membership active · welcome aboard, Sarah", style:"good"} ],
+        ops:`<div class="opscard">
+          <div class="opscard-h">Conversion event · logged</div>
+          <table class="convtbl">
+            <tr><td>Member</td><td>Sarah M. · Modo Mondo</td></tr>
+            <tr><td>Intro type</td><td>2-week unlimited</td></tr>
+            <tr><td>Days to convert</td><td>14</td></tr>
+            <tr><td>Visits at conversion</td><td>5</td></tr>
+            <tr><td>State before</td><td>high-velocity (≈3×/week)</td></tr>
+            <tr><td>New plan</td><td>Unlimited · $160/mo</td></tr>
+          </table>
+        </div>`,
+        behind:{ trigger:"Conversion recorded for analytics.",
+          does:"Logs the full conversion story so the studio can see exactly what drives members, and do more of it.",
+          prod:"Every conversion becomes data: which intro, how many classes, how many days. The loop that makes the next pitch smarter." } }
+    ]
+  }
+};
+
+/* ───────────────── engine ───────────────── */
+const $ = id => document.getElementById(id);
+const thread=$("thread"), pfoot=$("pfoot"), behindBody=$("behindBody"), mtEl=$("mt"), mtModal=$("mtModal");
+let jk="j1", idx=0, busy=false, awaiting=false;
+const chosen={};
+const ckey=(j,i)=>j+":"+i;
+
+function rowEl(ev){
+  const row=document.createElement("div");
+  row.className="row "+ev.from;
+  const bub=document.createElement("div");
+  bub.className="bub"+(ev.from==="system"&&ev.style?(" "+ev.style):"");
+  bub.appendChild(document.createTextNode(ev.text));
+  if(ev.mtlink){
+    bub.appendChild(document.createTextNode(" "));
+    const a=document.createElement("span"); a.className="msglink"; a.textContent=ev.mtlink; a.dataset.mt="1";
+    bub.appendChild(a);
+  }
+  if(ev.link){ const lc=document.createElement("div"); lc.className="linkcard"; lc.textContent=ev.link; bub.appendChild(lc); }
+  row.appendChild(bub);
+  return row;
+}
+function scrollDown(){ thread.scrollTop=thread.scrollHeight; }
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+
+async function addMsg(ev, animate){
+  if(ev.from==="ai" && animate){
+    const t=document.createElement("div"); t.className="row ai typing";
+    t.innerHTML='<div class="bub"><span></span><span></span><span></span></div>';
+    thread.appendChild(t); scrollDown(); await wait(620); t.remove();
+  }
+  thread.appendChild(rowEl(ev)); scrollDown();
+  if(animate) await wait(ev.from==="ai"?240:200);
+}
+
+function fakeBar(){
+  pfoot.innerHTML='<div class="fakebar">Text message<div class="send">↑</div></div>';
+}
+
+function bookHTML(mt){
+  return '<div class="mt-top">'+
+    '<div class="mt-brand"><svg class="mt-logo" width="21" height="21"><use href="#modo-mark"></use></svg> Modo Yoga</div>'+
+    '<span class="mt-pw">Mariana Tek</span>'+
+    '<button class="mt-close" type="button" aria-label="Close">✕</button></div>'+
+    '<div class="mt-body"><div class="mt-h">'+mt.title+'</div><div class="mt-date">'+mt.date+'</div>'+
+    mt.slots.map((s,i)=>'<div class="mt-slot"><div class="mt-time">'+s.time+'</div>'+
+      '<div class="mt-info"><div class="mt-cls">'+s.cls+'</div><div class="mt-meta">'+s.who+' · '+s.spots+'</div></div>'+
+      '<button class="mt-reserve" type="button" data-slot="'+i+'">Reserve</button></div>').join("")+
+    '</div><div class="mt-foot">Powered by Mariana Tek</div>';
+}
+function checkoutHTML(mt){
+  return '<div class="mt-top">'+
+    '<div class="mt-brand"><svg class="mt-logo" width="21" height="21"><use href="#modo-mark"></use></svg> Modo Yoga</div>'+
+    '<span class="mt-pw">Mariana Tek</span>'+
+    '<button class="mt-close" type="button" aria-label="Close">✕</button></div>'+
+    '<div class="mt-body"><div class="mt-h">'+mt.title+'</div><div class="mt-date">Modo Yoga · Modo Mondo</div>'+
+    '<div class="mt-plan"><div class="mt-plan-name">'+mt.plan.name+'</div>'+
+    '<div class="mt-plan-price">'+mt.plan.price+'<span>'+mt.plan.per+'</span></div>'+
+    '<ul class="mt-perks">'+mt.plan.perks.map(p=>'<li>'+p+'</li>').join("")+'</ul></div>'+
+    '<div class="mt-card">💳 ···· ···· ···· 4242</div>'+
+    '<button class="mt-reserve mt-pay" type="button" data-slot="0">Confirm & pay '+mt.plan.price+'</button>'+
+    '</div><div class="mt-foot">Secure checkout · Mariana Tek</div>';
+}
+
+function openMT(i){
+  if(busy || i!==idx || !awaiting) return;
+  const mt=DATA[jk].scenes[i].mt;
+  mtModal.innerHTML = mt.kind==="checkout" ? checkoutHTML(mt) : bookHTML(mt);
+  mtEl.classList.add("open"); mtEl.setAttribute("aria-hidden","false");
+  mtModal.querySelector(".mt-close").onclick=closeMT;
+  mtModal.querySelectorAll("[data-slot]").forEach(b=> b.onclick=()=>bookMT(i, +b.dataset.slot));
+}
+function closeMT(){ mtEl.classList.remove("open"); mtEl.setAttribute("aria-hidden","true"); }
+
+async function bookMT(i, slotIdx){
+  if(busy) return;
+  closeMT();
+  chosen[ckey(jk,i)]=slotIdx; awaiting=false; busy=true; updateControls();
+  const mt=DATA[jk].scenes[i].mt;
+  try {
+    const confirm = mt.kind==="checkout" ? mt.confirm : mt.slots[slotIdx].confirm;
+    for(const ev of confirm) await addMsg(ev, true);
+  } finally { busy=false; fakeBar(); updateControls(); }
+}
+
+async function renderScene(i, animate){
+  const s=DATA[jk].scenes[i];
+  for(const ev of s.pre) await addMsg(ev, animate);
+  if(s.mt){
+    const links=thread.querySelectorAll(".ai .msglink");
+    const a=links[links.length-1]; if(a) a.onclick=()=>openMT(i);
+    if(animate){ awaiting=true; return; }
+    const oi=chosen[ckey(jk,i)]??0;
+    const confirm = s.mt.kind==="checkout" ? s.mt.confirm : s.mt.slots[oi].confirm;
+    for(const ev of confirm) await addMsg(ev, false);
+  }
+}
+
+function updateBehind(i){
+  const s=DATA[jk].scenes[i], b=s.behind;
+  $("eyebrow").textContent="Step "+(i+1)+" of "+DATA[jk].scenes.length;
+  $("stepName").textContent=s.step;
+  let html="";
+  if(s.ops) html+=s.ops;
+  html+=`<div class="bsec"><div class="lab">What starts it</div><div class="val">${b.trigger}</div></div>`;
+  html+=`<div class="bsec"><div class="lab">What Compass does</div><div class="val">${b.does}</div></div>`;
+  behindBody.innerHTML=html;
+}
+
+function buildDots(){
+  const dots=$("dots"); dots.innerHTML="";
+  DATA[jk].scenes.forEach((s,i)=>{
+    const d=document.createElement("button"); d.className="dot-step"; d.setAttribute("aria-label","Step "+(i+1));
+    d.onclick=()=>jumpTo(i);
+    dots.appendChild(d);
+  });
+}
+function updateDots(){
+  [...$("dots").children].forEach((d,i)=>{
+    d.className="dot-step"+(i<idx?" done":"")+(i===idx?" active":"");
+  });
+}
+function updateControls(){
+  $("prevBtn").disabled = busy || idx===0;
+  $("nextBtn").disabled = busy || awaiting || idx===DATA[jk].scenes.length-1;
+  $("stepMeta").innerHTML = "Step <b>"+(idx+1)+"</b> of "+DATA[jk].scenes.length+" · "+DATA[jk].scenes[idx].step;
+  $("nextBtn").textContent = idx===DATA[jk].scenes.length-1 ? "Journey complete ✓" : "Next ›";
+}
+
+async function gotoScene(i, animate){
+  busy=true; awaiting=false; closeMT(); updateControls();
+  idx=i; updateBehind(i); updateDots();
+  try { await renderScene(i, animate); }
+  finally { busy=false; if(!awaiting) fakeBar(); updateControls(); }
+}
+async function next(){
+  if(busy||awaiting||idx>=DATA[jk].scenes.length-1) return;
+  await gotoScene(idx+1, true);
+}
+async function jumpTo(target){
+  if(busy||target===idx) return;
+  busy=true; awaiting=false; closeMT(); thread.innerHTML=""; pfoot.innerHTML=""; updateControls();
+  try {
+    for(let k=0;k<target;k++){ await renderScene(k, false); }
+    idx=target; updateBehind(target); updateDots();
+    await renderScene(target, true);
+  } finally { busy=false; if(!awaiting) fakeBar(); updateControls(); }
+}
+function prev(){ if(!busy && idx>0) jumpTo(idx-1); }
+
+async function startJourney(key){
+  jk=key; idx=0; busy=true; awaiting=false; closeMT();
+  document.querySelectorAll(".jtab").forEach(t=>t.setAttribute("aria-selected", t.dataset.j===key));
+  $("scenario").innerHTML=DATA[key].scenario;
+  $("clock").textContent=DATA[key].clock;
+  thread.innerHTML=""; pfoot.innerHTML=""; behindBody.innerHTML="";
+  buildDots();
+  await gotoScene(0, true);
+}
+
+/* wiring */
+$("nextBtn").onclick=next;
+$("prevBtn").onclick=prev;
+$("restartBtn").onclick=()=>startJourney(jk);
+mtEl.onclick=e=>{ if(e.target===mtEl) closeMT(); };
+document.querySelectorAll(".jtab").forEach(t=>t.onclick=()=>startJourney(t.dataset.j));
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){ closeMT(); return; }
+  if(e.key==="ArrowRight"){ e.preventDefault(); next(); }
+  if(e.key==="ArrowLeft"){ e.preventDefault(); prev(); }
+});
+
+startJourney("j1");
+</script>
+</body>
+</html>

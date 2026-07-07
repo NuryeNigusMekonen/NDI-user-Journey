@@ -7,7 +7,7 @@ window.STUDIO_DEMO_DATA_EN = {
       { step:"Welcome",
         pre:[
           {from:"system", text:"Sarah created an account on modoyoga.com"},
-          {from:"ai", text:"Hi Sarah! 👋 It's Modo Yoga, so glad you found us. What's drawing you to the mat right now, and is there anything holding you back?"},
+          {from:"ai", text:"Hi Sarah! 👋 It's Maya from Modo Yoga, so glad you found us. What's drawing you to the mat right now, and is there anything holding you back?"},
           {from:"member", text:"Hi! Honestly, stress relief + flexibility. A little nervous I'm not bendy enough 😅"},
           {from:"ai", text:"That's the most common worry, and the least true 🌿 Flexibility is something class gives you, not something you need first. You're exactly in the right place."}
         ],

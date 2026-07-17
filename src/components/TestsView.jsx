@@ -1,9 +1,6 @@
 import { motion } from 'framer-motion';
-import { CheckCircle2, AlertTriangle, XCircle, FlaskConical, Hand, MonitorPlay, Gauge } from 'lucide-react';
-import {
-  testLevels, userPath, testGroups, testMeta,
-  manualCases, uat, e2eFlows, nonFunctional,
-} from '../data/tests';
+import { CheckCircle2, AlertTriangle, XCircle, FlaskConical, Hand, MonitorPlay, Gauge, Loader2 } from 'lucide-react';
+import { useProtectedContent } from '../hooks/useProtectedContent';
 
 const PRIORITY = { P1: 'text-amber bg-amber/15 border-amber/40', P2: 'text-brand bg-brand/10 border-brand/30', P3: 'text-slate bg-slate/10 border-slate/30' };
 
@@ -13,7 +10,18 @@ const STATUS = {
   gap: { icon: XCircle, cls: 'text-slate', label: 'gap' },
 };
 
+function Centered({ children }) {
+  return <div className="h-full flex items-center justify-center bg-canvas text-ink-muted text-sm">{children}</div>;
+}
+
 export default function TestsView() {
+  const { payload, loading, error } = useProtectedContent('test_plan');
+
+  if (loading) return <Centered><Loader2 className="w-4 h-4 animate-spin mr-2" /> Loading test plan…</Centered>;
+  if (error || !payload) return <Centered>{error || 'No content.'}</Centered>;
+
+  const { testLevels, userPath, testGroups, testMeta, manualCases, uat, e2eFlows, nonFunctional } = payload;
+
   return (
     <div className="h-full overflow-y-auto bg-canvas px-8 py-7">
       <div className="max-w-5xl mx-auto">

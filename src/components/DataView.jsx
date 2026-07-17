@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Database, FileSpreadsheet, Copy, Check } from 'lucide-react';
-import { datasetFiles, edgeVariations, datasetMeta } from '../data/datasets';
+import { Database, FileSpreadsheet, Copy, Check, Loader2 } from 'lucide-react';
+import { useProtectedContent } from '../hooks/useProtectedContent';
 
 function CopyButton({ text, label = 'copy' }) {
   const [copied, setCopied] = useState(false);
@@ -27,6 +27,12 @@ function CopyButton({ text, label = 'copy' }) {
 }
 
 export default function DataView() {
+  const { payload, loading, error } = useProtectedContent('dataset_catalog');
+
+  if (loading) return <div className="h-full flex items-center justify-center bg-canvas text-ink-muted text-sm"><Loader2 className="w-4 h-4 animate-spin mr-2" /> Loading datasets…</div>;
+  if (error || !payload) return <div className="h-full flex items-center justify-center bg-canvas text-ink-muted text-sm">{error || 'No content.'}</div>;
+
+  const { datasetFiles, edgeVariations, datasetMeta } = payload;
   const totalRows = datasetFiles.reduce((n, d) => n + d.rows, 0);
   return (
     <div className="h-full overflow-y-auto bg-canvas px-8 py-7">

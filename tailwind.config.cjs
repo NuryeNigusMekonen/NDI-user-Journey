@@ -4,14 +4,14 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // --- Dark dashboard surfaces (deep charcoal → elevated panels) ---
-        canvas: '#0B0F1A',        // app/canvas background
+        // --- Dark dashboard surfaces (soft slate-navy → elevated panels) ---
+        canvas: '#171B26',        // app/canvas background
         surface: {
-          DEFAULT: '#141A28',     // panels, cards
-          raised: '#1B2333',      // elevated (headers, popovers)
-          hover: '#222C40',       // hover state
+          DEFAULT: '#1F2430',     // panels, cards
+          raised: '#272D3B',      // elevated (headers, popovers)
+          hover: '#2E3646',       // hover state
         },
-        hairline: '#2A3547',      // borders / dividers
+        hairline: '#363D4D',      // borders / dividers
         // --- Brand accent: electric cyan-navy ---
         brand: {
           DEFAULT: '#38BDF8',     // primary accent (cyan)
@@ -29,9 +29,9 @@ module.exports = {
         // --- Text / ink (inverted for dark) ---
         ink: { DEFAULT: '#E6EDF6', muted: '#8A97AC' },
         // --- Legacy aliases so untouched components keep rendering ---
-        cream: '#0B0F1A',
-        line: '#2A3547',
-        navy: { DEFAULT: '#0B0F1A', dark: '#070A12' },
+        cream: '#171B26',
+        line: '#363D4D',
+        navy: { DEFAULT: '#171B26', dark: '#12151E' },
       },
       fontFamily: {
         sans: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],

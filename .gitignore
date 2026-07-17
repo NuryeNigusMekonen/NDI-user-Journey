@@ -50,3 +50,5 @@ Desktop.ini
 tmp/
 temp/
 .cache/
+.vercel
+.env*

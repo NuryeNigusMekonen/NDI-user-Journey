@@ -49,7 +49,7 @@ body {
 
 .dg-port {
   @apply !w-2.5 !h-2.5 !bg-brand !border-2 !rounded-full;
-  border-color: #0B0F1A !important;
+  border-color: #171B26 !important;
   opacity: 0.55;
   transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
 }
@@ -96,10 +96,10 @@ body {
 
 /* MiniMap on dark canvas */
 .react-flow__minimap {
-  background-color: #141A28 !important;
+  background-color: #1F2430 !important;
 }
 .react-flow__minimap-mask {
-  fill: rgba(11, 15, 26, 0.7);
+  fill: rgba(23, 27, 38, 0.7);
 }
 
 .edge-animated {

@@ -738,8 +738,8 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
         maxZoom={2}
         proOptions={{ hideAttribution: true }}
       >
-        <Background gap={20} size={1} color="#1E2636" />
-        <MiniMap className="!rounded-lg !border !border-hairline" style={{ width: 120, height: 80 }} position="bottom-right" maskColor="rgba(11,15,26,.7)" nodeColor="#38BDF8" nodeStrokeColor="#2A3547" />
+        <Background gap={20} size={1} color="#2B3342" />
+        <MiniMap className="!rounded-lg !border !border-hairline" style={{ width: 120, height: 80 }} position="bottom-right" maskColor="rgba(23,27,38,.7)" nodeColor="#38BDF8" nodeStrokeColor="#2A3547" />
       </ReactFlow>
 
       <DrawingLayer

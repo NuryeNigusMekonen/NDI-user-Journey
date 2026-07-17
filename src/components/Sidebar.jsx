@@ -27,24 +27,24 @@ export default function Sidebar({
   const fillPct = isEmbed ? 0 : (j.stage / (stages.length - 1)) * 100;
 
   return (
-    <aside className="w-[280px] shrink-0 bg-surface flex flex-col border-r border-hairline">
-      <div className="px-5 pt-6 pb-5 border-b border-hairline">
+    <aside className="w-[280px] shrink-0 bg-rail flex flex-col">
+      <div className="px-5 pt-6 pb-5 border-b border-rail-line">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-brand/15 border border-brand/40 flex items-center justify-center shadow-glow">
-            <Activity className="w-[18px] h-[18px] text-brand" strokeWidth={2.25} />
+          <div className="w-9 h-9 rounded-lg bg-white/10 border border-white/25 flex items-center justify-center">
+            <Activity className="w-[18px] h-[18px] text-white" strokeWidth={2.25} />
           </div>
           <div>
-            <h1 className="font-display text-[16px] font-bold text-ink tracking-tight leading-none">
+            <h1 className="font-display text-[16px] font-bold text-white tracking-tight leading-none">
               NINE DEAN
             </h1>
-            <p className="text-[10px] font-mono text-ink-muted mt-1.5 leading-none tracking-wide">
+            <p className="text-[10px] font-mono text-white/55 mt-1.5 leading-none tracking-wide">
               quality-of-jobs · v1
             </p>
           </div>
         </div>
       </div>
 
-      <div className="px-3 py-3 border-b border-hairline space-y-1">
+      <div className="px-3 py-3 border-b border-rail-line space-y-1">
         {VIEW_ITEMS.map((v) => {
           const Icon = v.icon;
           const isActive = view === v.id;
@@ -52,24 +52,23 @@ export default function Sidebar({
             <button
               key={v.id}
               onClick={() => onViewChange?.(v.id)}
-              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left transition-colors border ${
-                isActive ? 'bg-brand/10 border-brand/30' : 'border-transparent hover:bg-surface-hover'
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left transition-colors ${
+                isActive ? 'bg-white text-rail shadow-sm' : 'text-white/80 hover:bg-white/10 hover:text-white'
               }`}
             >
-              <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-brand' : 'text-ink-muted'}`} strokeWidth={2.25} />
-              <span className={`text-[13px] font-semibold ${isActive ? 'text-ink' : 'text-ink/80'}`}>{v.label}</span>
+              <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-brand' : 'text-white/70'}`} strokeWidth={2.25} />
+              <span className="text-[13px] font-semibold">{v.label}</span>
             </button>
           );
         })}
       </div>
 
-      <div className="px-5 py-4 border-b border-hairline">
-        <p className="text-[9px] font-mono font-semibold tracking-[0.2em] uppercase text-brand/70 mb-3">Pipeline</p>
+      <div className="px-5 py-4 border-b border-rail-line">
+        <p className="text-[9px] font-mono font-semibold tracking-[0.2em] uppercase text-white/50 mb-3">Pipeline</p>
         <div className="relative px-1">
-          <div className="absolute top-2 left-3 right-3 h-px bg-hairline" />
+          <div className="absolute top-2 left-3 right-3 h-px bg-white/20" />
           <motion.div
-            className="absolute top-2 left-3 h-px bg-brand"
-            style={{ boxShadow: '0 0 8px rgba(56,189,248,.6)' }}
+            className="absolute top-2 left-3 h-px bg-brand-active"
             animate={{ width: `calc(${fillPct}% - 12px)` }}
             transition={{ duration: 0.4 }}
           />
@@ -81,17 +80,17 @@ export default function Sidebar({
                 className="flex flex-col items-center gap-1.5 group"
               >
                 <div
-                  className={`w-3.5 h-3.5 rounded-full border transition-all ${
+                  className={`w-3.5 h-3.5 rounded-full border-2 transition-all ${
                     i === j.stage
-                      ? 'bg-brand border-brand scale-110 shadow-glow'
+                      ? 'bg-white border-white scale-110'
                       : i < j.stage
-                        ? 'bg-brand/40 border-brand/60'
-                        : 'border-hairline bg-surface group-hover:border-ink-muted'
+                        ? 'bg-brand-active border-brand-active'
+                        : 'border-white/30 bg-rail group-hover:border-white/60'
                   }`}
                 />
                 <span
                   className={`text-[8px] font-medium text-center max-w-[52px] leading-tight ${
-                    i <= j.stage ? 'text-ink/80' : 'text-ink-muted/60'
+                    i <= j.stage ? 'text-white/85' : 'text-white/40'
                   }`}
                 >
                   {s}
@@ -103,7 +102,7 @@ export default function Sidebar({
       </div>
 
       <div className="px-5 pt-4 pb-2">
-        <p className="text-[9px] font-mono font-semibold tracking-[0.2em] uppercase text-brand/70">Journeys</p>
+        <p className="text-[9px] font-mono font-semibold tracking-[0.2em] uppercase text-white/50">Journeys</p>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 pb-3 space-y-1">
@@ -113,25 +112,22 @@ export default function Sidebar({
             <button
               key={i}
               onClick={() => onSelect(i)}
-              className={`group relative w-full flex items-start gap-3 px-3 py-2.5 rounded-lg text-left transition-colors border ${
-                isActive
-                  ? 'bg-brand/10 border-brand/30'
-                  : 'border-transparent hover:bg-surface-hover'
+              className={`group relative w-full flex items-start gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${
+                isActive ? 'bg-white/12' : 'hover:bg-white/[0.07]'
               }`}
             >
               {isActive && (
                 <motion.span
                   layoutId="sidebar-active"
-                  className="absolute left-0 top-2 bottom-2 w-0.5 bg-brand rounded-full"
-                  style={{ boxShadow: '0 0 8px rgba(56,189,248,.7)' }}
+                  className="absolute left-0 top-2 bottom-2 w-0.5 bg-brand-active rounded-full"
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                 />
               )}
               <span
                 className={`mt-0.5 w-6 h-6 rounded-md flex items-center justify-center text-[11px] font-mono font-bold shrink-0 transition-colors border ${
                   isActive
-                    ? 'bg-brand text-canvas border-brand'
-                    : 'bg-surface-raised text-ink-muted border-hairline group-hover:text-ink group-hover:border-ink-muted'
+                    ? 'bg-white text-rail border-white'
+                    : 'bg-white/10 text-white/70 border-white/20 group-hover:text-white group-hover:border-white/40'
                 } ${x.parallel ? 'border-dashed' : ''}`}
               >
                 {String(i + 1).padStart(2, '0')}
@@ -139,12 +135,12 @@ export default function Sidebar({
               <div className="min-w-0 flex-1 pt-0.5">
                 <p
                   className={`text-[13px] font-semibold leading-snug transition-colors ${
-                    isActive ? 'text-ink' : 'text-ink/80 group-hover:text-ink'
+                    isActive ? 'text-white' : 'text-white/80 group-hover:text-white'
                   }`}
                 >
                   {x.title}
                 </p>
-                <p className={`text-[10px] font-mono mt-1 leading-tight ${isActive ? 'text-brand/70' : 'text-ink-muted/70'}`}>
+                <p className={`text-[10px] font-mono mt-1 leading-tight ${isActive ? 'text-brand-active' : 'text-white/50'}`}>
                   {x.parallel ? '↻ background' : stages[x.stage]}
                 </p>
               </div>
@@ -153,10 +149,10 @@ export default function Sidebar({
         })}
       </nav>
 
-      <div className="px-5 py-3.5 border-t border-hairline">
-        <p className="text-[10px] font-mono text-ink-muted/60 leading-relaxed">
-          <kbd className="text-brand/60">←</kbd>{' '}
-          <kbd className="text-brand/60">→</kbd> navigate journeys
+      <div className="px-5 py-3.5 border-t border-rail-line">
+        <p className="text-[10px] font-mono text-white/45 leading-relaxed">
+          <kbd className="text-white/60">←</kbd>{' '}
+          <kbd className="text-white/60">→</kbd> navigate journeys
         </p>
       </div>
     </aside>

@@ -4,37 +4,48 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // --- Dark dashboard surfaces (soft slate-navy → elevated panels) ---
-        canvas: '#171B26',        // app/canvas background
+        // --- Light workspace surfaces (white canvas, cool blue-paper insets) ---
+        canvas: '#FFFFFF',        // main workspace / node ground
         surface: {
-          DEFAULT: '#1F2430',     // panels, cards
-          raised: '#272D3B',      // elevated (headers, popovers)
-          hover: '#2E3646',       // hover state
+          DEFAULT: '#FFFFFF',     // panels, cards
+          raised: '#F4F7FB',      // insets, headers, hovers (blue-biased paper)
+          hover: '#E9F0F9',       // hover state
         },
-        hairline: '#363D4D',      // borders / dividers
-        // --- Brand accent: electric cyan-navy ---
+        hairline: '#DCE5F0',      // blue-grey borders / dividers
+        // --- Deep navy for the left rail (its own ground) ---
+        rail: {
+          DEFAULT: '#1B3A6B',     // sidebar background (deep institutional navy)
+          raised: '#234779',      // elevated within rail
+          hover: '#2B5490',       // rail hover
+          line: '#33538A',        // rail dividers
+        },
+        // --- Brand accent: institutional blue ---
         brand: {
-          DEFAULT: '#38BDF8',     // primary accent (cyan)
-          dark: '#0EA5E9',
-          active: '#7DD3FC',
-          light: '#12324A',       // tinted fill on dark
-          muted: '#5B7A93',
+          DEFAULT: '#2563AE',     // primary accent
+          dark: '#1E4E8C',        // hover
+          active: '#3B7BC9',
+          light: '#EAF1FB',       // tinted fill on light
+          muted: '#9DB4D4',
         },
-        // --- Category / actor colors (tuned for dark bg) ---
-        sky: { DEFAULT: '#38BDF8', light: '#0F2A3D' },
-        amber: { DEFAULT: '#FBBF24', light: '#332608' },
-        slate: { DEFAULT: '#94A3B8', light: '#1E2636' },
-        teal: { DEFAULT: '#2DD4BF', light: '#0C2E2A' },
-        violet: { DEFAULT: '#A78BFA', light: '#241A3D' },
-        // --- Text / ink (inverted for dark) ---
-        ink: { DEFAULT: '#E6EDF6', muted: '#8A97AC' },
+        // --- Category / actor colors (tuned for light bg) ---
+        sky: { DEFAULT: '#2563AE', light: '#EAF1FB' },
+        amber: { DEFAULT: '#C77A0A', light: '#FBF1E0' },
+        slate: { DEFAULT: '#5A6B85', light: '#EDF1F6' },
+        teal: { DEFAULT: '#0F9D8A', light: '#E2F4F1' },
+        violet: { DEFAULT: '#6D57C9', light: '#EEEBFA' },
+        // --- Semantic state (separate from the accent hue) ---
+        good: '#0F9D6B',
+        warn: '#C77A0A',
+        crit: '#D14343',
+        // --- Text / ink (near-black with a blue bias) ---
+        ink: { DEFAULT: '#1A2433', muted: '#5A6B85' },
         // --- Legacy aliases so untouched components keep rendering ---
-        cream: '#171B26',
-        line: '#363D4D',
-        navy: { DEFAULT: '#171B26', dark: '#12151E' },
+        cream: '#F4F7FB',
+        line: '#DCE5F0',
+        navy: { DEFAULT: '#1B3A6B', dark: '#12294D' },
       },
       fontFamily: {
-        sans: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
         display: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
@@ -45,9 +56,9 @@ module.exports = {
         '2xl': '0.75rem',
       },
       boxShadow: {
-        card: '0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35)',
-        glow: '0 0 0 1px rgba(56,189,248,.4), 0 0 20px rgba(56,189,248,.25)',
-        panel: '0 4px 24px rgba(0,0,0,.5)',
+        card: '0 1px 2px rgba(27,58,107,.06), 0 4px 16px rgba(27,58,107,.08)',
+        glow: '0 0 0 1px rgba(37,99,174,.25), 0 2px 8px rgba(37,99,174,.18)',
+        panel: '0 8px 32px rgba(27,58,107,.14)',
       },
     },
   },

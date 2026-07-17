@@ -14,10 +14,10 @@ function normalizeFlow(flowType) {
 }
 
 const FLOW_STYLES = {
-  [EDGE_FLOW.DEFAULT]: { stroke: '#6B7280', dash: null, animate: false },
-  [EDGE_FLOW.CONDITIONAL]: { stroke: '#1F4E79', dash: '8 5', animate: true },
-  [EDGE_FLOW.DATA]: { stroke: '#0EA5E9', dash: '9 6', animate: true },
-  journey: { stroke: '#6B7280', dash: null, animate: false },
+  [EDGE_FLOW.DEFAULT]: { stroke: '#8194AE', dash: null, animate: false },
+  [EDGE_FLOW.CONDITIONAL]: { stroke: '#2563AE', dash: '8 5', animate: true },
+  [EDGE_FLOW.DATA]: { stroke: '#3B7BC9', dash: '9 6', animate: true },
+  journey: { stroke: '#8194AE', dash: null, animate: false },
   flowchart: { stroke: '#5F5E5A', dash: null, animate: false },
   flowchartConditional: { stroke: '#5F5E5A', dash: null, animate: false },
   auxiliary: { stroke: '#9CA3AF', dash: '4 4', animate: false },

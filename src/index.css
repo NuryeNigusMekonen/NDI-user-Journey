@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -15,21 +15,21 @@ body {
 }
 
 :root {
-  --brand: #38BDF8;
-  --brand-d: #0EA5E9;
-  --brand-active: #7DD3FC;
-  --brand-light: #12324A;
-  --brand-muted: #5B7A93;
+  --brand: #2563AE;
+  --brand-d: #1E4E8C;
+  --brand-active: #3B7BC9;
+  --brand-light: #EAF1FB;
+  --brand-muted: #9DB4D4;
 }
 
-/* Dark, technical scrollbars */
+/* Light, blue-grey scrollbars */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #2A3547 transparent;
+  scrollbar-color: #C4D3E6 transparent;
 }
 *::-webkit-scrollbar { width: 8px; height: 8px; }
-*::-webkit-scrollbar-thumb { background: #2A3547; border-radius: 4px; }
-*::-webkit-scrollbar-thumb:hover { background: #3A465C; }
+*::-webkit-scrollbar-thumb { background: #C4D3E6; border-radius: 4px; }
+*::-webkit-scrollbar-thumb:hover { background: #A7BEDB; }
 
 .react-flow__controls-button {
   @apply !border-hairline !bg-surface-raised;
@@ -49,7 +49,7 @@ body {
 
 .dg-port {
   @apply !w-2.5 !h-2.5 !bg-brand !border-2 !rounded-full;
-  border-color: #171B26 !important;
+  border-color: #FFFFFF !important;
   opacity: 0.55;
   transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
 }
@@ -81,7 +81,7 @@ body {
 }
 
 .react-flow__connection-path {
-  stroke: #38BDF8;
+  stroke: #2563AE;
   stroke-width: 2.5;
 }
 
@@ -91,15 +91,15 @@ body {
 }
 
 .react-flow__edge.selected .react-flow__edge-path {
-  filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.45));
+  filter: drop-shadow(0 0 4px rgba(37, 99, 174, 0.4));
 }
 
 /* MiniMap on dark canvas */
 .react-flow__minimap {
-  background-color: #1F2430 !important;
+  background-color: #F4F7FB !important;
 }
 .react-flow__minimap-mask {
-  fill: rgba(23, 27, 38, 0.7);
+  fill: rgba(244, 247, 251, 0.6);
 }
 
 .edge-animated {

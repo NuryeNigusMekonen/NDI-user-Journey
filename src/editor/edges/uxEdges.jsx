@@ -93,7 +93,7 @@ export function UxmEdge({
           strokeWidth: selected ? 2.5 : isBranch ? 2 : 1.75,
           strokeDasharray: isBranch ? '6 4' : undefined,
           transition: 'stroke-width 0.15s, stroke 0.15s',
-          filter: selected ? 'drop-shadow(0 0 4px rgba(31,78,121,.25))' : undefined,
+          filter: selected ? 'drop-shadow(0 0 4px rgba(37,99,174,.3))' : undefined,
         }}
         markerEnd={markerEnd || {
           type: MarkerType.ArrowClosed,

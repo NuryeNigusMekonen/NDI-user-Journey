@@ -1,6 +1,8 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import Sidebar, { VIEW } from './components/Sidebar';
 import AppHeader from './components/AppHeader';
+import TestsView from './components/TestsView';
+import DataView from './components/DataView';
 import { journeys } from './data/journeys';
 import { WORKSPACE_MODE } from './types/diagram';
 import { useDiagramStore } from './store/diagramStore';
@@ -80,9 +82,16 @@ export default function App() {
         view={view}
         onSelect={go}
         onStageSelect={onStageSelect}
+        onViewChange={setView}
       />
 
       <div className="flex-1 flex flex-col min-w-0">
+        {view === VIEW.TESTS ? (
+          <TestsView />
+        ) : view === VIEW.DATA ? (
+          <DataView />
+        ) : (
+        <>
         <AppHeader
           journey={j}
           journeyIndex={active}
@@ -121,6 +130,8 @@ export default function App() {
             </button>
           ))}
         </footer>
+        </>
+        )}
       </div>
     </div>
   );

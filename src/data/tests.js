@@ -66,7 +66,46 @@ export const testGroups = [
   },
 ];
 
+// Manual / UAT cases (§4) — the human-run half automation can't judge.
+export const manualCases = [
+  { id: 'M-1', case: 'Login fail-closed', expected: 'No users seeded → access denied, no default login' },
+  { id: 'M-2', case: 'Upload & preview', expected: 'Verbatim preview shows every column, unchanged' },
+  { id: 'M-3', case: 'Flagged-row review', expected: 'Flagged/rejected rows visible with a readable reason; none silently missing' },
+  { id: 'M-4', case: 'Correction flow', expected: 'Correction persists, logged, re-derives; status review→final' },
+  { id: 'M-5', case: 'Verdict readability', expected: 'Remediation (A+B) + per-plan healthcare pass/fail clear + correctly labeled' },
+  { id: 'M-6', case: 'Export', expected: 'Structured output pastes cleanly into the acquisition model' },
+  { id: 'M-7', case: 'Degraded run banner', expected: 'UI shows degraded clearly, not a silent full-confidence number' },
+  { id: 'M-8', case: 'ADVISOR run isolation', expected: 'Cannot see another advisor’s unshared run' },
+  { id: 'M-9', case: 'ADMIN full visibility', expected: 'ADMIN sees all runs' },
+  { id: 'M-10', case: 'Owner-only share mgmt', expected: 'A non-owner cannot add/remove shares' },
+  { id: 'M-11', case: 'Invite / reset flows', expected: 'Invite link + password reset work and expire correctly' },
+];
+
+export const uat = {
+  note: 'A deal-team member runs one or two REAL deal censuses end-to-end and confirms the output is usable in the acquisition model. Sign-off recorded.',
+  exit: 'Deal team accepts the verdict format + the remediation number’s presentation.',
+};
+
+// Frontend E2E automation design (§5) — Playwright, DESIGN ONLY (no code yet).
+export const e2eFlows = [
+  { id: 'E2E-1', flow: 'Happy path — login → upload clean census → run → verdict → export', covers: 'U1–U7 · smoke' },
+  { id: 'E2E-2', flow: 'Flagged-review — upload edge census → review → correct → run', covers: 'U3–U5' },
+  { id: 'E2E-3', flow: 'Auth/roles — ADVISOR cannot see another’s run; ADMIN can', covers: 'U8 · authz' },
+  { id: 'E2E-4', flow: 'Sharing — owner shares → sharee sees it → non-owner can’t unshare', covers: 'U8' },
+  { id: 'E2E-5', flow: 'Invite/reset — admin invites → accept-invite → login', covers: 'U8' },
+];
+
+// Non-functional testing (§6).
+export const nonFunctional = [
+  { type: 'Performance', case: '200-employee census runs in acceptable time', priority: 'P2' },
+  { type: 'Security · authz', case: 'ADVISOR cannot reach another’s run via the API directly', priority: 'P1' },
+  { type: 'Security · PII', case: 'No PII/secret in logs or client responses', priority: 'P1' },
+  { type: 'Reproducibility', case: 'Same census + methodology version → same number', priority: 'P1' },
+  { type: 'Accessibility', case: 'Keyboard nav + labels on upload/review screens', priority: 'P3' },
+];
+
 export const testMeta = {
   status: 'DRAFT — pending team approval',
-  source: 'NineDean research/14-user-journey-test-plan.md',
+  source: 'NineDean research/16-test-strategy.md',
+  note: 'E2E is design-only (no test code yet). Manual/UAT run on staging.',
 };

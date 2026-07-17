@@ -1,6 +1,30 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Database, FileSpreadsheet } from 'lucide-react';
+import { Database, FileSpreadsheet, Copy, Check } from 'lucide-react';
 import { datasetFiles, edgeVariations, datasetMeta } from '../data/datasets';
+
+function CopyButton({ text, label = 'copy' }) {
+  const [copied, setCopied] = useState(false);
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1400);
+    } catch {
+      // clipboard unavailable — no-op
+    }
+  };
+  return (
+    <button
+      onClick={onCopy}
+      className="flex items-center gap-1 text-[9px] font-mono px-1.5 py-0.5 rounded border border-hairline text-ink-muted hover:text-brand hover:border-brand/40 transition-colors"
+      title="Copy to clipboard"
+    >
+      {copied ? <Check className="w-3 h-3 text-teal" /> : <Copy className="w-3 h-3" />}
+      {copied ? 'copied' : label}
+    </button>
+  );
+}
 
 export default function DataView() {
   const totalRows = datasetFiles.reduce((n, d) => n + d.rows, 0);
@@ -26,7 +50,10 @@ export default function DataView() {
         <p className="text-[11px] text-ink-muted mt-3 max-w-2xl">{datasetMeta.coverage}</p>
 
         {/* dataset files */}
-        <Section title="Dataset suite">
+        <Section
+          title="Dataset suite"
+          action={<CopyButton label="copy all" text={datasetFiles.map((d) => `${d.name}.xlsx (${d.rows} rows) — ${d.purpose} → ${d.outcome}`).join('\n')} />}
+        >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {datasetFiles.map((d) => (
               <div key={d.name} className="p-3 rounded-lg bg-surface border border-hairline">
@@ -34,6 +61,7 @@ export default function DataView() {
                   <FileSpreadsheet className="w-4 h-4 text-teal shrink-0" strokeWidth={2.25} />
                   <span className="text-[13px] font-mono font-semibold text-ink">{d.name}</span>
                   <span className="text-[9px] font-mono text-brand ml-auto">{d.rows} rows</span>
+                  <CopyButton text={`${d.name}.xlsx (${d.rows} rows)\nPurpose: ${d.purpose}\nExpected: ${d.outcome}`} />
                 </div>
                 <p className="text-[11px] text-ink-muted mt-1.5">{d.purpose}</p>
                 <p className="text-[10px] font-mono text-teal/80 mt-1">→ {d.outcome}</p>
@@ -47,10 +75,13 @@ export default function DataView() {
           <Section key={grp.group} title={grp.group}>
             <div className="space-y-1.5">
               {grp.items.map((it) => (
-                <div key={it.id} className="flex items-start gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
+                <div key={it.id} className="group flex items-start gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
                   <span className="text-[10px] font-mono font-bold text-violet w-9 shrink-0">{it.id}</span>
                   <span className="text-[12px] text-ink w-1/2 shrink-0">{it.variation}</span>
                   <span className="text-[11px] text-ink-muted min-w-0 flex-1">{it.expected}</span>
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                    <CopyButton text={`${it.id} — ${it.variation}\nExpected: ${it.expected}`} />
+                  </div>
                 </div>
               ))}
             </div>
@@ -61,10 +92,13 @@ export default function DataView() {
   );
 }
 
-function Section({ title, children }) {
+function Section({ title, action, children }) {
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className="mt-7">
-      <p className="text-[10px] font-mono font-semibold tracking-[0.18em] uppercase text-brand/70 mb-3">{title}</p>
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-[10px] font-mono font-semibold tracking-[0.18em] uppercase text-brand/70">{title}</p>
+        {action}
+      </div>
       {children}
     </motion.div>
   );

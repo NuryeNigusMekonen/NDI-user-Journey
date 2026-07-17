@@ -624,10 +624,10 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
   const cursorClass = getToolCursorClass(activeTool, { spacePan });
 
   return (
-    <div className={`w-full h-full relative bg-[#FAFAF8] ${isEdit ? 'dg-editing' : ''} ${cursorClass}`}>
+    <div className={`w-full h-full relative bg-canvas ${isEdit ? 'dg-editing' : ''} ${cursorClass}`}>
       {loading && (
-        <div className="absolute inset-0 z-40 flex items-center justify-center bg-white/80">
-          <p className="text-sm text-[#6B7280] animate-pulse">Loading diagram…</p>
+        <div className="absolute inset-0 z-40 flex items-center justify-center bg-canvas/80">
+          <p className="text-sm text-ink-muted animate-pulse">Loading diagram…</p>
         </div>
       )}
 
@@ -639,19 +639,19 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
       />
 
       {isDrawOverlay && (
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 px-4 py-2 rounded-xl bg-white/95 border border-[#E8E6DF] text-[11px] text-[#374151] text-center leading-snug shadow-sm max-w-md">
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 px-4 py-2 rounded-xl bg-surface-raised border border-hairline text-[11px] text-ink text-center leading-snug shadow-sm max-w-md">
           <strong className="font-semibold">Pen</strong> to draw · <strong className="font-semibold">Highlight</strong> to mark · <strong className="font-semibold">Eraser</strong> to remove · <strong className="font-semibold">Move</strong> to pan
         </div>
       )}
 
       {isEdit && isDiagram && showEditTips && activeTool === TOOL.POINTER && !hasSelection && (
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 px-4 py-2.5 rounded-xl bg-white/95 border border-[#E8E6DF] text-[11px] text-[#374151] text-center leading-snug shadow-sm max-w-lg">
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 px-4 py-2.5 rounded-xl bg-surface-raised border border-hairline text-[11px] text-ink text-center leading-snug shadow-sm max-w-lg">
           <p>
             <strong className="font-semibold">Click</strong> any step to change its text ·
             <strong className="font-semibold"> Drag</strong> new shapes from the left panel ·
             <strong className="font-semibold"> Connect</strong> steps using the dots on each side
           </p>
-          <p className="text-[10px] text-[#6B7280] mt-1">Your changes save automatically</p>
+          <p className="text-[10px] text-ink-muted mt-1">Your changes save automatically</p>
           <button
             type="button"
             onClick={() => setShowEditTips(false)}
@@ -738,8 +738,8 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
         maxZoom={2}
         proOptions={{ hideAttribution: true }}
       >
-        <Background gap={20} size={1} color="#E8E6DF" />
-        <MiniMap className="!rounded-lg !border !border-[#E8E6DF]" style={{ width: 120, height: 80 }} position="bottom-right" />
+        <Background gap={20} size={1} color="#1E2636" />
+        <MiniMap className="!rounded-lg !border !border-hairline" style={{ width: 120, height: 80 }} position="bottom-right" maskColor="rgba(11,15,26,.7)" nodeColor="#38BDF8" nodeStrokeColor="#2A3547" />
       </ReactFlow>
 
       <DrawingLayer
@@ -820,14 +820,14 @@ function CanvasInner({ journey, journeyIndex, workspaceMode, onWorkspaceModeChan
 
       {isEdit && (
         <>
-          <div className="absolute bottom-4 right-28 z-20 px-3 py-1.5 rounded-full bg-white/95 border border-[#E8E6DF] text-[10px] text-[#6B7280] shadow-sm pointer-events-none">
+          <div className="absolute bottom-4 right-28 z-20 px-3 py-1.5 rounded-full bg-surface-raised border border-hairline text-[10px] text-ink-muted shadow-sm pointer-events-none">
             Scroll to move · Pinch or Ctrl+scroll to zoom
           </div>
           <div className={`absolute left-1/2 -translate-x-1/2 z-20 ${codePanelOpen ? 'bottom-[44%]' : 'bottom-14'}`}>
             <button
               type="button"
               onClick={() => useDiagramStore.getState().setSnapGrid(!snapGrid)}
-              className={`text-[10px] px-3 py-1 rounded-full border font-medium ${snapGrid ? 'bg-blue-500 text-white border-blue-500' : 'bg-white border-[#E8E6DF] text-[#6B7280]'}`}
+              className={`text-[10px] px-3 py-1 rounded-full border font-medium ${snapGrid ? 'bg-brand text-canvas border-brand' : 'bg-surface-raised border-hairline text-ink-muted'}`}
             >
               Grid {snapGrid ? 'on' : 'off'}
             </button>

@@ -53,7 +53,7 @@ export default function NodeContextMenu({
       type="button"
       onClick={() => { onClick(menu.node); onClose(); }}
       className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium transition-colors ${
-        danger ? 'text-brand hover:bg-brand-light' : 'text-ink hover:bg-cream'
+        danger ? 'text-brand hover:bg-brand-light' : 'text-ink hover:bg-canvas'
       }`}
     >
       <Icon className="w-3.5 h-3.5 text-ink-muted" />
@@ -67,7 +67,7 @@ export default function NodeContextMenu({
         ref={refs.setFloating}
         style={floatingStyles}
         {...getFloatingProps()}
-        className="z-50 w-44 py-1 rounded-xl bg-white border border-line shadow-card overflow-hidden"
+        className="z-50 w-44 py-1 rounded-xl bg-surface border border-hairline shadow-card overflow-hidden"
       >
         <Item icon={Copy} label="Duplicate" onClick={onDuplicate} />
         <Item icon={Trash2} label="Delete" onClick={onDelete} danger />
@@ -81,7 +81,7 @@ export default function NodeContextMenu({
         {locked
           ? <Item icon={Unlock} label="Unlock" onClick={onUnlock} />
           : <Item icon={Lock} label="Lock" onClick={onLock} />}
-        <div className="px-3 py-2 border-t border-line/60">
+        <div className="px-3 py-2 border-t border-hairline/60">
           <p className="text-[9px] font-bold uppercase tracking-wider text-ink-muted mb-1.5 flex items-center gap-1">
             <Palette className="w-3 h-3" /> Color
           </p>
@@ -91,7 +91,7 @@ export default function NodeContextMenu({
                 key={c}
                 type="button"
                 onClick={() => { onColor(menu.node, c); onClose(); }}
-                className="w-5 h-5 rounded-md border border-line/60 hover:scale-110 transition-transform"
+                className="w-5 h-5 rounded-md border border-hairline/60 hover:scale-110 transition-transform"
                 style={{ backgroundColor: c }}
               />
             ))}

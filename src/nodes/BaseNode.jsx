@@ -4,8 +4,8 @@ import { useDiagramStore } from '../store/diagramStore';
 import { WORKSPACE_MODE } from '../types/diagram';
 import ConnectionPorts from './ConnectionPorts';
 
-export const SELECT_RING = 'ring-2 ring-blue-500/50';
-export const HOVER_RING = 'hover:ring-1 hover:ring-blue-400/30';
+export const SELECT_RING = 'ring-2 ring-brand/60';
+export const HOVER_RING = 'hover:ring-1 hover:ring-brand/40';
 
 export function useNodeActions() {
   const workspaceMode = useDiagramStore((s) => s.workspaceMode);
@@ -44,11 +44,11 @@ export const NodeFrame = memo(function NodeFrame({
       {handles && <ConnectionPorts />}
       <div
         className={`transition-all duration-150 border ${
-          style.backgroundColor ? '' : 'bg-white'
+          style.backgroundColor ? '' : 'bg-surface'
         } ${HOVER_RING} ${
-          selected ? SELECT_RING : 'border-[#E8E6DF]'
+          selected ? SELECT_RING : 'border-hairline'
         } ${locked ? 'opacity-80 cursor-not-allowed' : ''} ${className}`}
-        style={{ boxShadow: '0 1px 3px rgba(0,0,0,.06)', ...style }}
+        style={{ boxShadow: '0 1px 3px rgba(0,0,0,.4)', ...style }}
         data-node-id={id}
       >
         {children}

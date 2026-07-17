@@ -47,17 +47,17 @@ export default function WorkspacePeoplePanel() {
             autoFocus
             value={nameDraft}
             onChange={(e) => setNameDraft(e.target.value)}
-            className="text-xs w-28 px-2 py-1.5 rounded-lg border border-line focus:outline-none focus:ring-1 focus:ring-brand/40"
+            className="text-xs w-28 px-2 py-1.5 rounded-lg border border-hairline focus:outline-none focus:ring-1 focus:ring-brand/40"
             placeholder="Your name"
             maxLength={32}
           />
-          <button type="submit" className="text-[10px] px-2 py-1.5 rounded-lg bg-brand text-white font-semibold">OK</button>
+          <button type="submit" className="text-[10px] px-2 py-1.5 rounded-lg bg-brand text-canvas font-semibold">OK</button>
         </form>
       ) : (
         <button
           type="button"
           onClick={() => { setNameDraft(getDisplayName()); setEditing(true); }}
-          className="inline-flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs hover:bg-cream transition-colors"
+          className="inline-flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs hover:bg-canvas transition-colors"
           title="Change your display name"
         >
           <span className="w-2 h-2 rounded-full shrink-0" style={{ background: self?.color || '#1F4E79' }} />
@@ -70,7 +70,7 @@ export default function WorkspacePeoplePanel() {
         type="button"
         onClick={() => setExpanded((v) => !v)}
         className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-          expanded ? 'bg-brand/10 text-brand' : 'hover:bg-cream text-[#374151]'
+          expanded ? 'bg-brand/10 text-brand' : 'hover:bg-canvas text-ink'
         }`}
         title="Who is online — follow their view"
       >
@@ -88,7 +88,7 @@ export default function WorkspacePeoplePanel() {
       </button>
 
       {followingId && (
-        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-brand text-white text-[10px] font-semibold max-w-[200px]">
+        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-brand text-canvas text-[10px] font-semibold max-w-[200px]">
           <Eye className="w-3 h-3 shrink-0" />
           <span className="truncate">
             Following {displayLabel(peers.find((p) => p.sessionId === followingId)?.name)}
@@ -104,7 +104,7 @@ export default function WorkspacePeoplePanel() {
       )}
 
       {expanded && (
-        <div className="absolute top-full right-0 mt-1 w-64 p-2.5 rounded-xl bg-white border border-line shadow-lg z-50">
+        <div className="absolute top-full right-0 mt-1 w-64 p-2.5 rounded-xl bg-surface border border-hairline shadow-lg z-50">
           {!getDisplayName() && (
             <p className="text-[10px] text-brand font-medium mb-2 px-1 py-1.5 bg-brand/5 rounded-lg">
               Set your name so teammates know who you are.
@@ -133,7 +133,7 @@ export default function WorkspacePeoplePanel() {
                     type="button"
                     onClick={() => presenceApi?.toggleFollow?.(peer.sessionId)}
                     className={`flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-left text-xs transition-colors ${
-                      isFollowing ? 'bg-brand/10 text-brand' : 'hover:bg-cream'
+                      isFollowing ? 'bg-brand/10 text-brand' : 'hover:bg-canvas'
                     }`}
                   >
                     <span className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white shrink-0" style={{ background: peer.color }}>

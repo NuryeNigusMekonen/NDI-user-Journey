@@ -44,7 +44,7 @@ export default function InlineEdit({
         onDoubleClick={!clickToEdit ? startEdit : undefined}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') startEdit(e); }}
       >
-        {value || <span className="text-[#9CA3AF] italic">{placeholder}</span>}
+        {value || <span className="text-ink-muted italic">{placeholder}</span>}
       </span>
     );
   }
@@ -54,7 +54,7 @@ export default function InlineEdit({
       ref={ref}
       contentEditable
       suppressContentEditableWarning
-      className={`${className} outline-none ring-2 ring-blue-400/70 rounded px-1 bg-white min-w-[2ch]`}
+      className={`${className} outline-none ring-2 ring-blue-400/70 rounded px-1 bg-surface min-w-[2ch]`}
       onBlur={() => {
         onChange(ref.current?.innerText || '');
         setEditing(false);

@@ -42,12 +42,12 @@ export function CommentThread({
       initial={{ opacity: 0, scale: 0.95, y: 4 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="w-72 bg-white rounded-2xl shadow-card border border-line overflow-hidden"
+      className="w-72 bg-surface rounded-2xl shadow-card border border-hairline overflow-hidden"
       onClick={(e) => e.stopPropagation()}
       onPointerDown={(e) => e.stopPropagation()}
       onMouseDown={(e) => e.stopPropagation()}
     >
-      <div className="flex items-center justify-between px-3 py-2.5 border-b border-line bg-cream/40">
+      <div className="flex items-center justify-between px-3 py-2.5 border-b border-hairline bg-canvas/40">
         <div className="min-w-0">
           <span className="text-xs font-semibold text-ink block">{title}</span>
           {!isNew && (
@@ -60,11 +60,11 @@ export function CommentThread({
           {isEditMode && !isNew && (
             <>
               {thread.resolved ? (
-                <button type="button" onClick={() => onReopen(thread.id)} title="Reopen" className="p-1 rounded-lg hover:bg-cream text-ink-muted">
+                <button type="button" onClick={() => onReopen(thread.id)} title="Reopen" className="p-1 rounded-lg hover:bg-canvas text-ink-muted">
                   <RotateCcw className="w-3.5 h-3.5" />
                 </button>
               ) : (
-                <button type="button" onClick={() => onResolve(thread.id)} title="Resolve" className="p-1 rounded-lg hover:bg-cream text-teal">
+                <button type="button" onClick={() => onResolve(thread.id)} title="Resolve" className="p-1 rounded-lg hover:bg-canvas text-teal">
                   <Check className="w-3.5 h-3.5" />
                 </button>
               )}
@@ -73,7 +73,7 @@ export function CommentThread({
               </button>
             </>
           )}
-          <button type="button" onClick={onClose} className="p-1 rounded-lg hover:bg-cream text-ink-muted">
+          <button type="button" onClick={onClose} className="p-1 rounded-lg hover:bg-canvas text-ink-muted">
             <X className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -95,23 +95,23 @@ export function CommentThread({
       </div>
 
       {!thread.resolved && (
-        <div className="p-3 border-t border-line">
+        <div className="p-3 border-t border-hairline">
           <textarea
             ref={inputRef}
             value={reply}
             onChange={(e) => handleChange(e.target.value)}
             placeholder={isNew ? 'Write a comment…' : 'Reply…'}
             rows={2}
-            className="w-full text-sm px-3 py-2 rounded-xl border border-line outline-none focus:border-brand resize-none"
+            className="w-full text-sm px-3 py-2 rounded-xl border border-hairline outline-none focus:border-brand resize-none"
             onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); } }}
           />
-          <button type="button" onClick={submit} className="mt-2 w-full py-2 rounded-xl bg-brand text-white text-xs font-semibold hover:bg-brand-dark">
+          <button type="button" onClick={submit} className="mt-2 w-full py-2 rounded-xl bg-brand text-canvas text-xs font-semibold hover:bg-brand-dark">
             {isNew ? 'Post comment' : 'Reply'}
           </button>
         </div>
       )}
       {thread.resolved && (
-        <p className="px-3 py-2 text-[10px] text-teal font-medium border-t border-line bg-teal-light/30">Resolved</p>
+        <p className="px-3 py-2 text-[10px] text-teal font-medium border-t border-hairline bg-teal-light/30">Resolved</p>
       )}
     </motion.div>
   );
@@ -193,12 +193,12 @@ function CommentPin({
           ? 'bg-teal-light border-teal text-teal opacity-70'
           : isOpen
             ? 'bg-brand border-brand text-white scale-110'
-            : 'bg-white border-brand text-brand'
+            : 'bg-surface border-brand text-brand'
       }`}
       title={`Comment ${commentNumber} — drag to move, click to open`}
     >
       <MessageCircle className="w-4 h-4" />
-      <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-brand text-white text-[9px] font-bold leading-4 text-center border border-white shadow-sm">
+      <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-brand text-canvas text-[9px] font-bold leading-4 text-center border border-white shadow-sm">
         {thread.replies.length}
       </span>
       {!isOpen && preview && !dragging && (

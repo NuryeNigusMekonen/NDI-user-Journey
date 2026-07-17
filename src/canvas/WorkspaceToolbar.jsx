@@ -16,7 +16,7 @@ function Btn({ icon: Icon, label, active, onClick, disabled, compact }) {
       onClick={onClick}
       className={`inline-flex items-center gap-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-30 ${
         compact ? 'px-2 py-1.5' : 'px-2.5 py-1.5'
-      } ${active ? 'bg-brand text-white shadow-sm' : 'text-[#374151] hover:bg-[#F3F4F6]'}`}
+      } ${active ? 'bg-brand text-canvas shadow-glow' : 'text-ink-muted hover:bg-surface-hover hover:text-ink'}`}
     >
       <Icon className="w-3.5 h-3.5 shrink-0" />
       <span className="hidden sm:inline">{label}</span>
@@ -31,7 +31,7 @@ function IconBtn({ icon: Icon, title, onClick, disabled }) {
       title={title}
       disabled={disabled}
       onClick={onClick}
-      className="w-8 h-8 rounded-lg flex items-center justify-center text-[#6B7280] hover:bg-[#F3F4F6] disabled:opacity-30"
+      className="w-8 h-8 rounded-lg flex items-center justify-center text-ink-muted hover:bg-surface-hover hover:text-ink disabled:opacity-30"
     >
       <Icon className="w-4 h-4" />
     </button>
@@ -123,7 +123,7 @@ export default function WorkspaceToolbar({
             <button
               type="button"
               onClick={() => api?.cancelChanges?.()}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-line text-xs font-semibold text-ink-muted hover:bg-white hover:text-ink transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-hairline text-xs font-semibold text-ink-muted hover:bg-surface-hover hover:text-ink transition-colors"
             >
               <X className="w-3.5 h-3.5" />
               Cancel
@@ -132,7 +132,7 @@ export default function WorkspaceToolbar({
               type="button"
               disabled={saving}
               onClick={() => api?.saveChanges?.()}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand text-white text-xs font-semibold hover:bg-brand-dark transition-colors disabled:opacity-60 shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand text-canvas text-xs font-semibold hover:bg-brand-dark transition-colors disabled:opacity-60 shadow-glow"
             >
               <Check className="w-3.5 h-3.5" />
               {saving ? 'Saving…' : 'Save changes'}
@@ -141,12 +141,12 @@ export default function WorkspaceToolbar({
           </>
         )}
 
-        <div className="flex items-center p-0.5 rounded-lg bg-cream border border-line">
+        <div className="flex items-center p-0.5 rounded-lg bg-canvas border border-hairline">
           <button
             type="button"
             onClick={switchToView}
             className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all ${
-              workspaceMode === WORKSPACE_MODE.VIEW ? 'bg-white text-ink shadow-sm' : 'text-ink-muted hover:text-ink'
+              workspaceMode === WORKSPACE_MODE.VIEW ? 'bg-surface-raised text-ink shadow-sm' : 'text-ink-muted hover:text-ink'
             }`}
           >
             <Eye className="w-3.5 h-3.5" /> View
@@ -155,7 +155,7 @@ export default function WorkspaceToolbar({
             type="button"
             onClick={() => onWorkspaceModeChange(WORKSPACE_MODE.EDIT)}
             className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all ${
-              workspaceMode === WORKSPACE_MODE.EDIT ? 'bg-brand text-white shadow-sm' : 'text-ink-muted hover:text-ink'
+              workspaceMode === WORKSPACE_MODE.EDIT ? 'bg-brand text-canvas shadow-glow' : 'text-ink-muted hover:text-ink'
             }`}
           >
             <Pencil className="w-3.5 h-3.5" /> Edit

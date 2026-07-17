@@ -13,7 +13,7 @@ function ToolButton({ icon: Icon, label, active, onClick, disabled }) {
       disabled={disabled}
       onClick={onClick}
       className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-30 ${
-        active ? 'bg-brand text-white shadow-sm' : 'text-[#374151] hover:bg-[#F3F4F6]'
+        active ? 'bg-brand text-canvas shadow-sm' : 'text-ink hover:bg-surface-hover'
       }`}
     >
       <Icon className="w-3.5 h-3.5 shrink-0" />
@@ -29,7 +29,7 @@ function IconButton({ icon: Icon, title, onClick, disabled }) {
       title={title}
       disabled={disabled}
       onClick={onClick}
-      className="w-8 h-8 rounded-lg flex items-center justify-center text-[#6B7280] hover:bg-[#F3F4F6] disabled:opacity-30"
+      className="w-8 h-8 rounded-lg flex items-center justify-center text-ink-muted hover:bg-surface-hover disabled:opacity-30"
     >
       <Icon className="w-4 h-4" />
     </button>
@@ -72,7 +72,7 @@ export default function Toolbar({
       <motion.div
         initial={{ opacity: 0, y: -6 }}
         animate={{ opacity: 1, y: 0 }}
-        className="absolute top-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1 px-2 py-1.5 rounded-xl bg-white/95 border border-[#E8E6DF] shadow-sm max-w-[95vw] overflow-x-auto"
+        className="absolute top-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1 px-2 py-1.5 rounded-xl bg-surface/95 border border-hairline shadow-sm max-w-[95vw] overflow-x-auto"
       >
         <ToolButton
           icon={LayoutGrid}
@@ -88,7 +88,7 @@ export default function Toolbar({
             onClick={() => onCanvasModeChange(CANVAS_MODE.DRAW)}
           />
         )}
-        <div className="w-px h-6 bg-[#E8E6DF] mx-0.5 shrink-0" />
+        <div className="w-px h-6 bg-hairline mx-0.5 shrink-0" />
         {activeTools.map(({ id, icon, label }) => (
           <ToolButton
             key={id}
@@ -98,7 +98,7 @@ export default function Toolbar({
             onClick={() => onToolChange(id)}
           />
         ))}
-        <div className="w-px h-6 bg-[#E8E6DF] mx-0.5 shrink-0" />
+        <div className="w-px h-6 bg-hairline mx-0.5 shrink-0" />
         <ToolButton icon={MessageCircle} label="Comment" active={activeTool === TOOL.COMMENT} onClick={() => onToolChange(TOOL.COMMENT)} />
         {isEdit && onSave && (
           <ToolButton icon={Save} label={saveLabel} onClick={onSave} />
@@ -111,11 +111,11 @@ export default function Toolbar({
       <motion.div
         initial={{ opacity: 0, x: -6 }}
         animate={{ opacity: 1, x: 0 }}
-        className="absolute left-3 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-0.5 p-1 rounded-xl bg-white/90 border border-[#E8E6DF] shadow-sm"
+        className="absolute left-3 top-1/2 -translate-y-1/2 z-30 flex flex-col gap-0.5 p-1 rounded-xl bg-surface/90 border border-hairline shadow-sm"
       >
         <IconButton icon={Undo2} title="Undo" disabled={!canUndo} onClick={onUndo} />
         <IconButton icon={Redo2} title="Redo" disabled={!canRedo} onClick={onRedo} />
-        <div className="h-px bg-[#E8E6DF] mx-1 my-0.5" />
+        <div className="h-px bg-hairline mx-1 my-0.5" />
         <IconButton icon={ZoomIn} title="Zoom in" onClick={onZoomIn} />
         <IconButton icon={ZoomOut} title="Zoom out" onClick={onZoomOut} />
         <IconButton icon={Maximize2} title="Fit to screen" onClick={onFit} />

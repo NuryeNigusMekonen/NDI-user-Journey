@@ -70,11 +70,11 @@ function ActorRow({ id, data, isEdit, selected, updateNode }) {
       </div>
       {isEdit && selected && (
         <div className="flex items-center gap-1.5 mt-1" onMouseDown={(e) => e.stopPropagation()}>
-          <span className="text-[8px] text-[#9CA3AF] shrink-0">From</span>
+          <span className="text-[8px] text-ink-muted shrink-0">From</span>
           <select
             value={data.from}
             onChange={(e) => updateNode(id, { from: e.target.value })}
-            className="text-[9px] font-medium rounded border border-[#E8E6DF] bg-white px-1 py-0.5 flex-1 min-w-0"
+            className="text-[9px] font-medium rounded border border-hairline bg-surface-raised text-ink px-1 py-0.5 flex-1 min-w-0"
           >
             {actorIds.map((aid) => (
               <option key={aid} value={aid}>{resolveActor(aid).short}</option>
@@ -84,7 +84,7 @@ function ActorRow({ id, data, isEdit, selected, updateNode }) {
           <select
             value={data.to}
             onChange={(e) => updateNode(id, { to: e.target.value })}
-            className="text-[9px] font-medium rounded border border-[#E8E6DF] bg-white px-1 py-0.5 flex-1 min-w-0"
+            className="text-[9px] font-medium rounded border border-hairline bg-surface-raised text-ink px-1 py-0.5 flex-1 min-w-0"
           >
             {actorIds.map((aid) => (
               <option key={aid} value={aid}>{resolveActor(aid).short}</option>
@@ -115,11 +115,11 @@ export const StepNode = memo(function StepNode({ id, data, selected }) {
         <div className="px-3 py-2.5">
       {isEdit && selected && (
         <div className="mb-1.5" onMouseDown={(e) => e.stopPropagation()}>
-          <span className="text-[8px] text-[#9CA3AF] block mb-0.5">Step type</span>
+          <span className="text-[8px] text-ink-muted block mb-0.5">Step type</span>
           <select
             value={kind}
             onChange={(e) => updateNode(id, { kind: e.target.value })}
-            className="w-full text-[10px] font-medium rounded border border-[#E8E6DF] bg-white px-1.5 py-1"
+            className="w-full text-[10px] font-medium rounded border border-hairline bg-surface-raised text-ink px-1.5 py-1"
           >
             {Object.entries(STEP_KIND_META).map(([k, m]) => (
               <option key={k} value={k}>{m.editLabel || m.label}</option>
@@ -140,7 +140,7 @@ export const StepNode = memo(function StepNode({ id, data, selected }) {
       )}
       <ActorRow id={id} data={data} isEdit={isEdit} selected={selected} updateNode={updateNode} />
       {!isEdit && data.dashed && (
-        <span className="inline-flex items-center gap-0.5 text-[8px] text-slate-600 mt-1">
+        <span className="inline-flex items-center gap-0.5 text-[8px] text-ink-muted mt-1">
           <Zap className="w-2.5 h-2.5" />
           {data.automatedLabel ?? 'Automated'}
         </span>
@@ -176,7 +176,7 @@ export const NoteNode = memo(function NoteNode({ id, data, selected }) {
     <>
       {isEdit && <NodeResizer minWidth={160} minHeight={48} isVisible={selected} />}
       <ConnectionPorts sides={SIDE_PORTS} />
-      <div className={`rounded-xl border px-3 py-2.5 transition-all ${HOVER_RING} ${selected ? SELECT_RING : ''} ${isSide ? 'bg-brand-light border-brand/20' : 'bg-ink border-ink text-white'}`} style={{ width: 228 }}>
+      <div className={`rounded-xl border px-3 py-2.5 transition-all ${HOVER_RING} ${selected ? SELECT_RING : ''} ${isSide ? 'bg-brand/10 border-brand/30 text-brand/90' : 'bg-surface-raised border-hairline text-ink'}`} style={{ width: 228 }}>
         <InlineEdit value={data.text} onChange={(v) => updateNode(id, { text: v })} enabled={isEdit} multiline className={`text-[11px] leading-snug block ${isSide ? '' : 'font-semibold text-center'}`} placeholder="Section title…" />
       </div>
     </>
@@ -193,9 +193,9 @@ export const ForkNode = memo(function ForkNode({ id, data, selected }) {
         <DecisionPorts />
         <div
           className={`absolute inset-3 rotate-45 rounded-sm border-2 ${
-            selected ? 'border-brand bg-brand/10' : 'border-brand/70 bg-white'
+            selected ? 'border-brand bg-brand/20' : 'border-brand/70 bg-surface'
           }`}
-          style={{ boxShadow: '0 2px 8px rgba(31,78,121,.15)' }}
+          style={{ boxShadow: '0 0 16px rgba(56,189,248,.25)' }}
         />
         <div className="relative z-10 text-center px-1 max-w-[80px]">
           <span className="text-[8px] font-bold text-brand block">OR</span>
@@ -216,7 +216,7 @@ export const ForkNode = memo(function ForkNode({ id, data, selected }) {
             onChange={(v) => updateNode(id, { description: v })}
             enabled={isEdit}
             multiline
-            className="text-[9px] text-[#6B7280] leading-snug block mt-1"
+            className="text-[9px] text-ink-muted leading-snug block mt-1"
             placeholder="Explain each path (optional)"
           />
         )}

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -11,23 +11,32 @@ body,
 }
 
 body {
-  @apply antialiased text-ink bg-cream font-sans;
+  @apply antialiased text-ink bg-canvas font-sans;
 }
 
 :root {
-  --brand: #1F4E79;
-  --brand-d: #163A5C;
-  --brand-active: #1D4A73;
-  --brand-light: #E8EEF5;
-  --brand-muted: #9DB6D0;
+  --brand: #38BDF8;
+  --brand-d: #0EA5E9;
+  --brand-active: #7DD3FC;
+  --brand-light: #12324A;
+  --brand-muted: #5B7A93;
 }
 
+/* Dark, technical scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2A3547 transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: #2A3547; border-radius: 4px; }
+*::-webkit-scrollbar-thumb:hover { background: #3A465C; }
+
 .react-flow__controls-button {
-  @apply !border-line !bg-white;
+  @apply !border-hairline !bg-surface-raised;
 }
 
 .react-flow__controls-button:hover {
-  @apply !bg-brand-light;
+  @apply !bg-surface-hover;
 }
 
 .react-flow__node.selected {
@@ -39,7 +48,8 @@ body {
 }
 
 .dg-port {
-  @apply !w-2.5 !h-2.5 !bg-blue-500 !border-2 !border-white !rounded-full;
+  @apply !w-2.5 !h-2.5 !bg-brand !border-2 !rounded-full;
+  border-color: #0B0F1A !important;
   opacity: 0.55;
   transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
 }
@@ -71,7 +81,7 @@ body {
 }
 
 .react-flow__connection-path {
-  stroke: #3b82f6;
+  stroke: #38BDF8;
   stroke-width: 2.5;
 }
 
@@ -81,7 +91,15 @@ body {
 }
 
 .react-flow__edge.selected .react-flow__edge-path {
-  filter: drop-shadow(0 0 3px rgba(59, 130, 246, 0.35));
+  filter: drop-shadow(0 0 4px rgba(56, 189, 248, 0.45));
+}
+
+/* MiniMap on dark canvas */
+.react-flow__minimap {
+  background-color: #141A28 !important;
+}
+.react-flow__minimap-mask {
+  fill: rgba(11, 15, 26, 0.7);
 }
 
 .edge-animated {

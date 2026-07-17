@@ -13,9 +13,9 @@ export const STEP_KIND_META = {
     editLabel: 'Someone sends a message',
     short: 'MSG',
     description: 'Human or AI communication',
-    border: 'border-solid border-[#E8E6DF]',
-    bg: 'bg-white',
-    badge: 'bg-sky-50 text-sky-700 border-sky-200',
+    border: 'border-solid border-hairline',
+    bg: 'bg-surface',
+    badge: 'bg-sky/10 text-sky border-sky/30',
     icon: 'message',
   },
   [STEP_KIND.SYSTEM]: {
@@ -23,9 +23,9 @@ export const STEP_KIND_META = {
     editLabel: 'Happens automatically',
     short: 'SYS',
     description: 'Webhook, automation, background sync',
-    border: 'border-dashed border-slate-300',
-    bg: 'bg-slate-50',
-    badge: 'bg-slate-100 text-slate-700 border-slate-200',
+    border: 'border-dashed border-slate/40',
+    bg: 'bg-surface-raised',
+    badge: 'bg-slate/10 text-slate border-slate/30',
     icon: 'system',
   },
   [STEP_KIND.HANDOFF]: {
@@ -33,9 +33,9 @@ export const STEP_KIND_META = {
     editLabel: 'Data is updated',
     short: 'DATA',
     description: 'Cross-system state or pipeline update',
-    border: 'border-dashed border-teal-300',
-    bg: 'bg-teal-50/50',
-    badge: 'bg-teal-50 text-teal-700 border-teal-200',
+    border: 'border-dashed border-teal/40',
+    bg: 'bg-teal/5',
+    badge: 'bg-teal/10 text-teal border-teal/30',
     icon: 'handoff',
   },
 };
@@ -71,7 +71,7 @@ export function inferJourneyEdgeData(sourceNode, targetNode, label = '') {
       flowType: EDGE_FLOW.CONDITIONAL,
       journeyFlow: true,
       animated: true,
-      branchColor: '#1F4E79',
+      branchColor: '#38BDF8',
     };
   }
 

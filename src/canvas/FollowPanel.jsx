@@ -32,7 +32,7 @@ export default function FollowPanel({
 
   return (
     <div className="absolute top-3 right-3 z-30 flex flex-col items-end gap-2 pointer-events-none">
-      <div className="pointer-events-auto flex items-center gap-2 px-3 py-2 rounded-xl bg-white/95 border border-[#E8E6DF] shadow-sm">
+      <div className="pointer-events-auto flex items-center gap-2 px-3 py-2 rounded-xl bg-surface/95 border border-hairline shadow-sm">
         {editing ? (
           <form
             className="flex items-center gap-1.5"
@@ -42,38 +42,38 @@ export default function FollowPanel({
               autoFocus
               value={nameDraft}
               onChange={(e) => setNameDraft(e.target.value)}
-              className="text-xs w-32 px-2 py-1 rounded-md border border-[#E8E6DF] focus:outline-none focus:ring-1 focus:ring-brand/40"
+              className="text-xs w-32 px-2 py-1 rounded-md border border-hairline focus:outline-none focus:ring-1 focus:ring-brand/40"
               placeholder="Enter your name"
               maxLength={32}
             />
-            <button type="submit" className="text-[10px] px-2 py-1 rounded-md bg-brand text-white font-semibold">Save</button>
+            <button type="submit" className="text-[10px] px-2 py-1 rounded-md bg-brand text-canvas font-semibold">Save</button>
           </form>
         ) : (
           <button
             type="button"
             onClick={() => { setNameDraft(getDisplayName()); setEditing(true); }}
-            className="flex items-center gap-1.5 text-xs text-[#6B7280] hover:text-[#1B1D28]"
+            className="flex items-center gap-1.5 text-xs text-ink-muted hover:text-ink"
             title="Change your display name"
           >
             <span
               className="w-2 h-2 rounded-full shrink-0"
               style={{ background: self?.color || '#1F4E79' }}
             />
-            <span className="font-medium text-[#1B1D28]">{myLabel}</span>
+            <span className="font-medium text-ink">{myLabel}</span>
             <Pencil className="w-3 h-3 opacity-50" />
           </button>
         )}
 
-        <span className="text-[#E8E6DF]">|</span>
+        <span className="text-hairline">|</span>
 
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="flex items-center gap-1.5 text-xs hover:text-[#1B1D28]"
+          className="flex items-center gap-1.5 text-xs hover:text-ink"
           title="See who is online and follow their view"
         >
-          <Users className="w-3.5 h-3.5 text-[#6B7280]" />
-          <span className="font-medium text-[#374151] tabular-nums">{online.length + 1} here</span>
+          <Users className="w-3.5 h-3.5 text-ink-muted" />
+          <span className="font-medium text-ink tabular-nums">{online.length + 1} here</span>
           {isLive ? (
             <span className="inline-flex items-center gap-0.5 text-[9px] text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded font-medium">
               <Radio className="w-2.5 h-2.5" /> Live
@@ -85,22 +85,22 @@ export default function FollowPanel({
       </div>
 
       {expanded && (
-        <div className="pointer-events-auto w-[260px] p-2.5 rounded-xl bg-white/95 border border-[#E8E6DF] shadow-sm">
+        <div className="pointer-events-auto w-[260px] p-2.5 rounded-xl bg-surface/95 border border-hairline shadow-sm">
           {!getDisplayName() && (
             <p className="text-[10px] text-brand font-medium leading-snug mb-2 px-1 bg-brand/5 rounded-lg py-1.5">
               Set your name above so teammates know who you are.
             </p>
           )}
-          <p className="text-[10px] text-[#6B7280] leading-snug mb-2 px-1">
+          <p className="text-[10px] text-ink-muted leading-snug mb-2 px-1">
             {isLive
               ? 'Anyone with this link appears here in real time. Click Follow to watch where they are looking.'
               : 'Connect Supabase for live follow across devices. Same-browser tabs still sync locally.'}
           </p>
           {online.length === 0 ? (
-            <p className="text-xs text-[#9CA3AF] px-1 py-2">No one else here yet — share the link with your team.</p>
+            <p className="text-xs text-ink-muted px-1 py-2">No one else here yet — share the link with your team.</p>
           ) : (
             <div className="space-y-0.5">
-              <p className="text-[9px] font-semibold uppercase tracking-wide text-[#9CA3AF] px-1 pb-1">Follow view</p>
+              <p className="text-[9px] font-semibold uppercase tracking-wide text-ink-muted px-1 pb-1">Follow view</p>
               {online.map((peer) => {
                 const isFollowing = followingId === peer.sessionId;
                 const label = displayLabel(peer.name);
@@ -110,7 +110,7 @@ export default function FollowPanel({
                     type="button"
                     onClick={() => onToggleFollow(peer.sessionId)}
                     className={`flex items-center gap-2 w-full px-2 py-1.5 rounded-lg text-left transition-colors ${
-                      isFollowing ? 'bg-brand/10 text-brand' : 'hover:bg-[#F3F4F6] text-[#1B1D28]'
+                      isFollowing ? 'bg-brand/10 text-brand' : 'hover:bg-surface-hover text-ink'
                     }`}
                   >
                     <span
@@ -121,7 +121,7 @@ export default function FollowPanel({
                     </span>
                     <span className="text-xs font-medium truncate flex-1">{label}</span>
                     {peer.mode === 'edit' && (
-                      <span className="text-[8px] text-[#9CA3AF] shrink-0">editing</span>
+                      <span className="text-[8px] text-ink-muted shrink-0">editing</span>
                     )}
                     {isFollowing ? (
                       <EyeOff className="w-3.5 h-3.5 shrink-0 opacity-70" />
@@ -137,7 +137,7 @@ export default function FollowPanel({
       )}
 
       {followingId && (
-        <div className="pointer-events-auto px-3 py-1.5 rounded-full bg-brand text-white text-[10px] font-semibold shadow-sm flex items-center gap-1.5">
+        <div className="pointer-events-auto px-3 py-1.5 rounded-full bg-brand text-canvas text-[10px] font-semibold shadow-sm flex items-center gap-1.5">
           <Eye className="w-3 h-3" />
           Following {displayLabel(peers.find((p) => p.sessionId === followingId)?.name)}
           <button

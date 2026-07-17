@@ -4,29 +4,50 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        navy: { DEFAULT: '#1B1D28', dark: '#12131a' },
-        brand: {
-          DEFAULT: '#1F4E79',
-          dark: '#163A5C',
-          active: '#1D4A73',
-          light: '#E8EEF5',
-          muted: '#9DB6D0',
+        // --- Dark dashboard surfaces (deep charcoal → elevated panels) ---
+        canvas: '#0B0F1A',        // app/canvas background
+        surface: {
+          DEFAULT: '#141A28',     // panels, cards
+          raised: '#1B2333',      // elevated (headers, popovers)
+          hover: '#222C40',       // hover state
         },
-        sky: { DEFAULT: '#0891B2', light: '#E4F4F8' },
-        amber: { DEFAULT: '#B5730A', light: '#FBF1DF' },
-        slate: { DEFAULT: '#5B6472', light: '#F0F1F3' },
-        teal: { DEFAULT: '#0D7A6E', light: '#E6F5F3' },
-        cream: '#F7F6F2',
-        ink: { DEFAULT: '#1B1D28', muted: '#5A5E6C' },
-        line: '#E2E0D8',
+        hairline: '#2A3547',      // borders / dividers
+        // --- Brand accent: electric cyan-navy ---
+        brand: {
+          DEFAULT: '#38BDF8',     // primary accent (cyan)
+          dark: '#0EA5E9',
+          active: '#7DD3FC',
+          light: '#12324A',       // tinted fill on dark
+          muted: '#5B7A93',
+        },
+        // --- Category / actor colors (tuned for dark bg) ---
+        sky: { DEFAULT: '#38BDF8', light: '#0F2A3D' },
+        amber: { DEFAULT: '#FBBF24', light: '#332608' },
+        slate: { DEFAULT: '#94A3B8', light: '#1E2636' },
+        teal: { DEFAULT: '#2DD4BF', light: '#0C2E2A' },
+        violet: { DEFAULT: '#A78BFA', light: '#241A3D' },
+        // --- Text / ink (inverted for dark) ---
+        ink: { DEFAULT: '#E6EDF6', muted: '#8A97AC' },
+        // --- Legacy aliases so untouched components keep rendering ---
+        cream: '#0B0F1A',
+        line: '#2A3547',
+        navy: { DEFAULT: '#0B0F1A', dark: '#070A12' },
       },
       fontFamily: {
-        sans: ['DM Sans', 'system-ui', 'sans-serif'],
-        display: ['Fraunces', 'Georgia', 'serif'],
+        sans: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+      },
+      borderRadius: {
+        // Sharper, more technical corners than MODO's soft rounded-xl
+        lg: '0.5rem',
+        xl: '0.625rem',
+        '2xl': '0.75rem',
       },
       boxShadow: {
-        card: '0 1px 3px rgba(27,29,40,.06), 0 12px 40px rgba(27,29,40,.1)',
-        glow: '0 0 0 3px rgba(31,78,121,.18)',
+        card: '0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35)',
+        glow: '0 0 0 1px rgba(56,189,248,.4), 0 0 20px rgba(56,189,248,.25)',
+        panel: '0 4px 24px rgba(0,0,0,.5)',
       },
     },
   },

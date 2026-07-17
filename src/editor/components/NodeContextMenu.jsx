@@ -6,7 +6,7 @@ import {
   Copy, Trash2, ArrowUp, ArrowDown, Clipboard, Lock, Unlock, Palette,
 } from 'lucide-react';
 
-const COLORS = ['#ffffff', '#fdecef', '#fff9c4', '#c8e6c9', '#bbdefb', '#e1bee7', '#1B1D28'];
+const COLORS = ['#ffffff', '#E8EEF5', '#fff9c4', '#c8e6c9', '#bbdefb', '#e1bee7', '#1B1D28'];
 
 export default function NodeContextMenu({
   menu, onClose, onDuplicate, onDelete, onBringForward, onSendBackward,

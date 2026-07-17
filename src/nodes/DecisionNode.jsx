@@ -14,7 +14,7 @@ export const DecisionNode = memo(function DecisionNode({ id, data, selected, wid
     ? customFlowStyles(customStyle, { selected })
     : flowClassStyles(flowClass, { selected });
   const fill = customStyle?.fill || palette?.fill || '#fff';
-  const stroke = customStyle?.stroke || palette?.stroke || '#c8102e';
+  const stroke = customStyle?.stroke || palette?.stroke || '#1F4E79';
   const textColor = customStyle?.text || palette?.text || '#1B1D28';
 
   const boxW = width || 120;
@@ -54,7 +54,7 @@ export const DecisionNode = memo(function DecisionNode({ id, data, selected, wid
               height: diamond,
               inset: 0,
               margin: 'auto',
-              boxShadow: '0 2px 6px rgba(200,16,46,0.12)',
+              boxShadow: '0 2px 6px rgba(31,78,121,0.12)',
             }}
           />
           <div className="relative z-10 text-center px-1" style={{ maxWidth: diamond * 0.72 }}>

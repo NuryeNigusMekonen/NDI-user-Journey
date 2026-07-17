@@ -1,6 +1,6 @@
-const NAME_KEY = 'compass-display-name';
+const NAME_KEY = 'ninedean-display-name';
 
-const COLORS = ['#c8102e', '#2563eb', '#059669', '#d97706', '#7c3aed', '#db2777', '#0891b2', '#4f46e5'];
+const COLORS = ['#1F4E79', '#2563eb', '#059669', '#d97706', '#7c3aed', '#db2777', '#0891b2', '#4f46e5'];
 
 /** Unique per tab — in-memory only (sessionStorage is cloned when duplicating tabs) */
 const TAB_SESSION_ID = crypto.randomUUID();

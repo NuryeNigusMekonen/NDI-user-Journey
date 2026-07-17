@@ -71,7 +71,7 @@ export function inferJourneyEdgeData(sourceNode, targetNode, label = '') {
       flowType: EDGE_FLOW.CONDITIONAL,
       journeyFlow: true,
       animated: true,
-      branchColor: '#c8102e',
+      branchColor: '#1F4E79',
     };
   }
 

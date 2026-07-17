@@ -1,14 +1,14 @@
-/** Modo brand tokens — single source for JS/React Flow usage */
+/** Nine Dean brand tokens — single source for JS/React Flow usage */
 export const brand = {
-  DEFAULT: '#c8102e',
-  dark: '#a60d26',
-  active: '#c7112f',
-  light: '#fdecef',
-  muted: '#f0a0ad',
+  DEFAULT: '#1F4E79',
+  dark: '#163A5C',
+  active: '#1D4A73',
+  light: '#E8EEF5',
+  muted: '#9DB6D0',
 };
 
 export const actorColors = {
-  sky: '#0E7FBF',
+  sky: '#0891B2',
   brand: brand.DEFAULT,
   slate: '#5B6472',
   amber: '#B5730A',

@@ -1,7 +1,7 @@
 import { Handle, Position } from '@xyflow/react';
 
 const BRANCHES = [
-  { id: 'branch-right', position: Position.Right, color: '#c8102e' },
+  { id: 'branch-right', position: Position.Right, color: '#1F4E79' },
   { id: 'branch-bottom', position: Position.Bottom, color: '#d97706' },
   { id: 'branch-left', position: Position.Left, color: '#7c3aed' },
   { id: 'branch-top', position: Position.Top, color: '#5F5E5A' },

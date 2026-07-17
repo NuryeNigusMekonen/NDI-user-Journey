@@ -149,7 +149,7 @@ export default function CodePanel({ open, onOpen, onClose, onApplied, journey, v
                 <Braces className="w-4 h-4 text-brand shrink-0" />
                 <span className="text-xs font-semibold text-[#1B1D28]">Diagram Code</span>
                 <span className="text-[10px] text-[#6B7280] truncate hidden sm:inline">
-                  {isMermaid ? 'Mermaid flowchart · paste & apply' : 'Compass DSL · or paste Mermaid'}
+                  {isMermaid ? 'Mermaid flowchart · paste & apply' : 'Journey DSL · or paste Mermaid'}
                 </span>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
@@ -237,7 +237,7 @@ Paste any flowchart TD/LR with:
   classDef name fill:#...,stroke:#...
   class A,B name
 
-# Compass DSL (alternative)
+# Journey DSL (alternative)
 @layout down
 @style flowchart
 action A "Title" class=action

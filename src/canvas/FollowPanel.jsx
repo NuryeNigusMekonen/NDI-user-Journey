@@ -57,7 +57,7 @@ export default function FollowPanel({
           >
             <span
               className="w-2 h-2 rounded-full shrink-0"
-              style={{ background: self?.color || '#c8102e' }}
+              style={{ background: self?.color || '#1F4E79' }}
             />
             <span className="font-medium text-[#1B1D28]">{myLabel}</span>
             <Pencil className="w-3 h-3 opacity-50" />

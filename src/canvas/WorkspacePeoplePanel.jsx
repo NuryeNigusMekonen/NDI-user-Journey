@@ -60,7 +60,7 @@ export default function WorkspacePeoplePanel() {
           className="inline-flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-xs hover:bg-cream transition-colors"
           title="Change your display name"
         >
-          <span className="w-2 h-2 rounded-full shrink-0" style={{ background: self?.color || '#c8102e' }} />
+          <span className="w-2 h-2 rounded-full shrink-0" style={{ background: self?.color || '#1F4E79' }} />
           <span className="font-medium text-ink">{myLabel}</span>
           <Pencil className="w-3 h-3 text-ink-muted opacity-60" />
         </button>

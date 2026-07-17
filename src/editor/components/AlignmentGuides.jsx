@@ -1,4 +1,4 @@
-const GUIDE_COLOR = '#c8102e';
+const GUIDE_COLOR = '#1F4E79';
 
 export default function AlignmentGuidesOverlay({ guides, viewport }) {
   if (!guides?.length) return null;

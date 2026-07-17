@@ -1,54 +1,10 @@
 import { motion } from 'framer-motion';
-import { Compass, Database, Smartphone } from 'lucide-react';
+import { Landmark } from 'lucide-react';
 import { stages } from '../data/journeys';
 
 export const VIEW = {
   JOURNEY: 'journey',
-  MARIANATEK_FINDINGS: 'marianatek-findings',
-  STUDIO_DEMO: 'studio-demo',
 };
-
-function DemoNavButton({
-  active, onClick, icon: Icon, title, subtitle,
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`group relative w-full flex items-start gap-3 px-3 py-3 rounded-lg text-left transition-colors ${
-        active ? 'bg-white/10' : 'hover:bg-white/[0.06]'
-      }`}
-    >
-      {active && (
-        <motion.span
-          layoutId="sidebar-active"
-          className="absolute left-0 top-2 bottom-2 w-0.5 bg-brand rounded-full"
-          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-        />
-      )}
-      <span
-        className={`mt-0.5 w-7 h-7 rounded-md flex items-center justify-center shrink-0 transition-colors border ${
-          active
-            ? 'bg-white text-brand border-white'
-            : 'bg-white/10 text-white border-white/20 group-hover:bg-white/15 group-hover:border-white/30'
-        }`}
-      >
-        <Icon className="w-3.5 h-3.5" strokeWidth={2.25} />
-      </span>
-      <div className="min-w-0 flex-1 pt-0.5">
-        <p className={`text-[13px] font-semibold leading-snug transition-colors ${
-          active ? 'text-white' : 'text-white/90 group-hover:text-white'
-        }`}
-        >
-          {title}
-        </p>
-        <p className={`text-[11px] mt-1 leading-tight ${active ? 'text-white/60' : 'text-white/55 group-hover:text-white/70'}`}>
-          {subtitle}
-        </p>
-      </div>
-    </button>
-  );
-}
 
 export default function Sidebar({
   journeys,
@@ -56,8 +12,6 @@ export default function Sidebar({
   view,
   onSelect,
   onStageSelect,
-  onSelectMarianaTekFindings,
-  onSelectStudioDemo,
 }) {
   const isEmbed = view !== VIEW.JOURNEY;
   const j = isEmbed ? journeys[0] : journeys[active];
@@ -68,13 +22,13 @@ export default function Sidebar({
       <div className="px-5 pt-7 pb-5">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-[10px] bg-brand flex items-center justify-center shadow-sm">
-            <Compass className="w-[18px] h-[18px] text-white" strokeWidth={2} />
+            <Landmark className="w-[18px] h-[18px] text-white" strokeWidth={2} />
           </div>
           <div>
             <h1 className="font-display text-[17px] font-semibold text-white tracking-tight leading-none">
-              Compass
+              Nine Dean
             </h1>
-            <p className="text-[11px] text-white/45 mt-1 leading-none">Member journey</p>
+            <p className="text-[11px] text-white/45 mt-1 leading-none">Quality of Jobs platform</p>
           </div>
         </div>
       </div>
@@ -165,32 +119,10 @@ export default function Sidebar({
         })}
       </nav>
 
-      <div className="px-3 pb-3 space-y-0.5">
-        <p className="px-3 pb-2 text-[9px] font-bold tracking-widest uppercase text-white/35">Demo</p>
-        <DemoNavButton
-          active={view === VIEW.MARIANATEK_FINDINGS}
-          onClick={onSelectMarianaTekFindings}
-          icon={Database}
-          title="Mariana Tek Data"
-          subtitle="Analysis & findings report"
-        />
-        <DemoNavButton
-          active={view === VIEW.STUDIO_DEMO}
-          onClick={onSelectStudioDemo}
-          icon={Smartphone}
-          title="Studio Journey Demo"
-          subtitle="SMS walkthrough + ops view"
-        />
-      </div>
-
       <div className="px-5 py-3.5 border-t border-white/8">
         <p className="text-[10px] text-white/30 leading-relaxed">
-          {view === VIEW.MARIANATEK_FINDINGS && 'Mariana Tek data analysis and studio insights'}
-          {view === VIEW.STUDIO_DEMO && 'Interactive phone demo with Mariana Tek booking flow'}
-          {view === VIEW.JOURNEY && (
-            <>Use <kbd className="font-sans text-white/45">←</kbd>{' '}
-            <kbd className="font-sans text-white/45">→</kbd> to move between journeys</>
-          )}
+          Use <kbd className="font-sans text-white/45">←</kbd>{' '}
+          <kbd className="font-sans text-white/45">→</kbd> to move between journeys
         </p>
       </div>
     </aside>

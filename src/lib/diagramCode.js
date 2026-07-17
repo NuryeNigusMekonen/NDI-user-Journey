@@ -23,7 +23,7 @@ const NODE_LINE = /^(user|start|end|action|process|decision|io|screen|annotation
 const EDGE_LINE = /^([a-zA-Z][\w-]*)\s*(?:->|-->|→)\s*([a-zA-Z][\w-]*)(?:\s+(?:"([^"]*)"|'([^']*)'))?(?:\s+when=(?:"([^"]*)"|'([^']*)'|(\S+)))?(?:\s+flow=(auto|default|process|conditional|data|journey))?(?:\s+style=(dashed|dotted|solid))?\s*$/i;
 const QUOTED_TITLE = /^"([^"]*)"|^'([^']*)'/;
 
-const EXAMPLE = `# Compass Diagram Code — User Flow + Journey Map
+const EXAMPLE = `# Nine Dean Diagram Code — User Flow + Journey Map
 @layout right
 @mode overlay
 
@@ -480,7 +480,7 @@ export function serializeDiagramCode(nodes, edges, options = {}) {
 
   const idToCode = new Map();
   const counters = {};
-  const lines = ['# Compass Diagram Code', '@layout right', '@mode overlay', ''];
+  const lines = ['# Nine Dean Diagram Code', '@layout right', '@mode overlay', ''];
 
   const journeyNodes = nodes.filter((n) => JOURNEY_TYPES.has(n.type));
   const diagramNodes = nodes.filter((n) => !JOURNEY_TYPES.has(n.type));

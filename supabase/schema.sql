@@ -1,4 +1,4 @@
--- Compass Journey Map — Supabase schema (idempotent)
+-- Nine Dean Journey Map — Supabase schema (idempotent)
 -- Run the full script in Supabase SQL Editor (safe to re-run)
 
 -- ---------------------------------------------------------------------------

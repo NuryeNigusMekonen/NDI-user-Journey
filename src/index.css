@@ -15,11 +15,11 @@ body {
 }
 
 :root {
-  --brand: #c8102e;
-  --brand-d: #a60d26;
-  --brand-active: #c7112f;
-  --brand-light: #fdecef;
-  --brand-muted: #f0a0ad;
+  --brand: #1F4E79;
+  --brand-d: #163A5C;
+  --brand-active: #1D4A73;
+  --brand-light: #E8EEF5;
+  --brand-muted: #9DB6D0;
 }
 
 .react-flow__controls-button {

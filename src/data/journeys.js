@@ -1,42 +1,67 @@
+// NDI — Nine Dean Institute · Quality of Jobs Platform
+// Journey map of the V1 MVP: census upload → three-engine cascade → export.
+// Source: "Nine Dean MVP — Technical Brief" (2026.06.11), Arclio / Tenacious.
+
 export const participants = {
-  lead: {
-    id: 'lead',
-    label: 'Member or Lead',
-    short: 'Member',
-    description: 'Someone interested in or attending your studio',
+  deal: {
+    id: 'deal',
+    label: 'NDI Deal Team',
+    short: 'Deal Team',
+    description: 'Authenticated NDI users who upload a target census and consume the outputs',
     color: 'sky',
   },
-  ai: {
-    id: 'ai',
-    label: 'Compass Assistant',
-    short: 'Compass',
-    description: 'Sends messages, books classes, and follows up automatically',
+  platform: {
+    id: 'platform',
+    label: 'Platform',
+    short: 'Platform',
+    description: 'The single-tenant, multi-user app: authenticated upload, orchestration, export',
     color: 'brand',
   },
-  mt: {
-    id: 'mt',
-    label: 'Booking System',
-    short: 'Booking System',
-    description: 'Mariana Tek — where classes are scheduled and purchases are made',
-    color: 'slate',
+  fairpay: {
+    id: 'fairpay',
+    label: 'Fair Pay Engine (A)',
+    short: 'Fair Pay (A)',
+    description: 'Foundation engine — per-employee Fair Pay remediation cost; feeds B and C',
+    color: 'teal',
   },
-  mgr: {
-    id: 'mgr',
-    label: 'Studio Team',
-    short: 'Studio Team',
-    description: 'Managers and front desk staff at the studio',
+  psl: {
+    id: 'psl',
+    label: 'PSL Engine (B)',
+    short: 'PSL (B)',
+    description: 'Paid Sick Leave cost to NDI’s floor — pure calculation, depends on A',
     color: 'amber',
   },
-  ghl: {
-    id: 'ghl',
-    label: 'Lead Tracking',
-    short: 'Lead Tracking',
-    description: 'Tracks where each person is in your sales process',
-    color: 'teal',
+  health: {
+    id: 'health',
+    label: 'Healthcare Engine (C)',
+    short: 'Healthcare (C)',
+    description: 'Affordability pass/fail per plan — highest engineering risk (doc parsing)',
+    color: 'slate',
+  },
+  monitor: {
+    id: 'monitor',
+    label: 'Source-Monitoring Agent',
+    short: 'Source Monitor',
+    description: 'Claude-powered watcher for wage/healthcare data & methodology updates',
+    color: 'brand',
+  },
+  sources: {
+    id: 'sources',
+    label: 'External Data Sources',
+    short: 'Data Sources',
+    description: 'MIT, EPI, ACS, CNT, PolicyEngine, BLS OEWS, ABB, KFF, Peterson-KFF',
+    color: 'slate',
+  },
+  model: {
+    id: 'model',
+    label: 'NDI Financial Model',
+    short: 'Financial Model',
+    description: 'The acquisition model the platform exports remediation cost + pass/fail into',
+    color: 'sky',
   },
 };
 
-export const stages = ['New Lead', 'First Class', '5 Class Pack', 'Membership'];
+export const stages = ['Upload & Normalize', 'Fair Pay (A)', 'PSL (B) + Healthcare (C)', 'Output & Export'];
 
 export function step(from, to, text, dashed) {
   return { type: 'step', from, to, text, dashed: !!dashed };
@@ -53,272 +78,214 @@ export function branch(label, isElse, ...steps) {
 
 export const journeys = [
   {
-    id: 'new-lead-first-class',
+    id: 'census-upload-normalization',
     stage: 0,
     parallel: false,
-    title: 'New Lead → First Class',
-    tagline: 'From first contact to attending class one.',
+    title: 'Census Upload & Normalization',
+    tagline: 'Standardized template in → one clean per-employee record out.',
     items: [
-      note('Journey 1 – New Lead to First Class'),
-      step('lead', 'mt', 'Submit lead form or walk in', false),
-      step('mt', 'ai', 'Webhook trigger – new lead created', true),
-      step('ai', 'lead', 'Welcome message (SMS/email) + fitness goals & hesitations', false),
-      alt(branch('Responds', false, step('ai', 'lead', 'Personalized intro offer with Stripe payment link', false))),
+      note('Journey 1 – Census Upload & Ingestion\nData contract: Rebecca’s May 2026 template — Employee Info, Wage Detail (4-yr history), Healthcare Detail, Paid Time Off.'),
+      step('deal', 'platform', 'Authenticate (NDI user) and upload a deal’s census', false),
+      step('platform', 'platform', 'Validate against the standardized template (hardened for production ingestion)', false),
       alt(
         branch(
-          'First visit – no intro purchased (drop-in, karma, guest)',
+          'Template valid',
           false,
-          step('ai', 'lead', '2–4hrs after class – personalized intro offer pitch', false)
-        )
-      ),
-      step('lead', 'mt', 'Purchases intro offer', true),
-      step('mt', 'ghl', 'Update pipeline status', true),
-      step(
-        'ai',
-        'lead',
-        '"I see you got the intro pack! We have spots tomorrow 7 AM or 5:30 PM. Which works for you?"',
-        false
-      ),
-      step('lead', 'ai', 'Chooses time', true),
-      step('ai', 'mt', 'Books class directly (no link)', false),
-      alt(
-        branch(
-          'No booking within 2h',
-          false,
-          step('ai', 'lead', 'Reminder – "Don\'t forget to lock in your first class"', false)
-        )
-      ),
-      step(
-        'ai',
-        'mgr',
-        'Daily morning briefing – first-time attendees for today with paragraph overview and optional personalised welcome script per lead',
-        false
-      ),
-      step('ai', 'lead', 'Pre-class reminder', false),
-      alt(
-        branch(
-          'No-show or late cancel (MT webhook)',
-          false,
-          step('ai', 'lead', '"Life happens! Let\'s get you back on schedule — mornings or evenings?"', false),
-          alt(
-            branch('Rebooks', false, step('ai', 'mt', 'Update booking', false)),
-            branch('No response', true, step('ai', 'ai', 'Flag as "at-risk", adjust cadence', false))
-          )
-        )
-      ),
-      step('ai', 'lead', 'Post-class check-in message', false),
-      step(
-        'ai',
-        'lead',
-        'Post-class booking nudge (timing customisable per studio) – "Lock in your next class"',
-        false
-      ),
-    ],
-  },
-  {
-    id: 'first-class-five-class',
-    stage: 1,
-    parallel: false,
-    title: 'First Class → 5-Class Milestone',
-    tagline: 'Building habit, catching drop-off, reading sentiment.',
-    items: [
-      note('Journey 2 – First Class to 5-Class Milestone'),
-      step('mt', 'ai', 'Attendance recorded', true),
-      step('ai', 'lead', 'After class 1 – reinforce decision, nudge next booking', false),
-      alt(
-        branch(
-          'No-show at any class',
-          false,
-          step('ai', 'lead', 'Recovery message with conversational rebooking within 15 mins', false)
-        )
-      ),
-      step('ai', 'lead', 'After each class – post-class nudge to book next class (timing customisable per studio)', false),
-      step('ai', 'lead', 'Every 7 days – personalised reminder until class pass is completed', false),
-      alt(
-        branch(
-          'Low velocity – less than 4 visits in 10 days',
-          false,
-          step('ai', 'lead', 'Encouraging message – make the most of remaining days + schedule suggestions', false),
-          alt(
-            branch(
-              'Zero visits at Day 10',
-              false,
-              step('ai', 'mgr', 'Staff task – check in with member, zero visits at Day 10', false)
-            )
-          )
+          step('platform', 'platform', 'Parse into a clean per-employee record', false)
         ),
         branch(
-          'High velocity – 4 or more visits in 10 days',
+          'Off-template / piecemeal files (multiple HRIS shapes)',
           true,
-          step(
-            'ai',
-            'lead',
-            'Celebratory message – membership as natural next step + cost-per-class math + purchase link',
-            false
-          )
+          step('platform', 'deal', 'Flag normalization issues for review (NDI normalizes in 15+ places today)', false)
         )
       ),
+      step('platform', 'platform', 'Reconcile comp components: base + bonus + overtime + total comp', false),
+      step('platform', 'platform', 'Attach 4-year comp history per employee', false),
+      note('Incomplete-data handling: V1 must run on incomplete inputs.\nMissing required field → fall back to NDI-provided default (e.g., home-office location for a missing residence zip). NDI owns the defaults.', 'platform'),
       alt(
         branch(
-          'Mid-journey check-in',
+          'Missing residence zip',
           false,
-          step('ai', 'lead', '14-day intro – light check-in on Day 7', false),
-          step('ai', 'lead', '30-day intro – light check-in on Day 14', false)
+          step('platform', 'platform', 'Apply NDI default (company home-office location)', false)
         )
       ),
-      step('ai', 'lead', 'After class 3 – sentiment check', false),
-      alt(
-        branch('Positive response', false, step('ai', 'ai', 'Continue standard upsell path', false)),
-        branch(
-          'Negative response',
-          true,
-          step('ai', 'ai', 'Classify objection (instructor, class type, etc.)', false),
-          alt(
-            branch('High-value member', false, step('ai', 'mgr', 'Alert – unhappy after class 3, recommend outreach', false)),
-            branch('General member', true, step('ai', 'lead', 'Suggest new instructor/class type', false))
-          )
-        )
-      ),
-      step('ai', 'lead', 'After class 5 – celebrate progress, introduce membership offer with direct purchase link', false),
-      alt(branch('No response at any stage', false, step('ai', 'ai', 'Flag as "at-risk", adjust cadence', false))),
+      step('platform', 'platform', 'Encrypt at rest; log run start (timestamp, methodology version)', false),
+      step('platform', 'fairpay', 'Hand clean per-employee dataset to Fair Pay Engine (A runs first)', true),
     ],
   },
   {
-    id: 'inactivity-churn-prevention',
+    id: 'fair-pay-engine-a',
     stage: 1,
-    parallel: true,
-    title: 'Inactivity & Churn Prevention',
-    tagline: 'Runs in parallel — catches members before they drift away.',
+    parallel: false,
+    title: 'Workstream A — Fair Pay Engine',
+    tagline: 'Raw census → per-employee Fair Pay remediation cost. The foundation.',
     items: [
-      note('Journey 3 – Inactivity / Churn Prevention'),
-      step('mt', 'ai', 'Velocity drop or 14-day inactivity trigger', true),
-      step('ai', 'ai', 'Detect early "near-churn" – no booking in 6 days for 3x/week attendee', false),
-      step('ai', 'lead', 'Light-touch check-in before habit breaks', false),
+      note('Journey 2 – Fair Pay Engine (A)\nInputs per employee: ID; hourly + OT + bonus + total comp; exempt/non-exempt; FT/PT/temp; residence zip; work state; SOC code; age; 4-yr comp history.'),
+      step('fairpay', 'fairpay', 'Ingestion & normalization — clean per-employee record; reconcile comp components', false),
+      step('fairpay', 'fairpay', 'Geocoding — map each residence zip to a county', false),
       alt(
         branch(
-          'Intro nearing expiry',
+          'Border / remote / multi-location case',
           false,
-          step(
-            'ai',
-            'lead',
-            'Message 1 – urgency email "Your intro ends in X days" + membership options + purchase link',
-            false
-          ),
-          alt(
-            branch(
-              'No purchase after 24hrs',
-              false,
-              step('ai', 'lead', 'Message 2 – SMS with direct purchase link only', false),
-              alt(
-                branch(
-                  'No purchase on last day',
-                  false,
-                  step('ai', 'lead', 'Message 3 – final day email, offer to answer questions', false)
-                )
-              )
-            ),
-            branch(
-              'Student replies at any point',
-              false,
-              step('ai', 'ai', 'Pause sequence – route to conversational handling', false)
-            )
-          )
+          step('fairpay', 'fairpay', 'Resolve county assignment per NDI rules', false)
         )
       ),
-      alt(
-        branch(
-          'Intro expired – no membership',
-          false,
-          step(
-            'ai',
-            'lead',
-            '24hrs after expiry – "It\'s not too late" message with drop-in, pack, or membership options',
-            false
-          ),
-          alt(branch('No response after 3 days', false, step('ai', 'ai', 'Exit to win-back campaign', false)))
-        )
-      ),
-      step('ai', 'lead', 'Day 14 – "We miss you" message personalized by class history and sentiment', false),
-      alt(
-        branch(
-          'No response',
-          false,
-          step('ai', 'lead', 'Day 17 – follow-up with relevant offer or class recommendation', false),
-          alt(branch('Still no response', false, step('ai', 'mgr', 'Day 21 – manual outreach task', false)))
-        )
-      ),
-      alt(
-        branch(
-          'Member texts "freeze" or "cancel"',
-          false,
-          step('ai', 'lead', 'Offer membership freeze instead of cancel', false),
-          alt(
-            branch(
-              'Freeze accepted',
-              false,
-              step('ai', 'mt', 'Collect start/end dates, update freeze', false),
-              step('ai', 'ghl', 'Save account status', false)
-            ),
-            branch(
-              'Cancel confirmed',
-              true,
-              step('ai', 'mt', 'Process cancellation', false),
-              step('ai', 'ai', 'Trigger win-back campaign at 3, 6, and 12 months', false)
-            )
-          )
-        )
-      ),
-      step('mt', 'ai', 'Failed billing webhook', true),
-      step('ai', 'lead', 'Empathetic payment retry message with secure update link', false),
-      step('lead', 'mt', 'Updates payment details', false),
-      step('ai', 'ghl', 'Update CRM on resolution', false),
-      step('ai', 'ai', 'Churn model runs continuously – prioritise high risk students', false),
+      note('Component-level basket construction (per county) — the analytical core.\nDeterministic MAX across MIT & EPI, with ACS (housing) and CNT (transportation) overrides. NO weighting — configurable source weights were retired.', 'fairpay'),
+      step('fairpay', 'sources', 'Pull cost-of-living components per county', true),
+      step('sources', 'fairpay', 'Food = MAX(MIT, EPI) — EPI typically wins via Map the Meal Gap', true),
+      step('sources', 'fairpay', 'Housing = MAX(MIT, EPI, ACS B25064 median gross rent ×12)', true),
+      step('sources', 'fairpay', 'Childcare = MAX(MIT, EPI); Healthcare = MAX(MIT, EPI) — both anchor MEPS-IC', true),
+      step('sources', 'fairpay', 'Transportation = CNT H+T Index regionalized figure (override, not MAX)', true),
+      step('sources', 'fairpay', 'Civic / other necessities / internet-mobile = MIT direct', true),
+      step('fairpay', 'sources', 'Tax microsimulation — run pre-tax basket through PolicyEngine US (federal + state + payroll)', true),
+      note('Binding Fair Pay floor = pre-tax basket + taxes.', 'fairpay'),
+      step('fairpay', 'sources', 'Prevailing-wage overlay — BLS OEWS cross-check (confirm exact role in discovery)', true),
+      step('fairpay', 'fairpay', 'Gap analysis — per-employee gap to the floor (non-exempt scope, per NDI direction)', false),
+      step('fairpay', 'fairpay', 'Total workforce remediation cost + staged-uplift timeline modeling', false),
+      step('fairpay', 'model', 'Output: presentation-grade analysis (Nine Tenets template) + structured paste into acquisition model', false),
+      note('Cascade hand-off: A’s wage-adjusted comp feeds B and C so downstream costs accumulate correctly once wages are raised to clear the floor. Make the A→B/C hand-off explicit and tested; version intermediate outputs.', 'fairpay'),
+      step('fairpay', 'psl', 'Hand wage-adjusted comp to PSL Engine (B)', true),
+      step('fairpay', 'health', 'Hand wage-adjusted comp to Healthcare Engine (C)', true),
     ],
   },
   {
-    id: 'membership-conversion',
+    id: 'psl-engine-b',
     stage: 2,
     parallel: false,
-    title: 'Membership Conversion',
-    tagline: 'When a proven habit becomes a recurring member.',
+    title: 'Workstream B — Paid Sick Leave Engine',
+    tagline: 'Cost to bring a target up to NDI’s PSL floor. Depends on A.',
     items: [
-      note('Journey 4 – Membership Conversion'),
-      step('mt', 'ai', 'Lead reaches 5-class milestone or responds positively to membership offer', true),
-      step('ai', 'lead', 'Personalised membership recommendation with pricing tied to attendance pattern', false),
-      note('Less than 8 visits/month → limited membership\n8 or more visits/month → unlimited membership', 'ai'),
-      step('lead', 'mt', 'Purchases membership via Stripe/MT Web link', true),
-      step('mt', 'ai', 'Membership purchased webhook', true),
-      step('ai', 'ai', 'Suppress all intro-phase messages immediately', false),
-      step('mt', 'ghl', 'Pipeline updated to "Membership Activated"', true),
-      step('ai', 'lead', 'Welcome sequence – onboarding messages, class schedule suggestions, community intro', false),
-      step(
-        'ai',
-        'ai',
-        'Log conversion event – student ID, date, intro type, days to convert, visits at conversion',
-        false
+      note('Journey 3 – PSL Engine (B)\nPure-calculation engine (no document parsing). Consumes A’s wage-adjusted comp.'),
+      step('fairpay', 'psl', 'Receive A’s wage-adjusted comp', true),
+      step('psl', 'sources', 'Compliance pre-check vs federal / state / local PSL law (15+ states + DC + municipalities)', true),
+      note('A Better Balance is the source of record for state-by-state PSL law.', 'sources'),
+      step('psl', 'psl', 'Compute most-favorable-state lift', false),
+      alt(
+        branch(
+          'A higher-minimum state holds ≥50% of the operating company’s workforce',
+          false,
+          step('psl', 'psl', 'Apply that state’s standard enterprise-wide (majority-concentration footprint, not a satellite presence)', false)
+        ),
+        branch(
+          'No majority-concentration footprint',
+          true,
+          step('psl', 'psl', 'Use default baseline only', false)
+        )
       ),
+      step('psl', 'psl', 'Tenet calculation — default 40-hour / 5-day baseline for all eligible employees', false),
+      note('Cost scope — non-exempt only.\nExempt salaried workers generate no incremental PSL cost (pay continues during absence by design).', 'psl'),
+      step('psl', 'psl', 'Non-exempt cost = (hours below threshold) × (hourly rate + replacement-coverage rate where applicable)', false),
+      alt(
+        branch(
+          'Fixed-term / project worker',
+          false,
+          step('psl', 'psl', 'Prorate entitlement against 2,080-hour year (1,040 hrs → 50% of annual entitlement)', false)
+        )
+      ),
+      step('psl', 'model', 'Output: PSL remediation cost (accumulated on A’s raised wages) into acquisition model', false),
     ],
   },
   {
-    id: 'win-back-lapsed',
-    stage: 3,
+    id: 'healthcare-engine-c',
+    stage: 2,
     parallel: true,
-    title: 'Win-Back — Lapsed Members',
-    tagline: 'Timed re-engagement for cancelled or inactive members.',
+    title: 'Workstream C — Affordable Healthcare Engine',
+    tagline: 'Pass/fail per plan — not a remediation cost. Highest engineering risk.',
     items: [
-      note('Journey 5 – Win-Back – Lapsed Members'),
-      step('ai', 'ai', 'Trigger at 3, 6, or 12 months post cancellation or inactivity', false),
-      step('ai', 'lead', 'Tailored win-back message via SMS/email with time-sensitive offer', false),
+      note('Journey 4 – Healthcare Engine (C)\nBuilt once A is stable; consumes A’s wage-adjusted outputs. Highest engineering risk — benefits-document parsing — isolate and benchmark early.'),
+      step('fairpay', 'health', 'Receive A’s wage-adjusted comp', true),
+      step('health', 'health', 'Benefits document parsing — summaries, plan docs, census benefits section', false),
+      note('Extract: premium split (EE/ER), deductibles, coinsurance, OOP maximums, plan tiers, HSA/FSA contributions, HDHP designation.\nAccuracy bar: ≥95% across ≥3 carriers — a hard acceptance criterion.', 'health'),
+      step('health', 'health', 'ACA compliance pre-check — flag grandfathered / non-compliant plans', false),
       alt(
         branch(
-          'Responds',
+          'Plan grandfathered or non-compliant',
           false,
-          step('ai', 'lead', 'Handle replies conversationally – answer questions, process reactivation', false),
-          step('lead', 'mt', 'Reactivates profile', true),
-          step('mt', 'ghl', 'Pipeline updated', true),
-          step('ai', 'lead', 'Re-trigger Journey 1 welcome sequence', false)
+          step('health', 'deal', 'Flag before applying NDI benchmarks', false)
+        ),
+        branch(
+          'Compliant',
+          true,
+          step('health', 'health', 'Confirm minimum essential coverage + IRS affordability test (9.02% 2025 / 9.96% 2026)', false)
         )
       ),
+      note('Benchmark 1 — employer premium contribution (firm-size split).\nSmall (3–199): single ≥84%, family ≥65%. Large (200+): single ≥84%, family ≥75%. The 200-employee break follows the KFF Employer Health Benefits Survey convention.', 'health'),
+      step('health', 'health', 'Benchmark 1 — evaluate employer premium contribution vs firm-size thresholds', false),
+      note('Benchmark 2 — OOP affordability, two layers.\nLayer A (average year): premium + est. cost-sharing ≤ 6.2% of household income (Peterson-KFF).\nLayer B (bad year): max deductible + premium + avg incremental OOP ≤ 9.6% on ≥1 offered plan.', 'health'),
+      step('health', 'health', 'Benchmark 2A — average-year OOP ≤ 6.2% of household income', false),
+      step('health', 'health', 'Benchmark 2B — bad-year exposure ≤ 9.6% on at least one offered plan', false),
+      alt(
+        branch(
+          'HDHP is the only plan offered',
+          false,
+          step('health', 'health', 'Layer B may fail — genuine exposure', false)
+        ),
+        branch(
+          'Standard plan offered alongside HDHP',
+          true,
+          step('health', 'health', 'HDHP choice = preference, not exposure — do not fail Layer B on it', false)
+        )
+      ),
+      note('Household income (1.53× multiplier).\nSingle-tier: 1.0×. Family-tier default: 1.53× worker’s wage. Conservative sensitivity: 1.0× stress test for lower-wage workforces. Gender refinement where census exposes it.', 'health'),
+      note('Family-status caveat: hardest input to obtain. V1 uses healthcare enrollment + tier election as the primary signal, falling back to default multipliers (1.0× single / 1.53× family).', 'health'),
+      step('health', 'model', 'Output: pass/fail on Benchmarks 1 + 2A + 2B per plan (no clean remediation number)', false),
+      note('Plan-design changes and their cost are surfaced for the post-acquisition Lockton review, not the diligence model.', 'health'),
+    ],
+  },
+  {
+    id: 'output-assembly-export',
+    stage: 3,
+    parallel: false,
+    title: 'Output Assembly & Export',
+    tagline: 'Remediation cost + healthcare pass/fail → NDI’s acquisition model.',
+    items: [
+      note('Journey 5 – Output Assembly & Export'),
+      step('fairpay', 'platform', 'Fair Pay remediation cost', true),
+      step('psl', 'platform', 'PSL remediation cost', true),
+      step('health', 'platform', 'Healthcare pass/fail per plan', true),
+      step('platform', 'platform', 'Assemble outputs — total remediation cost (Fair Pay + PSL) + healthcare pass/fail', false),
+      step('platform', 'model', 'Structured export into NDI’s acquisition financial model', false),
+      alt(
+        branch(
+          'Deal still pencils',
+          false,
+          step('deal', 'deal', 'Proceed with acquisition', false)
+        ),
+        branch(
+          'Remediation cost breaks the model',
+          true,
+          step('deal', 'deal', 'Re-evaluate or pass on the target', false)
+        )
+      ),
+      note('Same-day output replaces a multi-week manual analysis per deal.', 'platform'),
+    ],
+  },
+  {
+    id: 'source-monitoring-audit',
+    stage: 3,
+    parallel: true,
+    title: 'Source Monitoring & Audit Trail',
+    tagline: 'Cross-cutting — runs alongside the engines for reproducibility.',
+    items: [
+      note('Journey 6 – Cross-Cutting Platform Capabilities (parallel)\nSupport reproducibility — not multi-tenancy.'),
+      step('monitor', 'sources', 'Periodically scan for new/updated wage & healthcare data + methodology updates', false),
+      note('Scanned: KFF, Commonwealth Fund, Peterson-KFF, Pew, MIT, EPI, ACS, CNT, BLS.\nLock in discovery: scan cadence, surfacing mechanism, NDI approval workflow, integration SLA.', 'monitor'),
+      step('monitor', 'deal', 'Surface candidate source/methodology updates for NDI review', false),
+      alt(
+        branch(
+          'NDI approves an update',
+          false,
+          step('deal', 'platform', 'Integrate source; bump methodology version', false)
+        ),
+        branch(
+          'NDI defers',
+          true,
+          step('platform', 'platform', 'Hold current methodology version', false)
+        )
+      ),
+      note('Methodology versioning — thresholds, multipliers (e.g., 1.53×), and source choices are versioned.\nEvery analysis records the version it ran against, so a Q3 2026 assessment stays reproducible on Q3 2026 methodology.', 'platform'),
+      step('platform', 'platform', 'Audit trail — timestamp & log inputs, source values, thresholds, methodology version, outputs', false),
+      note('So a deal team can answer “why did the model say X?” months later. Census files older than the active diligence period are purged unless NDI specifies retention.', 'platform'),
     ],
   },
 ];

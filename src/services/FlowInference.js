@@ -9,7 +9,7 @@ export const BRANCH_HANDLES = {
   'branch-top': 3,
 };
 
-export const BRANCH_COLORS = ['#c8102e', '#d97706', '#7c3aed', '#059669'];
+export const BRANCH_COLORS = ['#1F4E79', '#d97706', '#7c3aed', '#059669'];
 
 export const FLOW_GUIDE = {
   default: 'Standard flow — single path between actions, screens, or steps.',

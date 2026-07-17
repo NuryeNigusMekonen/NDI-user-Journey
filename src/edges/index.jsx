@@ -15,7 +15,7 @@ function normalizeFlow(flowType) {
 
 const FLOW_STYLES = {
   [EDGE_FLOW.DEFAULT]: { stroke: '#6B7280', dash: null, animate: false },
-  [EDGE_FLOW.CONDITIONAL]: { stroke: '#c8102e', dash: '8 5', animate: true },
+  [EDGE_FLOW.CONDITIONAL]: { stroke: '#1F4E79', dash: '8 5', animate: true },
   [EDGE_FLOW.DATA]: { stroke: '#0EA5E9', dash: '9 6', animate: true },
   journey: { stroke: '#6B7280', dash: null, animate: false },
   flowchart: { stroke: '#5F5E5A', dash: null, animate: false },

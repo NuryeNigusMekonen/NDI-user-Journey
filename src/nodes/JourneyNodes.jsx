@@ -195,7 +195,7 @@ export const ForkNode = memo(function ForkNode({ id, data, selected }) {
           className={`absolute inset-3 rotate-45 rounded-sm border-2 ${
             selected ? 'border-brand bg-brand/10' : 'border-brand/70 bg-white'
           }`}
-          style={{ boxShadow: '0 2px 8px rgba(200,16,46,.15)' }}
+          style={{ boxShadow: '0 2px 8px rgba(31,78,121,.15)' }}
         />
         <div className="relative z-10 text-center px-1 max-w-[80px]">
           <span className="text-[8px] font-bold text-brand block">OR</span>

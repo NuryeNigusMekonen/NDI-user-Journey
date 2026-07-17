@@ -4,7 +4,7 @@ import { WORKSPACE_PRESENCE_ID } from '../lib/presenceScope';
 import { RemotePresenceSync } from '../presence/RemotePresenceSync';
 
 const BROADCAST_ROOM = `room:${WORKSPACE_PRESENCE_ID}`;
-const ROSTER_KEY = 'compass:presence-roster';
+const ROSTER_KEY = 'ninedean:presence-roster';
 const ROSTER_HEARTBEAT_MS = 2000;
 const ROSTER_STALE_MS = 8000;
 const VIEWPORT_BROADCAST_MS = 100;
@@ -150,7 +150,7 @@ export class PresenceService {
   setupLocalBroadcast() {
     if (this.bc) return;
     try {
-      this.bc = new BroadcastChannel(`compass-roster-${WORKSPACE_PRESENCE_ID}`);
+      this.bc = new BroadcastChannel(`ninedean-roster-${WORKSPACE_PRESENCE_ID}`);
       this.bc.onmessage = (e) => {
         const { type, sessionId, payload } = e.data || {};
         if (!sessionId || sessionId === this.sessionId) return;

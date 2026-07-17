@@ -3,6 +3,7 @@ import Sidebar, { VIEW } from './components/Sidebar';
 import AppHeader from './components/AppHeader';
 import TestsView from './components/TestsView';
 import DataView from './components/DataView';
+import AuthGate from './components/AuthGate';
 import { journeys } from './data/journeys';
 import { WORKSPACE_MODE } from './types/diagram';
 import { useDiagramStore } from './store/diagramStore';
@@ -87,9 +88,9 @@ export default function App() {
 
       <div className="flex-1 flex flex-col min-w-0">
         {view === VIEW.TESTS ? (
-          <TestsView />
+          <AuthGate title="Test Plan"><TestsView /></AuthGate>
         ) : view === VIEW.DATA ? (
-          <DataView />
+          <AuthGate title="Simulated Data"><DataView /></AuthGate>
         ) : (
         <>
         <AppHeader

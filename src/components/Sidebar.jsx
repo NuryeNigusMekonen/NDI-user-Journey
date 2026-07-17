@@ -1,10 +1,18 @@
 import { motion } from 'framer-motion';
-import { Activity } from 'lucide-react';
+import { Activity, GitBranch, FlaskConical, Database } from 'lucide-react';
 import { stages } from '../data/journeys';
 
 export const VIEW = {
   JOURNEY: 'journey',
+  TESTS: 'tests',
+  DATA: 'data',
 };
+
+const VIEW_ITEMS = [
+  { id: VIEW.JOURNEY, label: 'Journey Map', icon: GitBranch },
+  { id: VIEW.TESTS, label: 'Test Plan', icon: FlaskConical },
+  { id: VIEW.DATA, label: 'Simulated Data', icon: Database },
+];
 
 export default function Sidebar({
   journeys,
@@ -12,6 +20,7 @@ export default function Sidebar({
   view,
   onSelect,
   onStageSelect,
+  onViewChange,
 }) {
   const isEmbed = view !== VIEW.JOURNEY;
   const j = isEmbed ? journeys[0] : journeys[active];
@@ -33,6 +42,25 @@ export default function Sidebar({
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="px-3 py-3 border-b border-hairline space-y-1">
+        {VIEW_ITEMS.map((v) => {
+          const Icon = v.icon;
+          const isActive = view === v.id;
+          return (
+            <button
+              key={v.id}
+              onClick={() => onViewChange?.(v.id)}
+              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left transition-colors border ${
+                isActive ? 'bg-brand/10 border-brand/30' : 'border-transparent hover:bg-surface-hover'
+              }`}
+            >
+              <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-brand' : 'text-ink-muted'}`} strokeWidth={2.25} />
+              <span className={`text-[13px] font-semibold ${isActive ? 'text-ink' : 'text-ink/80'}`}>{v.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       <div className="px-5 py-4 border-b border-hairline">

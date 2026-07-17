@@ -1,6 +1,11 @@
 import { motion } from 'framer-motion';
-import { CheckCircle2, AlertTriangle, XCircle, FlaskConical } from 'lucide-react';
-import { testLevels, userPath, testGroups, testMeta } from '../data/tests';
+import { CheckCircle2, AlertTriangle, XCircle, FlaskConical, Hand, MonitorPlay, Gauge } from 'lucide-react';
+import {
+  testLevels, userPath, testGroups, testMeta,
+  manualCases, uat, e2eFlows, nonFunctional,
+} from '../data/tests';
+
+const PRIORITY = { P1: 'text-amber bg-amber/15 border-amber/40', P2: 'text-brand bg-brand/10 border-brand/30', P3: 'text-slate bg-slate/10 border-slate/30' };
 
 const STATUS = {
   exists: { icon: CheckCircle2, cls: 'text-teal', label: 'exists' },
@@ -81,6 +86,62 @@ export default function TestsView() {
             </div>
           </Section>
         ))}
+
+        {/* §4 Manual test plan + UAT */}
+        <Section title="Manual test plan (human-run)">
+          <div className="flex items-center gap-2 mb-2 text-ink-muted">
+            <Hand className="w-3.5 h-3.5 text-amber" strokeWidth={2.25} />
+            <span className="text-[10px] font-mono">run by a tester on staging — automation can’t judge these</span>
+          </div>
+          <div className="space-y-1.5">
+            {manualCases.map((m) => (
+              <div key={m.id} className="flex items-start gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
+                <span className="text-[10px] font-mono font-bold text-amber w-10 shrink-0">{m.id}</span>
+                <span className="text-[12px] font-semibold text-ink w-44 shrink-0">{m.case}</span>
+                <span className="text-[11px] text-ink-muted min-w-0 flex-1">{m.expected}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 p-3 rounded-lg bg-amber/5 border border-amber/20">
+            <p className="text-[10px] font-mono font-semibold text-amber mb-1">UAT — acceptance sign-off</p>
+            <p className="text-[11px] text-ink-muted">{uat.note}</p>
+            <p className="text-[11px] text-ink mt-1"><span className="text-amber">Exit:</span> {uat.exit}</p>
+          </div>
+        </Section>
+
+        {/* §5 Frontend E2E design */}
+        <Section title="Frontend E2E automation (Playwright)">
+          <div className="flex items-center gap-2 mb-2">
+            <MonitorPlay className="w-3.5 h-3.5 text-violet" strokeWidth={2.25} />
+            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-violet/15 text-violet border border-violet/30">DESIGN ONLY — no test code yet</span>
+          </div>
+          <div className="space-y-1.5">
+            {e2eFlows.map((e) => (
+              <div key={e.id} className="flex items-start gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
+                <span className="text-[10px] font-mono font-bold text-violet w-14 shrink-0">{e.id}</span>
+                <span className="text-[12px] text-ink min-w-0 flex-1">{e.flow}</span>
+                <span className="text-[9px] font-mono text-ink-muted shrink-0">{e.covers}</span>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        {/* §6 Non-functional */}
+        <Section title="Non-functional testing">
+          <div className="flex items-center gap-2 mb-2 text-ink-muted">
+            <Gauge className="w-3.5 h-3.5 text-teal" strokeWidth={2.25} />
+            <span className="text-[10px] font-mono">performance · security · reproducibility · accessibility</span>
+          </div>
+          <div className="space-y-1.5">
+            {nonFunctional.map((n) => (
+              <div key={n.type + n.case} className="flex items-center gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
+                <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border shrink-0 ${PRIORITY[n.priority]}`}>{n.priority}</span>
+                <span className="text-[12px] font-semibold text-ink w-40 shrink-0">{n.type}</span>
+                <span className="text-[11px] text-ink-muted min-w-0 flex-1">{n.case}</span>
+              </div>
+            ))}
+          </div>
+        </Section>
       </div>
     </div>
   );

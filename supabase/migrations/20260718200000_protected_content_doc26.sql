@@ -10,12 +10,14 @@ set payload = jsonb_set(
     '{"status":"DRAFT — pending team approval","source":"NineDean research/26-app-test-strategy.md","note":"Verified 2026-07-18 against feature/pipeline-postgres-s3 on disk. Suite: 218 tests / 30 files (159 app + 59 pipeline). Frontend E2E is design-only — no Vitest/Playwright runner in the repo yet.","riskPriority":"P1 = a silently wrong number · P2 = a broken journey step · P3 = cosmetic","scopeBoundary":"Covers the app (engines, ingestion, API, UI journey) + the gaps. Reference-data correctness is owned by 24-data-validation-plan / 25-validation-runbook (77 rules, 16 sources, ingest gate + WAP approval) and is cited, never restated.","architecture":"Two stores: the app uses SQLite (nine_dean_poc.db, ninedean/db.py); the reference/monitoring pipeline uses Postgres (ninedeandb, backend/pipeline/). Postgres did not replace the app DB — backend/ninedean never imports psycopg."}'::jsonb
   ),
   '{testLevels}',
+  -- `status` MUST be a canonical key the UI knows: exists | partial | gap | missing.
+  -- Any qualifier goes in `detail` — never inline in `status`.
   '[
-    {"level":"Unit","scope":"engine math, parsers, validation helpers","tool":"pytest","status":"exists (159 app tests)"},
+    {"level":"Unit","scope":"engine math, parsers, validation helpers","tool":"pytest","status":"exists","detail":"159 app tests"},
     {"level":"Integration","scope":"route contract, DB, A→B→C cascade","tool":"pytest + TestClient (in-process)","status":"exists"},
-    {"level":"Pipeline (code)","scope":"connectors, storage, promote, run, admin API","tool":"pytest (test_pipeline_*.py)","status":"exists (59 tests)"},
+    {"level":"Pipeline (code)","scope":"connectors, storage, promote, run, admin API","tool":"pytest (test_pipeline_*.py)","status":"exists","detail":"59 tests"},
     {"level":"Component (frontend)","scope":"React pages in isolation","tool":"Vitest + Testing Library","status":"missing"},
-    {"level":"Contract / API over the wire","scope":"endpoints via real HTTP","tool":"pytest + httpx","status":"partial (in-process only)"},
+    {"level":"Contract / API over the wire","scope":"endpoints via real HTTP","tool":"pytest + httpx","status":"partial","detail":"in-process only"},
     {"level":"E2E (user journey)","scope":"full browser journey U1–U8","tool":"Playwright","status":"missing"},
     {"level":"Manual / exploratory","scope":"judgment calls, report readability","tool":"human + checklist","status":"missing"},
     {"level":"UAT","scope":"deal team signs off on real deals","tool":"human (deal team)","status":"missing"},

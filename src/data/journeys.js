@@ -100,7 +100,7 @@ export const journeys = [
         )
       ),
       step('platform', 'platform', 'Reconcile comp components: base + bonus + overtime + total comp', false),
-      step('platform', 'platform', 'Attach 4-year comp history per employee', false),
+      note('Comp scope today: the CURRENT plan year is parsed and scored. The template also carries 2023–2025 history columns; multi-year ingestion is not wired yet (roadmap).', 'platform'),
       note('Incomplete-data handling: V1 must run on incomplete inputs.\nMissing required field → fall back to NDI-provided default (e.g., home-office location for a missing residence zip). NDI owns the defaults.', 'platform'),
       alt(
         branch(
@@ -109,7 +109,21 @@ export const journeys = [
           step('platform', 'platform', 'Apply NDI default (company home-office location)', false)
         )
       ),
-      step('platform', 'platform', 'Encrypt at rest; log run start (timestamp, methodology version)', false),
+      step('platform', 'deal', 'Staged review — the parsed record lands in “review” status; flagged rows surfaced for correction', false),
+      alt(
+        branch(
+          'Reviewer corrects a flagged row',
+          false,
+          step('deal', 'platform', 'Correction recorded (audited) and the record re-derived', false)
+        ),
+        branch(
+          'Accepted as parsed',
+          true,
+          step('platform', 'platform', 'Snapshot moves review → final on run', false)
+        )
+      ),
+      step('platform', 'platform', 'Log run start — timestamp, methodology version, per-employee fallback ledger', false),
+      note('Encryption at rest is a deployment/roadmap control, not implemented in the application layer today.', 'platform'),
       step('platform', 'fairpay', 'Hand clean per-employee dataset to Fair Pay Engine (A runs first)', true),
     ],
   },
@@ -139,9 +153,10 @@ export const journeys = [
       step('sources', 'fairpay', 'Civic / other necessities / internet-mobile = MIT direct', true),
       step('fairpay', 'sources', 'Tax microsimulation — run pre-tax basket through PolicyEngine US (federal + state + payroll)', true),
       note('Binding Fair Pay floor = pre-tax basket + taxes.', 'fairpay'),
-      step('fairpay', 'sources', 'Prevailing-wage overlay — BLS OEWS cross-check (confirm exact role in discovery)', true),
+      step('fairpay', 'sources', 'Prevailing-wage overlay — BLS OEWS cross-check by SOC (built)', true),
       step('fairpay', 'fairpay', 'Gap analysis — per-employee gap to the floor (non-exempt scope, per NDI direction)', false),
-      step('fairpay', 'fairpay', 'Total workforce remediation cost + staged-uplift timeline modeling', false),
+      step('fairpay', 'fairpay', 'Total workforce remediation cost (per-employee gap → workforce total)', false),
+      note('Staged-uplift timeline modeling (phasing the remediation over time) is roadmap, not built.', 'fairpay'),
       step('fairpay', 'model', 'Output: presentation-grade analysis (Nine Tenets template) + structured paste into acquisition model', false),
       note('Cascade hand-off: A’s wage-adjusted comp feeds B and C so downstream costs accumulate correctly once wages are raised to clear the floor. Make the A→B/C hand-off explicit and tested; version intermediate outputs.', 'fairpay'),
       step('fairpay', 'psl', 'Hand wage-adjusted comp to PSL Engine (B)', true),
@@ -194,7 +209,8 @@ export const journeys = [
     items: [
       note('Journey 4 – Healthcare Engine (C)\nBuilt once A is stable; consumes A’s wage-adjusted outputs. Highest engineering risk — benefits-document parsing — isolate and benchmark early.'),
       step('fairpay', 'health', 'Receive A’s wage-adjusted comp', true),
-      step('health', 'health', 'Benefits document parsing — summaries, plan docs, census benefits section', false),
+      step('health', 'health', 'Read plan + premium detail from the census benefits section (verbatim, no AI)', false),
+      note('Benefits-DOCUMENT parsing (plan PDFs / SBC summaries via LLM) is deferred — V1 scores from the census values. Today the deductible falls back to the plan name when no explicit figure is given.', 'health'),
       note('Extract: premium split (EE/ER), deductibles, coinsurance, OOP maximums, plan tiers, HSA/FSA contributions, HDHP designation.\nAccuracy bar: ≥95% across ≥3 carriers — a hard acceptance criterion.', 'health'),
       step('health', 'health', 'ACA compliance pre-check — flag grandfathered / non-compliant plans', false),
       alt(

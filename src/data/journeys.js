@@ -264,25 +264,30 @@ export const journeys = [
     id: 'source-monitoring-audit',
     stage: 3,
     parallel: true,
-    title: 'Source Monitoring & Audit Trail',
-    tagline: 'Cross-cutting — runs alongside the engines for reproducibility.',
+    title: 'Reference Pipeline & Audit Trail',
+    tagline: 'Cross-cutting — validated source updates, human-gated promotion, reproducibility.',
     items: [
-      note('Journey 6 – Cross-Cutting Platform Capabilities (parallel)\nSupport reproducibility — not multi-tenancy.'),
-      step('monitor', 'sources', 'Periodically scan for new/updated wage & healthcare data + methodology updates', false),
-      note('Scanned: KFF, Commonwealth Fund, Peterson-KFF, Pew, MIT, EPI, ACS, CNT, BLS.\nLock in discovery: scan cadence, surfacing mechanism, NDI approval workflow, integration SLA.', 'monitor'),
-      step('monitor', 'deal', 'Surface candidate source/methodology updates for NDI review', false),
+      note('Journey 6 – Reference-data pipeline & audit trail (parallel)\nBUILT: a Postgres reference store (ninedeandb) with a validate → stage → human-approve → promote flow.\nSeparate from the app’s operational store — the engines never read staged data.'),
+      step('monitor', 'monitor', 'Scheduled poll (run-due) — sources past their cadence, circuit-breaker aware', false),
+      step('monitor', 'sources', 'Cheap freshness signal; skip when unchanged', true),
+      step('sources', 'monitor', 'Fetch payload → content fingerprint (SHA); identical ⇒ NO_CHANGE, stop (idempotent)', true),
+      note('16 reference sources: MIT, EPI, ACS, CNT, BLS/OEWS, O*NET, Census (county + ZCTA), A Better Balance, KFF, Peterson-KFF …', 'monitor'),
+      step('monitor', 'monitor', 'Normalize → VALIDATE (the ingest gate) → stage into staging_ext_* + a pending_update', false),
+      note('The gate: 77 rules across 16 sources (row_count · regex · range · no_sentinel · unique · foreign_key · spot_check).\nerror ⇒ promotion BLOCKED; warn ⇒ recorded in the drift report and surfaced at review. Fail loud, never silent.', 'monitor'),
+      step('monitor', 'deal', 'Queue for human review — validation status + drift report + diff summary', false),
       alt(
         branch(
-          'NDI approves an update',
+          'Reviewer approves (the WAP gate)',
           false,
-          step('deal', 'platform', 'Integrate source; bump methodology version', false)
+          step('deal', 'platform', 'Promote staged rows live; bump the methodology version; record the approver', false)
         ),
         branch(
-          'NDI defers',
+          'Reviewer rejects or holds',
           true,
-          step('platform', 'platform', 'Hold current methodology version', false)
+          step('platform', 'platform', 'Drop staging (dead-letter) or defer; the current methodology version stands', false)
         )
       ),
+      note('Nothing promotes itself — a scheduled run never promotes. Promotion is always a person approving in the admin queue.', 'platform'),
       note('Methodology versioning — thresholds, multipliers (e.g., 1.53×), and source choices are versioned.\nEvery analysis records the version it ran against, so a Q3 2026 assessment stays reproducible on Q3 2026 methodology.', 'platform'),
       step('platform', 'platform', 'Audit trail — timestamp & log inputs, source values, thresholds, methodology version, outputs', false),
       note('So a deal team can answer “why did the model say X?” months later. Census files older than the active diligence period are purged unless NDI specifies retention.', 'platform'),

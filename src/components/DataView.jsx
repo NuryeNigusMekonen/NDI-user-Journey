@@ -35,7 +35,7 @@ export default function DataView() {
   const { datasetFiles, edgeVariations, datasetMeta } = payload;
   const totalRows = datasetFiles.reduce((n, d) => n + d.rows, 0);
   return (
-    <div className="h-full overflow-y-auto bg-canvas px-8 py-7">
+    <div className="h-full overflow-y-auto bg-canvas px-4 sm:px-8 py-5 sm:py-7">
       <div className="max-w-5xl mx-auto">
         {/* header */}
         <div className="flex items-center gap-3 mb-1">
@@ -81,11 +81,11 @@ export default function DataView() {
           <Section key={grp.group} title={grp.group}>
             <div className="space-y-1.5">
               {grp.items.map((it) => (
-                <div key={it.id} className="group flex items-start gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
+                <div key={it.id} className="group flex flex-col sm:flex-row items-start gap-1.5 sm:gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
                   <span className="text-[10px] font-mono font-bold text-violet w-9 shrink-0">{it.id}</span>
-                  <span className="text-[12px] text-ink w-1/2 shrink-0">{it.variation}</span>
+                  <span className="text-[12px] text-ink w-full sm:w-1/2 sm:shrink-0">{it.variation}</span>
                   <span className="text-[11px] text-ink-muted min-w-0 flex-1">{it.expected}</span>
-                  <div className="opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                  <div className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0 self-end sm:self-auto">
                     <CopyButton text={`${it.id} — ${it.variation}\nExpected: ${it.expected}`} />
                   </div>
                 </div>

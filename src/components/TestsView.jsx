@@ -23,7 +23,7 @@ export default function TestsView() {
   const { testLevels, userPath, testGroups, testMeta, manualCases, uat, e2eFlows, nonFunctional } = payload;
 
   return (
-    <div className="h-full overflow-y-auto bg-canvas px-8 py-7">
+    <div className="h-full overflow-y-auto bg-canvas px-4 sm:px-8 py-5 sm:py-7">
       <div className="max-w-5xl mx-auto">
         {/* header */}
         <div className="flex items-center gap-3 mb-1">

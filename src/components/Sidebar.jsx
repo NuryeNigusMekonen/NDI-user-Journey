@@ -21,13 +21,29 @@ export default function Sidebar({
   onSelect,
   onStageSelect,
   onViewChange,
+  open = false,
+  onClose,
 }) {
   const isEmbed = view !== VIEW.JOURNEY;
   const j = isEmbed ? journeys[0] : journeys[active];
   const fillPct = isEmbed ? 0 : (j.stage / (stages.length - 1)) * 100;
 
+  // On mobile the rail is an off-canvas drawer; from lg up it is a static column.
   return (
-    <aside className="w-[280px] shrink-0 bg-rail flex flex-col">
+    <>
+      {open && (
+        <div
+          onClick={onClose}
+          className="lg:hidden fixed inset-0 z-40 bg-ink/50 backdrop-blur-[2px]"
+          aria-hidden="true"
+        />
+      )}
+      <aside
+        className={`w-[280px] shrink-0 bg-rail flex flex-col
+          fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-out
+          ${open ? 'translate-x-0' : '-translate-x-full'}
+          lg:static lg:z-auto lg:translate-x-0`}
+      >
       <div className="px-5 pt-6 pb-5 border-b border-rail-line">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-white/10 border border-white/25 flex items-center justify-center">
@@ -51,7 +67,7 @@ export default function Sidebar({
           return (
             <button
               key={v.id}
-              onClick={() => onViewChange?.(v.id)}
+              onClick={() => { onViewChange?.(v.id); onClose?.(); }}
               className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left transition-colors ${
                 isActive ? 'bg-white text-rail shadow-sm' : 'text-white/80 hover:bg-white/10 hover:text-white'
               }`}
@@ -76,7 +92,7 @@ export default function Sidebar({
             {stages.map((s, i) => (
               <button
                 key={s}
-                onClick={() => onStageSelect(i)}
+                onClick={() => { onStageSelect(i); onClose?.(); }}
                 className="flex flex-col items-center gap-1.5 group"
               >
                 <div
@@ -111,7 +127,7 @@ export default function Sidebar({
           return (
             <button
               key={i}
-              onClick={() => onSelect(i)}
+              onClick={() => { onSelect(i); onClose?.(); }}
               className={`group relative w-full flex items-start gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${
                 isActive ? 'bg-white/12' : 'hover:bg-white/[0.07]'
               }`}
@@ -155,6 +171,7 @@ export default function Sidebar({
           <kbd className="text-white/60">→</kbd> navigate journeys
         </p>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

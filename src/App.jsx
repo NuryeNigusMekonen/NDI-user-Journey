@@ -1,4 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import { Menu } from 'lucide-react';
 import Sidebar, { VIEW } from './components/Sidebar';
 import AppHeader from './components/AppHeader';
 import TestsView from './components/TestsView';
@@ -18,6 +19,7 @@ export default function App() {
   const [view, setView] = useState(VIEW.JOURNEY);
   const [active, setActive] = useState(0);
   const [workspaceMode, setWorkspaceMode] = useState(WORKSPACE_MODE.VIEW);
+  const [navOpen, setNavOpen] = useState(false);
 
   const isEmbed = view !== VIEW.JOURNEY;
   const j = journeys[active];
@@ -84,9 +86,24 @@ export default function App() {
         onSelect={go}
         onStageSelect={onStageSelect}
         onViewChange={setView}
+        open={navOpen}
+        onClose={() => setNavOpen(false)}
       />
 
       <div className="flex-1 flex flex-col min-w-0">
+        {/* Mobile top bar — the rail is off-canvas below lg */}
+        <div className="lg:hidden shrink-0 flex items-center gap-3 px-4 h-14 bg-rail">
+          <button
+            type="button"
+            onClick={() => setNavOpen(true)}
+            aria-label="Open navigation"
+            className="w-9 h-9 -ml-1 rounded-lg flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <span className="font-display text-[15px] font-bold text-white tracking-tight">NINE DEAN</span>
+        </div>
+
         {view === VIEW.TESTS ? (
           <AuthGate title="Test Plan"><TestsView /></AuthGate>
         ) : view === VIEW.DATA ? (

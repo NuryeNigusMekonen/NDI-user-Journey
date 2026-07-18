@@ -16,8 +16,8 @@ export default function AppHeader({
 }) {
   return (
     <header className="shrink-0 bg-surface border-b border-hairline">
-      <div className="px-5 pt-4 pb-3">
-        <div className="flex items-start justify-between gap-4">
+      <div className="px-4 sm:px-5 pt-3 sm:pt-4 pb-3">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4">
           <motion.div
             key={journeyIndex}
             initial={{ opacity: 0, y: 4 }}
@@ -35,13 +35,13 @@ export default function AppHeader({
                 </span>
               )}
             </div>
-            <h1 className="font-display text-[1.2rem] font-bold text-ink tracking-tight leading-snug">
+            <h1 className="font-display text-[1.05rem] sm:text-[1.2rem] font-bold text-ink tracking-tight leading-snug">
               {journey.title}
             </h1>
-            <p className="text-[12px] text-ink-muted mt-0.5 leading-relaxed max-w-xl line-clamp-2">{journey.tagline}</p>
+            <p className="text-[12px] text-ink-muted mt-0.5 leading-relaxed max-w-xl line-clamp-2 hidden sm:block">{journey.tagline}</p>
           </motion.div>
 
-          <div className="flex items-center gap-2 shrink-0 pt-0.5">
+          <div className="flex items-center justify-end gap-2 shrink-0 sm:pt-0.5 w-full sm:w-auto">
             <WorkspacePeoplePanel />
             <button
               onClick={onPrev}
@@ -61,7 +61,7 @@ export default function AppHeader({
         </div>
       </div>
 
-      <div className="px-5 py-2.5 border-t border-hairline bg-canvas/40 overflow-x-auto">
+      <div className="px-4 sm:px-5 py-2.5 border-t border-hairline bg-canvas/40 overflow-x-auto">
         <WorkspaceToolbar
           workspaceMode={workspaceMode}
           onWorkspaceModeChange={onWorkspaceModeChange}

@@ -8,7 +8,19 @@ const STATUS = {
   exists: { icon: CheckCircle2, cls: 'text-teal', label: 'exists' },
   partial: { icon: AlertTriangle, cls: 'text-amber', label: 'partial' },
   gap: { icon: XCircle, cls: 'text-slate', label: 'gap' },
+  missing: { icon: XCircle, cls: 'text-slate', label: 'missing' },
 };
+
+/**
+ * Resolve a status to its badge. Content is authored in Supabase, so a value
+ * may arrive with trailing detail ("exists (159 app tests)") or be unknown —
+ * match on the leading keyword and fall back rather than crash the view.
+ */
+function resolveStatus(raw) {
+  const value = String(raw || '').trim().toLowerCase();
+  const key = Object.keys(STATUS).find((k) => value.startsWith(k));
+  return { meta: STATUS[key] || STATUS.gap, label: raw || 'unknown' };
+}
 
 function Centered({ children }) {
   return <div className="h-full flex items-center justify-center bg-canvas text-ink-muted text-sm">{children}</div>;
@@ -43,7 +55,7 @@ export default function TestsView() {
         <Section title="Test levels">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {testLevels.map((l) => {
-              const s = STATUS[l.status];
+              const { meta: s, label } = resolveStatus(l.status);
               const Icon = s.icon;
               return (
                 <div key={l.level} className="flex items-start gap-3 p-3 rounded-lg bg-surface border border-hairline">
@@ -51,7 +63,9 @@ export default function TestsView() {
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-[13px] font-semibold text-ink">{l.level}</span>
-                      <span className={`text-[9px] font-mono ${s.cls}`}>{s.label}</span>
+                      <span className={`text-[9px] font-mono ${s.cls}`}>
+                        {label}{l.detail ? ` · ${l.detail}` : ''}
+                      </span>
                     </div>
                     <p className="text-[11px] text-ink-muted mt-0.5">{l.scope}</p>
                     <p className="text-[10px] font-mono text-brand/70 mt-1">{l.tool}</p>

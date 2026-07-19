@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Activity, GitBranch, FlaskConical, Database } from 'lucide-react';
+import { GitBranch, FlaskConical, Database } from 'lucide-react';
 import { stages } from '../data/journeys';
 
 export const VIEW = {
@@ -46,19 +46,16 @@ export default function Sidebar({
           lg:static lg:z-auto lg:translate-x-0`}
       >
       <div className="px-5 pt-6 pb-5 border-b border-rail-line">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-white/10 border border-white/25 flex items-center justify-center">
-            <Activity className="w-[18px] h-[18px] text-white" strokeWidth={2.25} />
-          </div>
-          <div>
-            <h1 className="font-display text-[16px] font-bold text-white tracking-tight leading-none">
-              NINE DEAN
-            </h1>
-            <p className="text-[10px] font-mono text-white/55 mt-1.5 leading-none tracking-wide">
-              quality-of-jobs · v1
-            </p>
-          </div>
-        </div>
+        {/* The real Nine Dean wordmark. The brand asset is navy on transparent, which would be
+            invisible on this dark rail, so a white-filled copy is used here. */}
+        <img
+          src={`${import.meta.env.BASE_URL || '/'}nd-logo-white.png`}
+          alt="Nine Dean"
+          className="w-[168px] h-auto"
+        />
+        <p className="text-[10px] font-mono text-white/55 mt-2.5 leading-none tracking-wide">
+          quality-of-jobs · v1
+        </p>
       </div>
 
       <div className="px-3 py-3 border-b border-rail-line space-y-1">

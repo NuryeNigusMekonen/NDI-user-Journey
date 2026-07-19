@@ -103,7 +103,11 @@ export default function App() {
           >
             <Menu className="w-5 h-5" />
           </button>
-          <span className="font-display text-[15px] font-bold text-white tracking-tight">NINE DEAN</span>
+          <img
+            src={`${import.meta.env.BASE_URL || '/'}nd-logo-white.png`}
+            alt="Nine Dean"
+            className="h-5 w-auto"
+          />
         </div>
 
         {view === VIEW.OVERVIEW ? (

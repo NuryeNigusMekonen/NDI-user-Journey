@@ -53,7 +53,10 @@ export async function loadJourneyBoard({
   }
 
   const graph = buildGraph(journey.items);
-  const laid = await layoutWithElk(graph.nodes, graph.edges);
+  // Journeys are long sequences (~20 steps). layoutWithElk defaults to 'right', which strings them
+  // into one unreadable horizontal line; 'down' reads top-to-bottom and lets parallel branches
+  // (e.g. PSL and Healthcare) sit side by side.
+  const laid = await layoutWithElk(graph.nodes, graph.edges, 'down');
   return {
     journeyId,
     saved: {

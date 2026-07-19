@@ -1,0 +1,4 @@
+code,edge_id,expected_behavior
+GEO-E9,E9,"missing ZIP -> home-office fallback, flagged"
+GEO-E11,E11,"cross-border residence NY / work NJ -> county only if state-consistent, else flagged"
+GEO-E12,E12,"uncovered county (OH) -> degraded basket, flagged"

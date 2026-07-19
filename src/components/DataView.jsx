@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Database, FileSpreadsheet, Copy, Check, Loader2 } from 'lucide-react';
+import { Database, FileSpreadsheet, Copy, Check, Loader2, Download, FileText } from 'lucide-react';
 import { useProtectedContent } from '../hooks/useProtectedContent';
 
 function CopyButton({ text, label = 'copy' }) {
@@ -23,6 +23,29 @@ function CopyButton({ text, label = 'copy' }) {
       {copied ? <Check className="w-3 h-3 text-teal" /> : <Copy className="w-3 h-3" />}
       {copied ? 'copied' : label}
     </button>
+  );
+}
+
+// The generated workbooks ship as static assets, so a download is a plain link — no backend,
+// no auth round-trip, and the file the reviewer gets is byte-identical to what the engines ran on.
+function DownloadLink({ name, kind }) {
+  const isXlsx = kind === 'xlsx';
+  const href = `${import.meta.env.BASE_URL || '/'}fixtures/${name}.${isXlsx ? 'xlsx' : 'expected.csv'}`;
+  const Icon = isXlsx ? Download : FileText;
+  return (
+    <a
+      href={href}
+      download
+      className={`flex items-center gap-1 text-[9px] font-mono px-1.5 py-0.5 rounded border transition-colors ${
+        isXlsx
+          ? 'border-brand/40 text-brand hover:bg-brand/10'
+          : 'border-hairline text-ink-muted hover:text-brand hover:border-brand/40'
+      }`}
+      title={isXlsx ? 'Download the census workbook (.xlsx)' : 'Download the expectations (.csv)'}
+    >
+      <Icon className="w-3 h-3" />
+      {isXlsx ? '.xlsx' : '.csv'}
+    </a>
   );
 }
 
@@ -60,6 +83,12 @@ export default function DataView() {
           title="Dataset suite"
           action={<CopyButton label="copy all" text={datasetFiles.map((d) => `${d.name}.xlsx (${d.rows} rows) — ${d.purpose} → ${d.outcome}`).join('\n')} />}
         >
+          <p className="text-[11px] text-ink-muted mb-2">
+            Every dataset is downloadable: <span className="font-mono text-brand">.xlsx</span> is the census
+            workbook under the real 59-column ND3 template (upload it straight into the platform);
+            <span className="font-mono text-ink-muted"> .csv</span> is the row-by-row expectations file
+            (which edge case each row targets and what should happen).
+          </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {datasetFiles.map((d) => (
               <div key={d.name} className="p-3 rounded-lg bg-surface border border-hairline">
@@ -67,10 +96,16 @@ export default function DataView() {
                   <FileSpreadsheet className="w-4 h-4 text-teal shrink-0" strokeWidth={2.25} />
                   <span className="text-[13px] font-mono font-semibold text-ink">{d.name}</span>
                   <span className="text-[9px] font-mono text-brand ml-auto">{d.rows} rows</span>
-                  <CopyButton text={`${d.name}.xlsx (${d.rows} rows)\nPurpose: ${d.purpose}\nExpected: ${d.outcome}`} />
                 </div>
                 <p className="text-[11px] text-ink-muted mt-1.5">{d.purpose}</p>
                 <p className="text-[10px] font-mono text-teal/80 mt-1">→ {d.outcome}</p>
+                <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-hairline/60">
+                  <DownloadLink name={d.name} kind="xlsx" />
+                  <DownloadLink name={d.name} kind="csv" />
+                  <span className="ml-auto">
+                    <CopyButton text={`${d.name}.xlsx (${d.rows} rows)\nPurpose: ${d.purpose}\nExpected: ${d.outcome}`} />
+                  </span>
+                </div>
               </div>
             ))}
           </div>
@@ -80,7 +115,12 @@ export default function DataView() {
         {sampleRows?.rows?.length > 0 && (
           <Section
             title={`Sample rows — actual generated data (${sampleRows.headers.length} columns)`}
-            action={<CopyButton label="copy as TSV" text={[sampleRows.headers.join('\t'), ...sampleRows.rows.map((r) => r.join('\t'))].join('\n')} />}
+            action={(
+              <div className="flex items-center gap-1.5">
+                <DownloadLink name="scale_large" kind="xlsx" />
+                <CopyButton label="copy as TSV" text={[sampleRows.headers.join('\t'), ...sampleRows.rows.map((r) => r.join('\t'))].join('\n')} />
+              </div>
+            )}
           >
             <p className="text-[11px] text-ink-muted mb-2">
               Straight out of <span className="font-mono text-teal">scale_large.xlsx</span> under the real

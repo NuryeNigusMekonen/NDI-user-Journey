@@ -225,7 +225,18 @@ export default function DataView() {
           </Section>
         )}
 
-        {/* edge variations */}
+        {/* edge variations — grouped by the pipeline stage or engine that owns the behaviour */}
+        {(edgeVariations || []).length > 0 && (
+          <Section title="Edge cases the data deliberately tests">
+            <p className="text-[11px] text-ink-muted">
+              27 input variations, each paired with the behaviour the platform must produce. They are
+              grouped by <span className="text-ink">where a failure would occur</span> — two pipeline
+              stages that run before any engine (ingestion, then geo resolution), then the three
+              engines. A ZIP that will not resolve fails upstream of Engine A, so it belongs to the geo
+              stage, not to an engine.
+            </p>
+          </Section>
+        )}
         {(edgeVariations || []).map((grp) => (
           <Section key={grp.group} title={grp.group}>
             <div className="space-y-1.5">

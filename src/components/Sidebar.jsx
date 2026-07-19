@@ -3,13 +3,14 @@ import { Activity, GitBranch, FlaskConical, Database } from 'lucide-react';
 import { stages } from '../data/journeys';
 
 export const VIEW = {
+  OVERVIEW: 'overview',
   JOURNEY: 'journey',
   TESTS: 'tests',
   DATA: 'data',
 };
 
 const VIEW_ITEMS = [
-  { id: VIEW.JOURNEY, label: 'Journey Map', icon: GitBranch },
+  { id: VIEW.OVERVIEW, label: 'Journey Map', icon: GitBranch },
   { id: VIEW.TESTS, label: 'Test Plan', icon: FlaskConical },
   { id: VIEW.DATA, label: 'Simulated Data', icon: Database },
 ];

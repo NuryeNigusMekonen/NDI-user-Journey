@@ -5,6 +5,7 @@ import AppHeader from './components/AppHeader';
 import TestsView from './components/TestsView';
 import DataView from './components/DataView';
 import AuthGate from './components/AuthGate';
+import JourneyOverview from './components/JourneyOverview';
 import { journeys } from './data/journeys';
 import { WORKSPACE_MODE } from './types/diagram';
 import { useDiagramStore } from './store/diagramStore';
@@ -16,7 +17,8 @@ import { resolveJourneyIndex } from './lib/journeyMatch';
 const EditorCanvas = lazy(() => import('./editor/EditorCanvas'));
 
 export default function App() {
-  const [view, setView] = useState(VIEW.JOURNEY);
+  // Land on the end-to-end overview, not journey 1's diagram — the map is the orientation.
+  const [view, setView] = useState(VIEW.OVERVIEW);
   const [active, setActive] = useState(0);
   const [workspaceMode, setWorkspaceMode] = useState(WORKSPACE_MODE.VIEW);
   const [navOpen, setNavOpen] = useState(false);
@@ -104,7 +106,9 @@ export default function App() {
           <span className="font-display text-[15px] font-bold text-white tracking-tight">NINE DEAN</span>
         </div>
 
-        {view === VIEW.TESTS ? (
+        {view === VIEW.OVERVIEW ? (
+          <JourneyOverview onSelect={(i) => { setView(VIEW.JOURNEY); setActive(i); }} />
+        ) : view === VIEW.TESTS ? (
           <AuthGate title="Test Plan"><TestsView /></AuthGate>
         ) : view === VIEW.DATA ? (
           <AuthGate title="Simulated Data"><DataView /></AuthGate>

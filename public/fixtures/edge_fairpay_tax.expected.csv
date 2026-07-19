@@ -1,0 +1,7 @@
+code,edge_id,expected_behavior
+FP-E13,E13,"low-wage large family -> gross-up floored at 0, floor >= basket"
+FP-E14a,E14,tier ES -> filing JOINT inferred
+FP-E14b,E14,tier EC -> HEAD_OF_HOUSEHOLD inferred
+FP-E15,E15,"waived -> methodology default household (2A2W1C), flagged"
+FP-E16,E16,"EC with enrollment 1 (mismatch) -> tier base children, flagged"
+FP-E17,E17,PA municipal local tax -> flagged as uncaptured (note: PA county uncovered)

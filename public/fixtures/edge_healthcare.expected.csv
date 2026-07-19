@@ -1,0 +1,6 @@
+code,edge_id,expected_behavior
+HC-E23,E23,low employer share (50%) -> Benchmark 1 fail -> verdict review
+HC-E24,E24,high employer share (100%) -> affordable
+HC-E25,E25,HDHP choice -> do NOT fail Layer B on it
+HC-E26,E26,non-compliant/grandfathered -> flagged before benchmarks
+HC-E27,E27,waived enrollee -> not a false healthcare fail

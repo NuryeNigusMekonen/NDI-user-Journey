@@ -1,0 +1,7 @@
+code,edge_id,expected_behavior
+PSL-E18,E18,TX preempted -> PSL floor 0
+PSL-E19,E19,WA no-cap -> floor 0
+PSL-E20a,E20,CA 40h floor -> gap costed
+PSL-E20b,E20,NY 56h floor -> gap costed
+PSL-E21,E21,part-time 1040h -> entitlement prorated to 2080h (50%)
+PSL-E22,E22,exempt -> out of PSL scope

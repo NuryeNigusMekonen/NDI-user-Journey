@@ -1,0 +1,10 @@
+code,edge_id,expected_behavior
+ING-E2,E2,"exempt as single letter 'E' -> exempt, out of scope"
+ING-E2b,E2,"'N' -> non-exempt, in scope"
+,E3,"blank Code but carries data -> FLAGGED+REJECTED, not dropped"
+(blank),E4,fully empty padding row -> skipped as padding
+ING-DUP,E5,duplicate Code (see next) -> disambiguated
+ING-DUP,E5,"duplicate Code -> disambiguated, no silent merge"
+ING-E6,E6,HSA employer contrib present -> NOT counted as medical employer_contribution
+ING-E7,E7,plan-holder missing tier -> defaults single + flag
+ING-E8,E8,unknown exempt -> defaults in-scope + flag

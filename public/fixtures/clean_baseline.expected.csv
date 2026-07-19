@@ -1,0 +1,6 @@
+code,edge_id,expected_behavior
+CLN-1,-,clean; affordable; CA PSL 40h
+CLN-2,-,clean family; NY 56h
+CLN-3,-,clean exempt salaried + 4-yr base-salary history
+CLN-4,-,clean; WA no-cap PSL -> floor 0
+CLN-5,-,rehired employee — termination + rehire dates populated

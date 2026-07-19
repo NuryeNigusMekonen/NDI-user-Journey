@@ -32,7 +32,7 @@ export default function DataView() {
   if (loading) return <div className="h-full flex items-center justify-center bg-canvas text-ink-muted text-sm"><Loader2 className="w-4 h-4 animate-spin mr-2" /> Loading datasets…</div>;
   if (error || !payload) return <div className="h-full flex items-center justify-center bg-canvas text-ink-muted text-sm">{error || 'No content.'}</div>;
 
-  const { datasetFiles, edgeVariations, datasetMeta, sourceCoverage } = payload;
+  const { datasetFiles, edgeVariations, datasetMeta, sourceCoverage, sampleRows } = payload;
   const totalRows = datasetFiles.reduce((n, d) => n + d.rows, 0);
   return (
     <div className="h-full overflow-y-auto bg-canvas px-4 sm:px-8 py-5 sm:py-7">
@@ -75,6 +75,41 @@ export default function DataView() {
             ))}
           </div>
         </Section>
+
+        {/* REAL rows straight from the generated workbook — the data itself, not a description */}
+        {sampleRows?.rows?.length > 0 && (
+          <Section
+            title={`Sample rows — actual generated data (${sampleRows.headers.length} columns)`}
+            action={<CopyButton label="copy as TSV" text={[sampleRows.headers.join('\t'), ...sampleRows.rows.map((r) => r.join('\t'))].join('\n')} />}
+          >
+            <p className="text-[11px] text-ink-muted mb-2">
+              Straight out of <span className="font-mono text-teal">scale_large.xlsx</span> under the real
+              59-column ND3 template — scroll right to see every field.
+            </p>
+            <div className="overflow-x-auto rounded-lg border border-hairline bg-surface">
+              <table className="text-[10px] font-mono whitespace-nowrap">
+                <thead>
+                  <tr className="border-b border-hairline">
+                    {sampleRows.headers.map((h, i) => (
+                      <th key={i} className="text-left px-2 py-1.5 text-brand/80 font-semibold">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sampleRows.rows.map((r, ri) => (
+                    <tr key={ri} className="border-b border-hairline/50 last:border-0">
+                      {r.map((cell, ci) => (
+                        <td key={ci} className={`px-2 py-1 ${cell ? 'text-ink' : 'text-ink-muted/30'}`}>
+                          {cell || '·'}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Section>
+        )}
 
         {/* reference-source coverage — which of the 11 sources the fixtures actually exercise */}
         {sourceCoverage?.length > 0 && (

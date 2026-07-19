@@ -21,9 +21,9 @@ export async function layoutWithElk(nodes, edges, direction = 'right', options =
       'elk.direction': dirMap[direction] || 'DOWN',
       // Vertical journeys are long (~20 steps), so keep the step-to-step gap tight — the eye
       // follows a close column far better than a sparse one, and it halves the scrolling.
-      'elk.spacing.nodeNode': flowchart ? (vertical ? '44' : '64') : (vertical ? '28' : '56'),
-      'elk.layered.spacing.nodeNodeBetweenLayers': flowchart ? (vertical ? '88' : '120') : (vertical ? '40' : '110'),
-      'elk.layered.spacing.edgeNodeBetweenLayers': flowchart ? (vertical ? '44' : '56') : (vertical ? '24' : '48'),
+      'elk.spacing.nodeNode': flowchart ? (vertical ? '44' : '64') : (vertical ? '40' : '56'),
+      'elk.layered.spacing.nodeNodeBetweenLayers': flowchart ? (vertical ? '88' : '120') : (vertical ? '56' : '110'),
+      'elk.layered.spacing.edgeNodeBetweenLayers': flowchart ? (vertical ? '44' : '56') : (vertical ? '32' : '48'),
       'elk.layered.nodePlacement.strategy': 'NETWORK_SIMPLEX',
       'elk.layered.crossingMinimization.strategy': 'LAYER_SWEEP',
       'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES',

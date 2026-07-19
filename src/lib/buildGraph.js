@@ -6,6 +6,22 @@ const STEP_H = 96;
 const NOTE_H = 64;
 const BANNER_H = 52;
 
+// Text-wrapping height estimate. ELK spaces nodes using the height we DECLARE, but a note renders
+// its full wrapped text — declaring a flat 64px for a 250-character note made the node draw ~3x
+// taller than its reserved slot and overlap the next step. Estimate from the content instead.
+const CHARS_PER_LINE = 30;        // ~228px wide at the note's font size, minus padding
+const LINE_H = 17;                // rendered line-height
+const V_PADDING = 26;             // top+bottom padding inside the card
+
+function textHeight(text, min) {
+  const raw = String(text || '');
+  if (!raw) return min;
+  // Count wrapped lines per explicit line break, so a hard-wrapped note is measured faithfully.
+  const lines = raw.split('\n')
+    .reduce((n, line) => n + Math.max(1, Math.ceil(line.length / CHARS_PER_LINE)), 0);
+  return Math.max(min, Math.round(lines * LINE_H + V_PADDING));
+}
+
 export function buildGraph(items) {
   const nodes = [];
   const edges = [];
@@ -28,7 +44,9 @@ export function buildGraph(items) {
           type: 'step',
           data: { ...item, stepNum, kind },
           width: NODE_W,
-          height: STEP_H,
+          // Steps wrap too — a 100-character step needs ~4 lines, more than the flat STEP_H.
+          // +18 leaves room for the step number/actor line above the text.
+          height: textHeight(item.text, STEP_H) + 18,
         });
         for (const p of front) {
           if (p.id) {
@@ -51,7 +69,7 @@ export function buildGraph(items) {
         front = [{ id }];
       } else if (item.type === 'note') {
         const id = nid();
-        const h = item.anchor ? NOTE_H : BANNER_H;
+        const h = textHeight(item.text, item.anchor ? NOTE_H : BANNER_H);
         nodes.push({
           id,
           type: 'note',

@@ -155,8 +155,19 @@ export default function DataView() {
         {sourceCoverage?.length > 0 && (
           <Section
             title="Reference-source coverage"
-            action={<CopyButton label="copy all" text={sourceCoverage.map((s) => `${s.source} — ${s.evidence} [${s.status}]`).join('\n')} />}
+            action={<CopyButton label="copy all" text={sourceCoverage.map((s) => [
+              `${s.source} [${s.status}]`,
+              `  evidence: ${s.evidence}`,
+              s.table ? `  table:    ${s.table}${s.rows && s.rows !== '—' ? ` (${s.rows} rows)` : ''}` : '',
+              s.vintage ? `  vintage:  ${s.vintage}` : '',
+              s.feeds ? `  feeds:    ${s.feeds}` : '',
+            ].filter(Boolean).join('\n')).join('\n\n')} />}
           >
+            <p className="text-[11px] text-ink-muted mb-2">
+              Every source is traceable: the warehouse table it is read from, its row count and
+              <span className="text-brand/80"> vintage</span>, and which engine input it feeds. All values read
+              live from <span className="font-mono text-teal">public.ext_*</span> in the reference warehouse.
+            </p>
             <div className="space-y-1.5">
               {sourceCoverage.map((s) => {
                 const cls = s.status === 'strong' || s.status === 'good'
@@ -165,10 +176,36 @@ export default function DataView() {
                     ? 'text-amber bg-amber/10 border-amber/30'
                     : 'text-slate bg-slate/10 border-slate/30';
                 return (
-                  <div key={s.source} className="flex flex-col sm:flex-row items-start gap-1.5 sm:gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
-                    <span className="text-[12px] font-semibold text-ink w-full sm:w-44 sm:shrink-0">{s.source}</span>
-                    <span className="text-[11px] text-ink-muted min-w-0 flex-1">{s.evidence}</span>
-                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border shrink-0 ${cls}`}>{s.status}</span>
+                  <div key={s.source} className="p-3 rounded-lg bg-surface border border-hairline">
+                    <div className="flex items-start gap-3">
+                      <span className="text-[12px] font-semibold text-ink min-w-0 flex-1">{s.source}</span>
+                      <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border shrink-0 ${cls}`}>{s.status}</span>
+                    </div>
+                    <p className="text-[11px] text-ink-muted mt-1">{s.evidence}</p>
+                    {/* Provenance — where the number actually comes from, so it can be traced. */}
+                    {(s.table || s.vintage || s.feeds) && (
+                      <div className="mt-2 pt-2 border-t border-hairline/60 grid gap-1 text-[10px] font-mono">
+                        {s.table && (
+                          <div className="flex gap-2">
+                            <span className="text-ink-muted/60 w-14 shrink-0">table</span>
+                            <span className="text-teal break-all">{s.table}</span>
+                            {s.rows && s.rows !== '—' && <span className="text-ink-muted/60 ml-auto shrink-0">{s.rows} rows</span>}
+                          </div>
+                        )}
+                        {s.vintage && (
+                          <div className="flex gap-2">
+                            <span className="text-ink-muted/60 w-14 shrink-0">vintage</span>
+                            <span className="text-brand/80">{s.vintage}</span>
+                          </div>
+                        )}
+                        {s.feeds && (
+                          <div className="flex gap-2">
+                            <span className="text-ink-muted/60 w-14 shrink-0">feeds</span>
+                            <span className="text-ink-muted">{s.feeds}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 );
               })}

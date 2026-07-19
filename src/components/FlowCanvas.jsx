@@ -54,7 +54,9 @@ function FlowInner({ journey, journeyIndex }) {
     setLoading(true);
     (async () => {
       const graph = buildGraph(journey.items);
-      const laid = await layoutWithElk(graph.nodes, graph.edges);
+      // 'down' — see journeyRegistry: the default 'right' strings a ~20-step journey into one
+      // unreadable horizontal line.
+      const laid = await layoutWithElk(graph.nodes, graph.edges, 'down');
       if (cancelled) return;
       const nextNodes = laid.nodes.map((n) => ({ ...n, type: n.type, data: n.data }));
       setLaidNodes(nextNodes);

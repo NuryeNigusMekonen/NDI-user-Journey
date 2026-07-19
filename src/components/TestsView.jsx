@@ -32,7 +32,11 @@ export default function TestsView() {
   if (loading) return <Centered><Loader2 className="w-4 h-4 animate-spin mr-2" /> Loading test plan…</Centered>;
   if (error || !payload) return <Centered>{error || 'No content.'}</Centered>;
 
-  const { testLevels, userPath, testGroups, testMeta, manualCases, uat, e2eFlows, nonFunctional } = payload;
+  const { testLevels, userPath, testGroups, testMeta, manualCases, uat, e2eFlows, nonFunctional, intros } = payload;
+  // Short plain-language framing per section, authored in Supabase. Renders only when present.
+  const Intro = ({ k }) => (intros?.[k]
+    ? <p className="text-[11px] text-ink-muted mb-2.5 max-w-3xl leading-relaxed">{intros[k]}</p>
+    : null);
 
   return (
     <div className="h-full overflow-y-auto bg-canvas px-4 sm:px-8 py-5 sm:py-7">
@@ -53,6 +57,7 @@ export default function TestsView() {
 
         {/* test levels */}
         <Section title="Test levels">
+          <Intro k="levels" />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {testLevels.map((l) => {
               const { meta: s, label } = resolveStatus(l.status);
@@ -68,7 +73,9 @@ export default function TestsView() {
                       </span>
                     </div>
                     <p className="text-[11px] text-ink-muted mt-0.5">{l.scope}</p>
-                    <p className="text-[10px] font-mono text-brand/70 mt-1">{l.tool}</p>
+                    <p className="text-[10px] font-mono text-brand/70 mt-1">
+                      <span className="text-ink-muted/60">run with </span>{l.tool}
+                    </p>
                   </div>
                 </div>
               );
@@ -77,20 +84,30 @@ export default function TestsView() {
         </Section>
 
         {/* user path */}
-        <Section title="Deal-team user journey (U1–U8)">
+        <Section title="Deal-team user journey (U1–U9)">
+          <Intro k="journey" />
+          {/* Column headers: the middle column is an API endpoint or screen file, which reads as
+              noise unless it is labelled. */}
+          <div className="hidden sm:flex items-center gap-3 px-2.5 pb-1.5 text-[9px] font-mono uppercase tracking-[0.14em] text-ink-muted/50">
+            <span className="w-7 shrink-0">step</span>
+            <span className="w-40 shrink-0">what the user does</span>
+            <span className="w-52 shrink-0">screen / API endpoint</span>
+            <span className="min-w-0">why it matters</span>
+          </div>
           <div className="space-y-1.5">
             {userPath.map((u) => (
-              <div key={u.id} className="flex items-center gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
+              <div key={u.id} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
                 <span className="text-[10px] font-mono font-bold text-brand w-7 shrink-0">{u.id}</span>
-                <span className="text-[13px] font-semibold text-ink w-40 shrink-0">{u.step}</span>
-                <span className="text-[10px] font-mono text-teal w-52 shrink-0 truncate">{u.where}</span>
-                <span className="text-[11px] text-ink-muted min-w-0 truncate">{u.note}</span>
+                <span className="text-[13px] font-semibold text-ink w-full sm:w-40 sm:shrink-0">{u.step}</span>
+                <span className="text-[10px] font-mono text-teal w-full sm:w-52 sm:shrink-0 sm:truncate" title={u.where}>{u.where}</span>
+                <span className="text-[11px] text-ink-muted min-w-0">{u.note}</span>
               </div>
             ))}
           </div>
         </Section>
 
         {/* test cases by stage */}
+        {testGroups.length > 0 && <Section title="Automated engine checks"><Intro k="cases" /></Section>}
         {testGroups.map((g) => (
           <Section key={g.stage} title={g.stage}>
             <div className="space-y-1.5">
@@ -98,11 +115,17 @@ export default function TestsView() {
                 <div key={c.id} className="flex items-start gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
                   <span className="text-[10px] font-mono font-bold text-brand w-12 shrink-0">{c.id}</span>
                   <span className="text-[12px] text-ink min-w-0 flex-1">{c.assert}</span>
-                  <div className="flex flex-wrap gap-1 justify-end shrink-0 max-w-[30%]">
-                    {c.edges.map((e) => (
-                      <span key={e} className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-violet/15 text-violet border border-violet/30">{e}</span>
-                    ))}
-                  </div>
+                  {/* E-numbers point at the edge cases in the Simulated Data view that prove this
+                      assertion — meaningless as bare chips, so say what they are. */}
+                  {c.edges.length > 0 && (
+                    <div className="flex flex-wrap items-center gap-1 justify-end shrink-0 max-w-[34%]">
+                      <span className="text-[9px] font-mono text-ink-muted/60">proven by</span>
+                      {c.edges.map((e) => (
+                        <span key={e} title="Edge case in the Simulated Data view"
+                          className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-violet/15 text-violet border border-violet/30">{e}</span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -111,6 +134,7 @@ export default function TestsView() {
 
         {/* §4 Manual test plan + UAT */}
         <Section title="Manual test plan (human-run)">
+          <Intro k="manual" />
           <div className="flex items-center gap-2 mb-2 text-ink-muted">
             <Hand className="w-3.5 h-3.5 text-amber" strokeWidth={2.25} />
             <span className="text-[10px] font-mono">run by a tester on staging — automation can’t judge these</span>
@@ -133,6 +157,7 @@ export default function TestsView() {
 
         {/* §5 Frontend E2E design */}
         <Section title="Frontend E2E automation (Playwright)">
+          <Intro k="e2e" />
           <div className="flex items-center gap-2 mb-2">
             <MonitorPlay className="w-3.5 h-3.5 text-violet" strokeWidth={2.25} />
             <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-violet/15 text-violet border border-violet/30">DESIGN ONLY — no test code yet</span>
@@ -142,7 +167,9 @@ export default function TestsView() {
               <div key={e.id} className="flex items-start gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
                 <span className="text-[10px] font-mono font-bold text-violet w-14 shrink-0">{e.id}</span>
                 <span className="text-[12px] text-ink min-w-0 flex-1">{e.flow}</span>
-                <span className="text-[9px] font-mono text-ink-muted shrink-0">{e.covers}</span>
+                <span className="text-[9px] font-mono text-ink-muted shrink-0">
+                  <span className="text-ink-muted/50">covers </span>{e.covers}
+                </span>
               </div>
             ))}
           </div>
@@ -150,6 +177,7 @@ export default function TestsView() {
 
         {/* §6 Non-functional */}
         <Section title="Non-functional testing">
+          <Intro k="nonfunc" />
           <div className="flex items-center gap-2 mb-2 text-ink-muted">
             <Gauge className="w-3.5 h-3.5 text-teal" strokeWidth={2.25} />
             <span className="text-[10px] font-mono">performance · security · reproducibility · accessibility</span>

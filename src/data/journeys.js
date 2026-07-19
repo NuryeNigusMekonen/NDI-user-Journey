@@ -280,30 +280,28 @@ export const journeys = [
     id: 'source-monitoring-audit',
     stage: 3,
     parallel: true,
-    title: 'Reference Pipeline & Audit Trail',
-    tagline: 'Cross-cutting — validated source updates, human-gated promotion, reproducibility.',
+    title: 'Reference Data & Audit Trail',
+    tagline: 'Cross-cutting — transparent rulers, versioned methodology, reproducibility.',
     items: [
-      note('Journey 6 – Reference-data pipeline & audit trail (parallel)\nBUILT: a Postgres reference store (ninedeandb) with a validate → stage → human-approve → promote flow.\nSeparate from the app’s operational store — the engines never read staged data.'),
-      step('monitor', 'monitor', 'Scheduled poll (run-due) — sources past their cadence, circuit-breaker aware', false),
-      step('monitor', 'sources', 'Cheap freshness signal; skip when unchanged', true),
-      step('sources', 'monitor', 'Fetch payload → content fingerprint (SHA); identical ⇒ NO_CHANGE, stop (idempotent)', true),
-      note('16 reference sources: MIT, EPI, ACS, CNT, BLS/OEWS, O*NET, Census (county + ZCTA), A Better Balance, KFF, Peterson-KFF …', 'monitor'),
-      step('monitor', 'monitor', 'Normalize → VALIDATE (the ingest gate) → stage into staging_ext_* + a pending_update', false),
-      note('The gate: 77 rules across 16 sources (row_count · regex · range · no_sentinel · unique · foreign_key · spot_check).\nerror ⇒ promotion BLOCKED; warn ⇒ recorded in the drift report and surfaced at review. Fail loud, never silent.', 'monitor'),
-      step('monitor', 'deal', 'Queue for human review — validation status + drift report + diff summary', false),
+      note('Journey 6 – Reference data & audit trail (parallel)\nThe engines read their rulers DIRECTLY from the Postgres warehouse (public.ext_*). Reference data is\nnational and global — not run-specific — and is owned by the data-engineering team, which loads it.'),
+      step('platform', 'sources', 'Engines read the rulers straight from the warehouse — nothing hardcoded', true),
+      note('Reference sources: MIT, EPI, ACS, CNT (Engine A cost-of-living) · BLS/OEWS + O*NET (wages, occupations)\n· Census county + ZCTA (geography) · A Better Balance (PSL statutes) · KFF + Peterson-KFF (healthcare benchmarks).', 'sources'),
+      step('platform', 'deal', 'Reference screen — every external value shown as loaded, searchable by source/component/family', false),
+      note('/reference and /policies expose the numbers verbatim so anyone can check a basket, a PSL statute or a\nhealthcare benchmark against the source. Transparency is the control: the rulers are inspectable, not implicit.', 'platform'),
+      step('deal', 'platform', 'Methodology admin — thresholds, multipliers and source choices are set globally, not per run', false),
       alt(
         branch(
-          'Reviewer approves (the WAP gate)',
+          'NDI changes a default',
           false,
-          step('deal', 'platform', 'Promote staged rows live; bump the methodology version; record the approver', false)
+          step('platform', 'platform', 'The effective config changes ⇒ a NEW immutable methodology version is frozen', false)
         ),
         branch(
-          'Reviewer rejects or holds',
+          'No change',
           true,
-          step('platform', 'platform', 'Drop staging (dead-letter) or defer; the current methodology version stands', false)
+          step('platform', 'platform', 'Runs keep reusing the current frozen version', false)
         )
       ),
-      note('Nothing promotes itself — a scheduled run never promotes. Promotion is always a person approving in the admin queue.', 'platform'),
+      note('A version is frozen by CONTENT: the label carries a fingerprint of the effective params + engine config,\nso an admin edit can never silently reuse an older snapshot under the same name.', 'platform'),
       note('Methodology versioning — thresholds, multipliers (e.g., 1.53×), and source choices are versioned.\nEvery analysis records the version it ran against, so a Q3 2026 assessment stays reproducible on Q3 2026 methodology.', 'platform'),
       step('platform', 'platform', 'Audit trail — timestamp & log inputs, source values, thresholds, methodology version, outputs', false),
       note('So a deal team can answer “why did the model say X?” months later. Census files older than the active diligence period are purged unless NDI specifies retention.', 'platform'),

@@ -124,14 +124,23 @@ export default function DataView() {
           >
             <p className="text-[11px] text-ink-muted mb-2">
               Straight out of <span className="font-mono text-teal">scale_large.xlsx</span> under the real
-              59-column ND3 template — scroll right to see every field.
+              59-column ND3 template — scroll right to see every field. Columns drawn from a reference
+              source are labelled beneath the header; the downloaded workbook carries the same detail on
+              its <span className="font-mono text-teal">PROVENANCE</span> sheet.
             </p>
             <div className="overflow-x-auto rounded-lg border border-hairline bg-surface">
               <table className="text-[10px] font-mono whitespace-nowrap">
                 <thead>
                   <tr className="border-b border-hairline">
                     {sampleRows.headers.map((h, i) => (
-                      <th key={i} className="text-left px-2 py-1.5 text-brand/80 font-semibold">{h}</th>
+                      <th key={i} className="text-left px-2 py-1.5 align-top">
+                        <span className="block text-brand/80 font-semibold">{h}</span>
+                        {sampleRows.sources?.[i] && (
+                          <span className="block text-[8px] font-normal text-teal/70 mt-0.5">
+                            ← {sampleRows.sources[i]}
+                          </span>
+                        )}
+                      </th>
                     ))}
                   </tr>
                 </thead>

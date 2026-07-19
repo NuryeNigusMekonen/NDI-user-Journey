@@ -32,7 +32,7 @@ export default function DataView() {
   if (loading) return <div className="h-full flex items-center justify-center bg-canvas text-ink-muted text-sm"><Loader2 className="w-4 h-4 animate-spin mr-2" /> Loading datasets…</div>;
   if (error || !payload) return <div className="h-full flex items-center justify-center bg-canvas text-ink-muted text-sm">{error || 'No content.'}</div>;
 
-  const { datasetFiles, edgeVariations, datasetMeta } = payload;
+  const { datasetFiles, edgeVariations, datasetMeta, sourceCoverage } = payload;
   const totalRows = datasetFiles.reduce((n, d) => n + d.rows, 0);
   return (
     <div className="h-full overflow-y-auto bg-canvas px-4 sm:px-8 py-5 sm:py-7">
@@ -76,8 +76,36 @@ export default function DataView() {
           </div>
         </Section>
 
+        {/* reference-source coverage — which of the 11 sources the fixtures actually exercise */}
+        {sourceCoverage?.length > 0 && (
+          <Section
+            title="Reference-source coverage"
+            action={<CopyButton label="copy all" text={sourceCoverage.map((s) => `${s.source} — ${s.evidence} [${s.status}]`).join('\n')} />}
+          >
+            <div className="space-y-1.5">
+              {sourceCoverage.map((s) => {
+                const cls = s.status === 'strong' || s.status === 'good'
+                  ? 'text-teal bg-teal/10 border-teal/30'
+                  : s.status === 'thin'
+                    ? 'text-amber bg-amber/10 border-amber/30'
+                    : 'text-slate bg-slate/10 border-slate/30';
+                return (
+                  <div key={s.source} className="flex flex-col sm:flex-row items-start gap-1.5 sm:gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
+                    <span className="text-[12px] font-semibold text-ink w-full sm:w-44 sm:shrink-0">{s.source}</span>
+                    <span className="text-[11px] text-ink-muted min-w-0 flex-1">{s.evidence}</span>
+                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border shrink-0 ${cls}`}>{s.status}</span>
+                  </div>
+                );
+              })}
+            </div>
+            {datasetMeta.blocked && (
+              <p className="text-[11px] text-amber/90 mt-3 p-3 rounded-lg bg-amber/5 border border-amber/20">{datasetMeta.blocked}</p>
+            )}
+          </Section>
+        )}
+
         {/* edge variations */}
-        {edgeVariations.map((grp) => (
+        {(edgeVariations || []).map((grp) => (
           <Section key={grp.group} title={grp.group}>
             <div className="space-y-1.5">
               {grp.items.map((it) => (

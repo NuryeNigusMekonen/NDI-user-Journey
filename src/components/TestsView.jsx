@@ -141,10 +141,34 @@ export default function TestsView() {
           </div>
           <div className="space-y-1.5">
             {manualCases.map((m) => (
-              <div key={m.id} className="flex items-start gap-3 p-2.5 rounded-lg bg-surface border border-hairline">
-                <span className="text-[10px] font-mono font-bold text-amber w-10 shrink-0">{m.id}</span>
-                <span className="text-[12px] font-semibold text-ink w-44 shrink-0">{m.case}</span>
-                <span className="text-[11px] text-ink-muted min-w-0 flex-1">{m.expected}</span>
+              <div key={m.id} className="p-3 rounded-lg bg-surface border border-hairline">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[10px] font-mono font-bold text-amber">{m.id}</span>
+                  {m.area && (
+                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-surface-raised text-ink-muted border border-hairline">
+                      {m.area}
+                    </span>
+                  )}
+                  <span className="text-[12px] font-semibold text-ink">{m.case}</span>
+                  {m.priority && (
+                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ml-auto ${
+                      m.priority === 'High'
+                        ? 'text-amber bg-amber/10 border-amber/30'
+                        : 'text-slate bg-slate/10 border-slate/30'
+                    }`}>{m.priority}</span>
+                  )}
+                </div>
+                {/* Steps: HOW to run it. Without this a tester had to work out the click-path. */}
+                {m.steps && (
+                  <p className="text-[11px] text-ink-muted mt-2">
+                    <span className="text-ink-muted/50 font-mono text-[9px] uppercase tracking-wider">steps </span>
+                    {m.steps}
+                  </p>
+                )}
+                <p className="text-[11px] text-teal/85 mt-1.5">
+                  <span className="text-ink-muted/50 font-mono text-[9px] uppercase tracking-wider">expected </span>
+                  {m.expected}
+                </p>
               </div>
             ))}
           </div>

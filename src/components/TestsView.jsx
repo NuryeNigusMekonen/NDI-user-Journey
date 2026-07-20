@@ -1,7 +1,9 @@
+import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, AlertTriangle, XCircle, FlaskConical, Hand, MonitorPlay, Gauge, Loader2 } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, XCircle, FlaskConical, MonitorPlay, Gauge, Loader2 } from 'lucide-react';
 import { useProtectedContent } from '../hooks/useProtectedContent';
 import TestRunLog from './TestRunLog';
+import ManualCases from './ManualCases';
 
 const PRIORITY = { P1: 'text-amber bg-amber/15 border-amber/40', P2: 'text-brand bg-brand/10 border-brand/30', P3: 'text-slate bg-slate/10 border-slate/30' };
 
@@ -29,11 +31,16 @@ function Centered({ children }) {
 
 export default function TestsView() {
   const { payload, loading, error } = useProtectedContent('test_plan');
+  // Manual cases now live in their own table, not in the payload. Lifting the IDs here keeps the
+  // Run Log's case dropdown in sync when a tester adds or renames a case.
+  const [caseIds, setCaseIds] = useState([]);
+  // Stable identity: an inline arrow would re-fire the child's effect on every render.
+  const handleCaseIds = useCallback((ids) => setCaseIds(ids), []);
 
   if (loading) return <Centered><Loader2 className="w-4 h-4 animate-spin mr-2" /> Loading test plan…</Centered>;
   if (error || !payload) return <Centered>{error || 'No content.'}</Centered>;
 
-  const { testLevels, userPath, testGroups, testMeta, manualCases, uat, e2eFlows, nonFunctional, intros } = payload;
+  const { testLevels, userPath, testGroups, testMeta, uat, e2eFlows, nonFunctional, intros } = payload;
   // Short plain-language framing per section, authored in Supabase. Renders only when present.
   const Intro = ({ k }) => (intros?.[k]
     ? <p className="text-[11px] text-ink-muted mb-2.5 max-w-3xl leading-relaxed">{intros[k]}</p>
@@ -136,43 +143,8 @@ export default function TestsView() {
         {/* §4 Manual test plan + UAT */}
         <Section title="Manual test plan (human-run)">
           <Intro k="manual" />
-          <div className="flex items-center gap-2 mb-2 text-ink-muted">
-            <Hand className="w-3.5 h-3.5 text-amber" strokeWidth={2.25} />
-            <span className="text-[10px] font-mono">run by a tester on staging — automation can’t judge these</span>
-          </div>
-          <div className="space-y-1.5">
-            {manualCases.map((m) => (
-              <div key={m.id} className="p-3 rounded-lg bg-surface border border-hairline">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-[10px] font-mono font-bold text-amber">{m.id}</span>
-                  {m.area && (
-                    <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-surface-raised text-ink-muted border border-hairline">
-                      {m.area}
-                    </span>
-                  )}
-                  <span className="text-[12px] font-semibold text-ink">{m.case}</span>
-                  {m.priority && (
-                    <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded border ml-auto ${
-                      m.priority === 'High'
-                        ? 'text-amber bg-amber/10 border-amber/30'
-                        : 'text-slate bg-slate/10 border-slate/30'
-                    }`}>{m.priority}</span>
-                  )}
-                </div>
-                {/* Steps: HOW to run it. Without this a tester had to work out the click-path. */}
-                {m.steps && (
-                  <p className="text-[11px] text-ink-muted mt-2">
-                    <span className="text-ink-muted/50 font-mono text-[9px] uppercase tracking-wider">steps </span>
-                    {m.steps}
-                  </p>
-                )}
-                <p className="text-[11px] text-teal/85 mt-1.5">
-                  <span className="text-ink-muted/50 font-mono text-[9px] uppercase tracking-wider">expected </span>
-                  {m.expected}
-                </p>
-              </div>
-            ))}
-          </div>
+          <ManualCases onCaseIds={handleCaseIds} />
+
           <div className="mt-3 p-3 rounded-lg bg-amber/5 border border-amber/20">
             <p className="text-[10px] font-mono font-semibold text-amber mb-1">UAT — acceptance sign-off</p>
             <p className="text-[11px] text-ink-muted">{uat.note}</p>
@@ -188,7 +160,7 @@ export default function TestsView() {
             tester records what <span className="text-ink">did</span> — one row per case per run, plus
             any defects found. Everything you add here is shared with everyone who can sign in.
           </p>
-          <TestRunLog caseIds={(manualCases || []).map((m) => m.id)} />
+          <TestRunLog caseIds={caseIds} />
         </Section>
 
         {/* §5 Frontend E2E design */}

@@ -9,11 +9,26 @@ export const VIEW = {
   DATA: 'data',
 };
 
+// The Test Plan tab is hidden at NDI's request. This hides the NAV ITEM only -- the view, its
+// route and all Supabase data (cases, run log, findings) are untouched, so nothing is lost and
+// restoring it is a one-line change.
+//
+// Reach it deliberately with ?view=tests (see App.jsx). That is a cosmetic gate, not a security
+// one: the view already sits behind AuthGate, so only signed-in users can load it either way.
+export const HIDDEN_VIEWS = [VIEW.TESTS];
+
 const VIEW_ITEMS = [
   { id: VIEW.OVERVIEW, label: 'Journey Map', icon: GitBranch },
   { id: VIEW.TESTS, label: 'Test Plan', icon: FlaskConical },
   { id: VIEW.DATA, label: 'Simulated Data', icon: Database },
-];
+].filter((v) => !HIDDEN_VIEWS.includes(v.id) || isRevealed(v.id));
+
+/** A hidden view still renders its tab when explicitly requested by URL, so someone who knows it
+ *  is there keeps one-click navigation for the rest of the session. */
+function isRevealed(id) {
+  if (typeof window === 'undefined') return false;
+  return new URLSearchParams(window.location.search).get('view') === id;
+}
 
 export default function Sidebar({
   journeys,

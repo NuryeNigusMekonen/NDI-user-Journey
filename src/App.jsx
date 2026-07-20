@@ -18,7 +18,13 @@ const EditorCanvas = lazy(() => import('./editor/EditorCanvas'));
 
 export default function App() {
   // Land on the end-to-end overview, not journey 1's diagram — the map is the orientation.
-  const [view, setView] = useState(VIEW.OVERVIEW);
+  // ?view=<id> opens a view directly. This is how the hidden Test Plan tab is reached
+  // (?view=tests) now that its nav item is removed -- see HIDDEN_VIEWS in Sidebar.jsx.
+  // Unknown values fall back to the default rather than rendering a blank shell.
+  const [view, setView] = useState(() => {
+    const want = new URLSearchParams(window.location.search).get('view');
+    return Object.values(VIEW).includes(want) ? want : VIEW.OVERVIEW;
+  });
   const [active, setActive] = useState(0);
   const [workspaceMode, setWorkspaceMode] = useState(WORKSPACE_MODE.VIEW);
   const [navOpen, setNavOpen] = useState(false);

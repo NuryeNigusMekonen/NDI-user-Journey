@@ -5,14 +5,32 @@ import { useProtectedContent } from '../hooks/useProtectedContent';
 
 function CopyButton({ text, label = 'copy' }) {
   const [copied, setCopied] = useState(false);
+  const [failed, setFailed] = useState(false);
   const onCopy = async () => {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
-      setTimeout(() => setCopied(false), 1400);
     } catch {
-      // clipboard unavailable — no-op
+      // navigator.clipboard needs a secure context and can be blocked by permissions policy.
+      // Fall back to a hidden textarea + execCommand, which works without either.
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        if (!ok) throw new Error('execCommand refused');
+        setCopied(true);
+      } catch {
+        setFailed(true);                    // an empty catch made this button look broken
+        setTimeout(() => setFailed(false), 1800);
+        return;
+      }
     }
+    setTimeout(() => setCopied(false), 1400);
   };
   return (
     <button
@@ -21,7 +39,7 @@ function CopyButton({ text, label = 'copy' }) {
       title="Copy to clipboard"
     >
       {copied ? <Check className="w-3 h-3 text-teal" /> : <Copy className="w-3 h-3" />}
-      {copied ? 'copied' : label}
+      {copied ? 'copied' : failed ? 'copy blocked' : label}
     </button>
   );
 }
@@ -90,7 +108,6 @@ export default function DataView() {
         {/* dataset files */}
         <Section
           title="Dataset suite"
-          action={<CopyButton label="copy all" text={datasetFiles.map((d) => `${d.name}.xlsx (${d.rows} rows) — ${d.purpose} → ${d.outcome}`).join('\n')} />}
         >
           <p className="text-[11px] text-ink-muted mb-2">
             Hit <span className="text-brand">preview</span> to see the first rows of a dataset — each

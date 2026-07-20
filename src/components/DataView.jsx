@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Database, FileSpreadsheet, Copy, Check, Loader2, Download, FileText } from 'lucide-react';
+import { Database, FileSpreadsheet, Copy, Check, Loader2, Download, Eye, ChevronDown } from 'lucide-react';
 import { useProtectedContent } from '../hooks/useProtectedContent';
 
 function CopyButton({ text, label = 'copy' }) {
@@ -28,34 +28,29 @@ function CopyButton({ text, label = 'copy' }) {
 
 // The generated workbooks ship as static assets, so a download is a plain link — no backend,
 // no auth round-trip, and the file the reviewer gets is byte-identical to what the engines ran on.
-function DownloadLink({ name, kind }) {
-  const isXlsx = kind === 'xlsx';
-  const href = `${import.meta.env.BASE_URL || '/'}fixtures/${name}.${isXlsx ? 'xlsx' : 'expected.csv'}`;
-  const Icon = isXlsx ? Download : FileText;
+function DownloadLink({ name }) {
   return (
     <a
-      href={href}
+      href={`${import.meta.env.BASE_URL || '/'}fixtures/${name}.xlsx`}
       download
-      className={`flex items-center gap-1 text-[9px] font-mono px-1.5 py-0.5 rounded border transition-colors ${
-        isXlsx
-          ? 'border-brand/40 text-brand hover:bg-brand/10'
-          : 'border-hairline text-ink-muted hover:text-brand hover:border-brand/40'
-      }`}
-      title={isXlsx ? 'Download the census workbook (.xlsx)' : 'Download the expectations (.csv)'}
+      className="flex items-center gap-1 text-[9px] font-mono px-1.5 py-0.5 rounded border border-brand/40 text-brand hover:bg-brand/10 transition-colors"
+      title="Download the census workbook (.xlsx) — all 59 ND3 columns"
     >
-      <Icon className="w-3 h-3" />
-      {isXlsx ? '.xlsx' : '.csv'}
+      <Download className="w-3 h-3" />
+      .xlsx
     </a>
   );
 }
 
 export default function DataView() {
   const { payload, loading, error } = useProtectedContent('dataset_catalog');
+  // Which dataset card has its preview expanded (one at a time keeps the page readable).
+  const [openPreview, setOpenPreview] = useState(null);
 
   if (loading) return <div className="h-full flex items-center justify-center bg-canvas text-ink-muted text-sm"><Loader2 className="w-4 h-4 animate-spin mr-2" /> Loading datasets…</div>;
   if (error || !payload) return <div className="h-full flex items-center justify-center bg-canvas text-ink-muted text-sm">{error || 'No content.'}</div>;
 
-  const { datasetFiles, edgeVariations, datasetMeta, sourceCoverage, sampleRows } = payload;
+  const { datasetFiles, edgeVariations, datasetMeta, sourceCoverage, sampleRows, previews } = payload;
   const totalRows = datasetFiles.reduce((n, d) => n + d.rows, 0);
   return (
     <div className="h-full overflow-y-auto bg-canvas px-4 sm:px-8 py-5 sm:py-7">
@@ -84,10 +79,10 @@ export default function DataView() {
           action={<CopyButton label="copy all" text={datasetFiles.map((d) => `${d.name}.xlsx (${d.rows} rows) — ${d.purpose} → ${d.outcome}`).join('\n')} />}
         >
           <p className="text-[11px] text-ink-muted mb-2">
-            Every dataset is downloadable: <span className="font-mono text-brand">.xlsx</span> is the census
-            workbook under the real 59-column ND3 template (upload it straight into the platform);
-            <span className="font-mono text-ink-muted"> .csv</span> is the row-by-row expectations file
-            (which edge case each row targets and what should happen).
+            Hit <span className="text-brand">preview</span> to see the first rows of a dataset — each
+            with the edge case it targets and what should happen — then download the
+            <span className="font-mono text-brand"> .xlsx</span> to get the full census workbook under
+            the real 59-column ND3 template, ready to upload straight into the platform.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {datasetFiles.map((d) => (
@@ -100,12 +95,53 @@ export default function DataView() {
                 <p className="text-[11px] text-ink-muted mt-1.5">{d.purpose}</p>
                 <p className="text-[10px] font-mono text-teal/80 mt-1">→ {d.outcome}</p>
                 <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-hairline/60">
-                  <DownloadLink name={d.name} kind="xlsx" />
-                  <DownloadLink name={d.name} kind="csv" />
-                  <span className="ml-auto">
-                    <CopyButton text={`${d.name}.xlsx (${d.rows} rows)\nPurpose: ${d.purpose}\nExpected: ${d.outcome}`} />
-                  </span>
+                  <DownloadLink name={d.name} />
+                  {previews?.[d.name] && (
+                    <button
+                      onClick={() => setOpenPreview(openPreview === d.name ? null : d.name)}
+                      className={`flex items-center gap-1 text-[9px] font-mono px-1.5 py-0.5 rounded border transition-colors ${
+                        openPreview === d.name
+                          ? 'border-brand/50 text-brand bg-brand/10'
+                          : 'border-hairline text-ink-muted hover:text-brand hover:border-brand/40'
+                      }`}
+                    >
+                      {openPreview === d.name ? <ChevronDown className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
+                      preview
+                    </button>
+                  )}
                 </div>
+
+                {/* Inline preview: enough to answer "is this the file I want?" without downloading.
+                    Carries each row's expected behaviour, which used to live only in the .csv. */}
+                {openPreview === d.name && previews?.[d.name] && (
+                  <div className="mt-2 overflow-x-auto rounded-md border border-hairline bg-canvas/60">
+                    <table className="text-[9px] font-mono whitespace-nowrap w-full">
+                      <thead>
+                        <tr className="border-b border-hairline">
+                          {previews[d.name].headers.map((h) => (
+                            <th key={h} className="text-left px-1.5 py-1 text-brand/70 font-semibold">{h}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {previews[d.name].rows.map((r, ri) => (
+                          <tr key={ri} className="border-b border-hairline/40 last:border-0">
+                            {r.map((cell, ci) => (
+                              <td key={ci} className={`px-1.5 py-1 ${
+                                ci === r.length - 1 ? 'text-teal/80 whitespace-normal min-w-[180px]'
+                                  : cell ? 'text-ink' : 'text-ink-muted/30'}`}>
+                                {cell || '·'}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <p className="text-[9px] font-mono text-ink-muted/60 px-1.5 py-1">
+                      first {previews[d.name].rows.length} of {d.rows} rows · download the .xlsx for all 59 columns
+                    </p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -117,7 +153,7 @@ export default function DataView() {
             title={`Sample rows — actual generated data (${sampleRows.headers.length} columns)`}
             action={(
               <div className="flex items-center gap-1.5">
-                <DownloadLink name="scale_large" kind="xlsx" />
+                <DownloadLink name="scale_large" />
                 <CopyButton label="copy as TSV" text={[sampleRows.headers.join('\t'), ...sampleRows.rows.map((r) => r.join('\t'))].join('\n')} />
               </div>
             )}

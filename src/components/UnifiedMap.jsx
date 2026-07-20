@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Map, X, AlertTriangle, CheckCircle2, RotateCcw, GitMerge } from 'lucide-react';
+// Aliased: lucide's Map icon would shadow the global Map constructor used below (new Map()),
+// which threw at render and blanked the page.
+import { Map as MapIcon, X, AlertTriangle, CheckCircle2, RotateCcw, GitMerge } from 'lucide-react';
 import { LANES, NODES, LINKS, PATHS, PATH_FILTERS } from '../data/unifiedMap';
 
 /**
@@ -41,7 +43,7 @@ export default function UnifiedMap() {
       <div className="px-4 sm:px-8 py-5 sm:py-7 max-w-[1400px] mx-auto">
         <div className="flex items-center gap-3 mb-1">
           <div className="w-9 h-9 rounded-lg bg-teal/15 border border-teal/40 flex items-center justify-center">
-            <Map className="w-[18px] h-[18px] text-teal" strokeWidth={2.25} />
+            <MapIcon className="w-[18px] h-[18px] text-teal" strokeWidth={2.25} />
           </div>
           <div>
             <h2 className="font-display text-[19px] font-bold text-ink tracking-tight leading-none">

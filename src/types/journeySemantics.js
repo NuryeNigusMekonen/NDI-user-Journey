@@ -55,6 +55,11 @@ export function inferStepKind(step) {
     if (step.to === 'ghl' || step.from === 'ghl') return STEP_KIND.HANDOFF;
     return STEP_KIND.SYSTEM;
   }
+  // A step whose actor talks to ITSELF is the system doing work, not a message between two
+  // parties — "Platform → Platform: parse into a clean per-employee record" is SYS, not MSG.
+  // Without this, every solid step fell through to MESSAGE, so each node wore an identical MSG
+  // badge: no information, and wrong on most steps.
+  if (step?.from && step?.to && step.from === step.to) return STEP_KIND.SYSTEM;
   return STEP_KIND.MESSAGE;
 }
 

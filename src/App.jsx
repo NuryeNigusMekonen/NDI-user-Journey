@@ -3,6 +3,7 @@ import { Menu } from 'lucide-react';
 import Sidebar, { VIEW } from './components/Sidebar';
 import AppHeader from './components/AppHeader';
 import TestsView from './components/TestsView';
+import UnifiedMap from './components/UnifiedMap';
 import DataView from './components/DataView';
 import AuthGate from './components/AuthGate';
 import JourneyOverview from './components/JourneyOverview';
@@ -118,6 +119,8 @@ export default function App() {
 
         {view === VIEW.OVERVIEW ? (
           <JourneyOverview onSelect={(i) => { setView(VIEW.JOURNEY); setActive(i); }} />
+        ) : view === VIEW.FULLMAP ? (
+          <UnifiedMap />
         ) : view === VIEW.TESTS ? (
           <AuthGate title="Test Plan"><TestsView /></AuthGate>
         ) : view === VIEW.DATA ? (

@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
-import { GitBranch, FlaskConical, Database } from 'lucide-react';
+import { GitBranch, FlaskConical, Database, Map } from 'lucide-react';
 import { stages } from '../data/journeys';
 
 export const VIEW = {
   OVERVIEW: 'overview',
   JOURNEY: 'journey',
+  FULLMAP: 'fullmap',
   TESTS: 'tests',
   DATA: 'data',
 };
@@ -19,6 +20,7 @@ export const HIDDEN_VIEWS = [VIEW.TESTS];
 
 const VIEW_ITEMS = [
   { id: VIEW.OVERVIEW, label: 'Journey Map', icon: GitBranch },
+  { id: VIEW.FULLMAP, label: 'Full Journey', icon: Map },
   { id: VIEW.TESTS, label: 'Test Plan', icon: FlaskConical },
   { id: VIEW.DATA, label: 'Simulated Data', icon: Database },
 ].filter((v) => !HIDDEN_VIEWS.includes(v.id) || isRevealed(v.id));

@@ -158,18 +158,37 @@ export default function TestRunLog({ caseIds: propCaseIds = [], onCaseIds }) {
       supabase.from('test_run_log').select('*').order('created_at', { ascending: false }).limit(100),
       supabase.from('test_findings').select('*').order('created_at', { ascending: false }).limit(100),
     ]);
-    if (r.error || f.error) setErr('Could not load results — has the migration been run?');
+    // Report the real reason. "has the migration been run?" hid RLS denials and network
+    // failures behind the same sentence, which made a save that silently no-ops undiagnosable.
+    const e = r.error || f.error;
+    if (e) {
+      setErr(e.code === '42P01' || /does not exist/i.test(e.message || '')
+        ? 'Table missing — run 20260720070000_test_run_log.sql in the Supabase SQL editor.'
+        : `Could not load results: ${e.message}${e.code ? ` (${e.code})` : ''}`);
+    }
     setRuns(r.data || []); setFindings(f.data || []);
     setLoading(false);
   }, []);
 
   useEffect(() => { load(); }, [load]);
 
+  // caseIds arrive asynchronously from ManualCases, after useState(blankRun) has already run.
+  // Without this the select displays the first case while run.case_id is still '', and the
+  // submit guard rejects it with no feedback at all.
+  useEffect(() => {
+    if (caseIds.length && !run.case_id) setRun((r) => ({ ...r, case_id: caseIds[0] }));
+  }, [caseIds, run.case_id]);
+
   const add = async (table, row, reset) => {
     setSaving(true);
     const { error } = await supabase.from(table).insert(row);
     setSaving(false);
-    if (error) return setErr(error.message);
+    if (error) {
+      // 42501 = RLS refused the write. Distinct from a missing table, and the fix is different.
+      return setErr(error.code === '42501'
+        ? 'Save refused by row-level security — are you signed in? (42501)'
+        : `Save failed: ${error.message}${error.code ? ` (${error.code})` : ''}`);
+    }
     reset(); load();
   };
 
@@ -269,10 +288,19 @@ export default function TestRunLog({ caseIds: propCaseIds = [], onCaseIds }) {
           </span>
         </div>
 
-        <form onSubmit={(e) => { e.preventDefault(); if (run.case_id && run.tester) add('test_run_log', run, () => setRun({ ...blankRun, tester: run.tester, build: run.build })); }}
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          if (!run.case_id) return setErr('Pick a case first — none is selected. If the dropdown is empty, add a manual case.');
+          if (!run.tester) return setErr('Enter a tester name.');
+          setErr('');
+          add('test_run_log', run, () => setRun({ ...blankRun, case_id: run.case_id, tester: run.tester, build: run.build }));
+        }}
           className="flex flex-wrap gap-1.5 mb-2">
-          <select value={run.case_id} onChange={(e) => setRun({ ...run, case_id: e.target.value })} className={input}>
-            {caseIds.map((c) => <option key={c} value={c}>{c}</option>)}
+          <select value={run.case_id} onChange={(e) => setRun({ ...run, case_id: e.target.value })}
+            className={input} disabled={!caseIds.length}>
+            {caseIds.length
+              ? caseIds.map((c) => <option key={c} value={c}>{c}</option>)
+              : <option value="">no cases yet</option>}
           </select>
           <input className={`${input} w-28`} placeholder="tester" value={run.tester}
             onChange={(e) => setRun({ ...run, tester: e.target.value })} required />
@@ -356,7 +384,13 @@ export default function TestRunLog({ caseIds: propCaseIds = [], onCaseIds }) {
 
         </div>
 
-        <form onSubmit={(e) => { e.preventDefault(); if (finding.summary && finding.raised_by) add('test_findings', finding, () => setFinding({ ...blankFinding, raised_by: finding.raised_by })); }}
+        <form onSubmit={(e) => {
+          e.preventDefault();
+          if (!finding.raised_by) return setErr('Enter who raised this.');
+          if (!finding.summary) return setErr('Describe what went wrong.');
+          setErr('');
+          add('test_findings', finding, () => setFinding({ ...blankFinding, raised_by: finding.raised_by }));
+        }}
           className="flex flex-wrap gap-1.5 mb-2">
           <input className={`${input} w-20`} placeholder="case" value={finding.case_id}
             onChange={(e) => setFinding({ ...finding, case_id: e.target.value })} />

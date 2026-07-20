@@ -283,8 +283,15 @@ export default function DataView() {
         {/* edge variations — grouped by the pipeline stage or engine that owns the behaviour */}
         {(edgeVariations || []).length > 0 && (
           <Section title="Edge cases the data deliberately tests">
+            {/* Counted from the content, not hardcoded: the previous literal "27" survived the
+                list changing and overstated how many variations a generated row actually covers. */}
             <p className="text-[11px] text-ink-muted">
-              27 input variations, each paired with the behaviour the platform must produce. They are
+              {edgeVariations.reduce((n, g) => n + (g.items?.length || 0), 0)} input variations,
+              each paired with the behaviour the platform must produce.{' '}
+              <span className="text-amber/90">
+                Two (E1, E10) have no generated row and are proven by engine tests instead.
+              </span>{' '}
+              They are
               grouped by <span className="text-ink">where a failure would occur</span> — two pipeline
               stages that run before any engine (ingestion, then geo resolution), then the three
               engines. A ZIP that will not resolve fails upstream of Engine A, so it belongs to the geo

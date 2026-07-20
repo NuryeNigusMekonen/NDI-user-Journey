@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { CheckCircle2, AlertTriangle, XCircle, FlaskConical, Hand, MonitorPlay, Gauge, Loader2 } from 'lucide-react';
 import { useProtectedContent } from '../hooks/useProtectedContent';
+import TestRunLog from './TestRunLog';
 
 const PRIORITY = { P1: 'text-amber bg-amber/15 border-amber/40', P2: 'text-brand bg-brand/10 border-brand/30', P3: 'text-slate bg-slate/10 border-slate/30' };
 
@@ -177,6 +178,17 @@ export default function TestsView() {
             <p className="text-[11px] text-ink-muted">{uat.note}</p>
             <p className="text-[11px] text-ink mt-1"><span className="text-amber">Exit:</span> {uat.exit}</p>
           </div>
+        </Section>
+
+        {/* Run log + findings — where a tester records what actually happened. Editable: the
+            view is already behind a login and signups are disabled, so everyone here is a tester. */}
+        <Section title="Test results — run log & findings">
+          <p className="text-[11px] text-ink-muted mb-3 max-w-3xl leading-relaxed">
+            The cases above say what <span className="text-ink">should</span> happen. This is where a
+            tester records what <span className="text-ink">did</span> — one row per case per run, plus
+            any defects found. Everything you add here is shared with everyone who can sign in.
+          </p>
+          <TestRunLog caseIds={(manualCases || []).map((m) => m.id)} />
         </Section>
 
         {/* §5 Frontend E2E design */}

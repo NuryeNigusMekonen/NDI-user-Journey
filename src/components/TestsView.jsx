@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { CheckCircle2, AlertTriangle, XCircle, FlaskConical, MonitorPlay, Gauge, Loader2 } from 'lucide-react';
 import { useProtectedContent } from '../hooks/useProtectedContent';
 import TestRunLog from './TestRunLog';
-import ManualCases from './ManualCases';
 
 const PRIORITY = { P1: 'text-amber bg-amber/15 border-amber/40', P2: 'text-brand bg-brand/10 border-brand/30', P3: 'text-slate bg-slate/10 border-slate/30' };
 
@@ -140,27 +139,24 @@ export default function TestsView() {
           </Section>
         ))}
 
-        {/* §4 Manual test plan + UAT */}
-        <Section title="Manual test plan (human-run)">
+        {/* §4 Manual test plan, run log and findings — one tabbed surface. Previously three
+            stacked tables that made the page very long; they are the same workflow, so they now
+            swap in place instead. */}
+        <Section title="Manual testing — cases, runs & findings">
           <Intro k="manual" />
-          <ManualCases onCaseIds={handleCaseIds} />
+          <p className="text-[11px] text-ink-muted mb-3 max-w-3xl leading-relaxed">
+            <span className="text-ink">Manual cases</span> say what should happen,
+            {' '}<span className="text-ink">Run log</span> records what did, and
+            {' '}<span className="text-ink">Findings</span> holds the defects. All three are editable
+            and shared with everyone who can sign in.
+          </p>
+          <TestRunLog caseIds={caseIds} onCaseIds={handleCaseIds} />
 
           <div className="mt-3 p-3 rounded-lg bg-amber/5 border border-amber/20">
             <p className="text-[10px] font-mono font-semibold text-amber mb-1">UAT — acceptance sign-off</p>
             <p className="text-[11px] text-ink-muted">{uat.note}</p>
             <p className="text-[11px] text-ink mt-1"><span className="text-amber">Exit:</span> {uat.exit}</p>
           </div>
-        </Section>
-
-        {/* Run log + findings — where a tester records what actually happened. Editable: the
-            view is already behind a login and signups are disabled, so everyone here is a tester. */}
-        <Section title="Test results — run log & findings">
-          <p className="text-[11px] text-ink-muted mb-3 max-w-3xl leading-relaxed">
-            The cases above say what <span className="text-ink">should</span> happen. This is where a
-            tester records what <span className="text-ink">did</span> — one row per case per run, plus
-            any defects found. Everything you add here is shared with everyone who can sign in.
-          </p>
-          <TestRunLog caseIds={caseIds} />
         </Section>
 
         {/* §5 Frontend E2E design */}

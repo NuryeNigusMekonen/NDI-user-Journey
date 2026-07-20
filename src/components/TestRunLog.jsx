@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ClipboardCheck, Bug, Plus, Loader2, RefreshCw, Pencil, Trash2, Check, X, Download } from 'lucide-react';
+import { ClipboardCheck, Bug, Hand, Plus, Loader2, RefreshCw, Pencil, Trash2, Check, X, Download,
+  ChevronDown, ChevronUp } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import ManualCases from './ManualCases';
 
 const RESULTS = ['Pass', 'Fail', 'Blocked', 'Skipped'];
 const SEVERITIES = ['Critical', 'High', 'Medium', 'Low'];
@@ -69,6 +71,23 @@ function ExcelButton({ onClick, disabled }) {
   );
 }
 
+/** A table longer than COLLAPSED_ROWS is clipped with a "show all" toggle. Without this the
+ *  Findings table pushes everything below it off-screen once a real testing round fills it. */
+const COLLAPSED_ROWS = 8;
+
+function ShowAll({ total, shown, expanded, onToggle }) {
+  if (total <= COLLAPSED_ROWS) return null;
+  return (
+    <button onClick={onToggle}
+      className="w-full flex items-center justify-center gap-1 py-1.5 text-[9px] font-mono
+        text-ink-muted hover:text-brand border-t border-hairline/60 transition-colors">
+      {expanded
+        ? <><ChevronUp className="w-3 h-3" /> show fewer</>
+        : <><ChevronDown className="w-3 h-3" /> show all {total} — {total - shown} hidden</>}
+    </button>
+  );
+}
+
 /** Edit / delete controls. Delete confirms first — the log is shared, so a misclick would
  *  destroy someone else's recorded result. */
 function RowActions({ editing, onEdit, onSave, onCancel, onDelete, confirming, saving }) {
@@ -112,7 +131,7 @@ function RowActions({ editing, onEdit, onSave, onCancel, onDelete, confirming, s
  * Rows are editable and deletable in place. Writes are authenticated-only (see the migration);
  * the view already sits behind a login and signups are disabled, so everyone here is a tester.
  */
-export default function TestRunLog({ caseIds = [] }) {
+export default function TestRunLog({ caseIds: propCaseIds = [], onCaseIds }) {
   const [runs, setRuns] = useState([]);
   const [findings, setFindings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -121,6 +140,12 @@ export default function TestRunLog({ caseIds = [] }) {
   const [editing, setEditing] = useState(null);   // { table, id }
   const [draft, setDraft] = useState({});
   const [confirming, setConfirming] = useState(null);
+  const [tab, setTab] = useState('cases');            // cases | runs | findings
+  const [expanded, setExpanded] = useState({});       // per-table "show all"
+  const [caseIds, setCaseIds] = useState(propCaseIds);
+  // Stable identity: ManualCases keeps this in an effect dependency array, so an inline arrow
+  // would re-fire that effect on every render.
+  const handleCaseIds = useCallback((ids) => { setCaseIds(ids); onCaseIds?.(ids); }, [onCaseIds]);
 
   const blankRun = { case_id: caseIds[0] || '', tester: '', build: '', result: 'Pass', notes: '' };
   const blankFinding = { case_id: '', raised_by: '', severity: 'High', summary: '', status: 'Open' };
@@ -167,6 +192,11 @@ export default function TestRunLog({ caseIds = [] }) {
   const startEdit = (t, row) => { setConfirming(null); setEditing({ table: t, id: row.id }); setDraft(row); };
   const clear = () => { setEditing(null); setConfirming(null); setDraft({}); };
 
+  const vis = (rows, key) => expanded[key] ? rows : rows.slice(0, COLLAPSED_ROWS);
+  const toggle = (key) => setExpanded((e) => ({ ...e, [key]: !e[key] }));
+  const visRuns = vis(runs, 'runs');
+  const visFinds = vis(findings, 'findings');
+
   if (loading) {
     return <p className="text-[11px] text-ink-muted flex items-center gap-2">
       <Loader2 className="w-3.5 h-3.5 animate-spin" /> Loading results…
@@ -177,12 +207,45 @@ export default function TestRunLog({ caseIds = [] }) {
     <th className="text-left px-2 py-1.5 font-semibold uppercase tracking-wider">{children}</th>
   );
 
+  const TABS = [
+    { key: 'cases', label: 'Manual cases', icon: Hand, count: caseIds.length, cls: 'text-amber' },
+    { key: 'runs', label: 'Run log', icon: ClipboardCheck, count: runs.length, cls: 'text-teal' },
+    { key: 'findings', label: 'Findings', icon: Bug, count: findings.length, cls: 'text-amber' },
+  ];
+
   return (
-    <div className="space-y-6">
-      {err && <p className="text-[11px] text-amber p-2 rounded bg-amber/5 border border-amber/20">{err}</p>}
+    <div>
+      {err && <p className="text-[11px] text-amber p-2 rounded bg-amber/5 border border-amber/20 mb-2">{err}</p>}
+
+      {/* One surface, three tables — swapped in place rather than stacked, so the page stays
+          short and a tester works in one spot. */}
+      <div className="flex items-center gap-1 mb-3 border-b border-hairline">
+        {TABS.map((t) => {
+          const on = tab === t.key;
+          const Icon = t.icon;
+          return (
+            <button key={t.key} onClick={() => setTab(t.key)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-mono -mb-px border-b-2
+                transition-colors ${on
+                  ? 'border-brand text-ink font-semibold'
+                  : 'border-transparent text-ink-muted hover:text-ink'}`}>
+              <Icon className={`w-3.5 h-3.5 ${on ? t.cls : ''}`} strokeWidth={2.25} />
+              {t.label}
+              <span className={`px-1 rounded text-[9px] ${on ? 'bg-brand/15 text-brand' : 'text-ink-muted/50'}`}>
+                {t.count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ---------------- Manual cases ---------------- */}
+      <div className={tab === 'cases' ? '' : 'hidden'}>
+        <ManualCases collapsedRows={COLLAPSED_ROWS} onCaseIds={handleCaseIds} />
+      </div>
 
       {/* ---------------- Run Log ---------------- */}
-      <div>
+      <div className={tab === 'runs' ? '' : 'hidden'}>
         <div className="flex items-center gap-2 mb-2">
           <ClipboardCheck className="w-3.5 h-3.5 text-teal" strokeWidth={2.25} />
           <span className="text-[10px] font-mono font-semibold tracking-[0.14em] uppercase text-teal/80">
@@ -226,7 +289,7 @@ export default function TestRunLog({ caseIds = [] }) {
                   <TH>date</TH><TH>case</TH><TH>tester</TH><TH>build</TH><TH>result</TH><TH>notes</TH><TH></TH>
                 </tr></thead>
                 <tbody>
-                  {runs.map((r) => {
+                  {visRuns.map((r) => {
                     const ed = isEditing('test_run_log', r.id);
                     return (
                       <tr key={r.id} className="group border-b border-hairline/40 last:border-0">
@@ -268,12 +331,14 @@ export default function TestRunLog({ caseIds = [] }) {
                   })}
                 </tbody>
               </table>
+              <ShowAll total={runs.length} shown={visRuns.length}
+                expanded={!!expanded.runs} onToggle={() => toggle('runs')} />
             </div>
           )}
       </div>
 
       {/* ---------------- Findings ---------------- */}
-      <div>
+      <div className={tab === 'findings' ? '' : 'hidden'}>
         <div className="flex items-center gap-2 mb-2">
           <Bug className="w-3.5 h-3.5 text-amber" strokeWidth={2.25} />
           <span className="text-[10px] font-mono font-semibold tracking-[0.14em] uppercase text-amber/80">
@@ -308,7 +373,7 @@ export default function TestRunLog({ caseIds = [] }) {
                   <TH>raised</TH><TH>case</TH><TH>by</TH><TH>severity</TH><TH>summary</TH><TH>status</TH><TH></TH>
                 </tr></thead>
                 <tbody>
-                  {findings.map((f) => {
+                  {visFinds.map((f) => {
                     const ed = isEditing('test_findings', f.id);
                     return (
                       <tr key={f.id} className="group border-b border-hairline/40 last:border-0">
@@ -356,6 +421,8 @@ export default function TestRunLog({ caseIds = [] }) {
                   })}
                 </tbody>
               </table>
+              <ShowAll total={findings.length} shown={visFinds.length}
+                expanded={!!expanded.findings} onToggle={() => toggle('findings')} />
             </div>
           )}
       </div>

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Hand, Plus, Loader2, RefreshCw, Pencil, Trash2, Check, X, Download } from 'lucide-react';
+import { Plus, Loader2, RefreshCw, Pencil, Trash2, Check, X, Download,
+  ChevronDown, ChevronUp } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 const PRIORITIES = ['High', 'Medium', 'Low'];
@@ -83,7 +84,7 @@ function RowActions({ editing, onEdit, onSave, onCancel, onDelete, confirming, s
  * `onCaseIds` lifts the case list to the parent so the Run Log's case dropdown stays in sync with
  * whatever is actually in the plan — add M-14 here and it is immediately loggable.
  */
-export default function ManualCases({ onCaseIds }) {
+export default function ManualCases({ onCaseIds, collapsedRows = 8 }) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -92,6 +93,7 @@ export default function ManualCases({ onCaseIds }) {
   const [draft, setDraft] = useState({});
   const [confirming, setConfirming] = useState(null);
   const [adding, setAdding] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const blank = { case_id: '', area: 'Upload', title: '', steps: '', expected: '', priority: 'High' };
   const [next, setNext] = useState(blank);
@@ -145,6 +147,8 @@ export default function ManualCases({ onCaseIds }) {
     </p>;
   }
 
+  const visible = expanded ? rows : rows.slice(0, collapsedRows);
+
   const TH = ({ children, w }) => (
     <th className={`text-left px-2 py-1.5 font-semibold uppercase tracking-wider ${w || ''}`}>{children}</th>
   );
@@ -160,8 +164,9 @@ export default function ManualCases({ onCaseIds }) {
       {err && <p className="text-[11px] text-amber p-2 rounded bg-amber/5 border border-amber/20 mb-2">{err}</p>}
 
       <div className="flex items-center gap-2 mb-2">
-        <Hand className="w-3.5 h-3.5 text-amber" strokeWidth={2.25} />
-        <span className="text-[10px] font-mono">run by a tester on staging — automation can’t judge these</span>
+        <span className="text-[10px] font-mono text-ink-muted">
+          run by a tester on staging — automation can’t judge these
+        </span>
         <span className="ml-auto flex items-center gap-1.5">
           <button onClick={() => downloadCases(rows)} disabled={!rows.length}
             title="Download the plan as an Excel workbook"
@@ -211,7 +216,7 @@ export default function ManualCases({ onCaseIds }) {
                 <TH>steps</TH><TH>expected result</TH><TH w="w-16">pri</TH><TH w="w-14" />
               </tr></thead>
               <tbody>
-                {rows.map((r) => {
+                {visible.map((r) => {
                   const ed = editing === r.id;
                   return (
                     <tr key={r.id} className="group border-b border-hairline/40 last:border-0 align-top">
@@ -251,6 +256,15 @@ export default function ManualCases({ onCaseIds }) {
                 })}
               </tbody>
             </table>
+            {rows.length > collapsedRows && (
+              <button onClick={() => setExpanded((v) => !v)}
+                className="w-full flex items-center justify-center gap-1 py-1.5 text-[9px] font-mono
+                  text-ink-muted hover:text-brand border-t border-hairline/60 transition-colors">
+                {expanded
+                  ? <><ChevronUp className="w-3 h-3" /> show fewer</>
+                  : <><ChevronDown className="w-3 h-3" /> show all {rows.length} — {rows.length - visible.length} hidden</>}
+              </button>
+            )}
           </div>
         )}
     </div>

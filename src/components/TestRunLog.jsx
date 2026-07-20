@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ClipboardCheck, Bug, Plus, Loader2, RefreshCw, Pencil, Trash2, Check, X } from 'lucide-react';
+import { ClipboardCheck, Bug, Plus, Loader2, RefreshCw, Pencil, Trash2, Check, X, Download } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 const RESULTS = ['Pass', 'Fail', 'Blocked', 'Skipped'];
@@ -23,6 +23,27 @@ const input = 'px-2 py-1 rounded bg-surface border border-hairline text-[11px] t
   'placeholder:text-ink-muted/50 focus:outline-none focus:border-brand/50';
 const cellInput = 'w-full px-1 py-0.5 rounded bg-canvas border border-brand/40 text-[10px] ' +
   'text-ink focus:outline-none';
+
+
+/** Export rows as CSV. Testers need the log in a spreadsheet for reporting and sign-off, and a
+ *  file is also the only backup if a row is deleted. Quotes are doubled per RFC 4180. */
+function downloadCsv(filename, columns, rows) {
+  const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const csv = [columns.join(','), ...rows.map((r) => columns.map((c) => esc(r[c])).join(','))].join('\n');
+  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+  const a = Object.assign(document.createElement('a'), { href: url, download: filename });
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function CsvButton({ onClick, disabled }) {
+  return (
+    <button onClick={onClick} disabled={disabled} title="Download as CSV"
+      className="flex items-center gap-1 text-[9px] font-mono px-1.5 py-0.5 rounded border border-hairline text-ink-muted hover:text-brand hover:border-brand/40 transition-colors disabled:opacity-40">
+      <Download className="w-3 h-3" /> csv
+    </button>
+  );
+}
 
 /** Edit / delete controls. Delete confirms first — the log is shared, so a misclick would
  *  destroy someone else's recorded result. */
@@ -143,9 +164,13 @@ export default function TestRunLog({ caseIds = [] }) {
           <span className="text-[10px] font-mono font-semibold tracking-[0.14em] uppercase text-teal/80">
             Run log — one row per case, per run
           </span>
-          <button onClick={load} className="ml-auto text-ink-muted hover:text-brand" title="Refresh">
-            <RefreshCw className="w-3 h-3" />
-          </button>
+          <span className="ml-auto flex items-center gap-1.5">
+            <CsvButton disabled={!runs.length} onClick={() => downloadCsv('test-run-log.csv',
+              ['run_date', 'case_id', 'tester', 'build', 'result', 'notes'], runs)} />
+            <button onClick={load} className="text-ink-muted hover:text-brand" title="Refresh">
+              <RefreshCw className="w-3 h-3" />
+            </button>
+          </span>
         </div>
 
         <form onSubmit={(e) => { e.preventDefault(); if (run.case_id && run.tester) add('test_run_log', run, () => setRun({ ...blankRun, tester: run.tester, build: run.build })); }}
@@ -229,6 +254,10 @@ export default function TestRunLog({ caseIds = [] }) {
           <Bug className="w-3.5 h-3.5 text-amber" strokeWidth={2.25} />
           <span className="text-[10px] font-mono font-semibold tracking-[0.14em] uppercase text-amber/80">
             Findings — defects raised during testing
+          </span>
+          <span className="ml-auto">
+            <CsvButton disabled={!findings.length} onClick={() => downloadCsv('test-findings.csv',
+              ['raised_on', 'case_id', 'raised_by', 'severity', 'summary', 'detail', 'status'], findings)} />
           </span>
         </div>
 

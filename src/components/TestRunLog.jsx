@@ -25,22 +25,46 @@ const cellInput = 'w-full px-1 py-0.5 rounded bg-canvas border border-brand/40 t
   'text-ink focus:outline-none';
 
 
-/** Export rows as CSV. Testers need the log in a spreadsheet for reporting and sign-off, and a
- *  file is also the only backup if a row is deleted. Quotes are doubled per RFC 4180. */
-function downloadCsv(filename, columns, rows) {
-  const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  const csv = [columns.join(','), ...rows.map((r) => columns.map((c) => esc(r[c])).join(','))].join('\n');
-  const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
-  const a = Object.assign(document.createElement('a'), { href: url, download: filename });
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
+/** Export both tables as ONE .xlsx with a sheet each — the shape the team's test-plan format uses,
+ *  and what a reviewer expects to receive. The library is imported lazily so its weight only lands
+ *  when someone actually exports, not on every page load.
+ *
+ *  A file also matters because deletes here are permanent: exporting after a testing round is the
+ *  only record that survives a row being removed. */
+async function downloadWorkbook(runs, findings) {
+  const { default: writeXlsxFile } = await import('write-excel-file/browser');
+  const sheet = (cols, rows) => [
+    cols.map((c) => ({ value: c.label, fontWeight: 'bold' })),
+    ...rows.map((r) => cols.map((c) => ({ value: r[c.key] ?? '', type: String }))),
+  ];
+  const runCols = [
+    { key: 'run_date', label: 'Date' }, { key: 'case_id', label: 'Case' },
+    { key: 'tester', label: 'Tester' }, { key: 'build', label: 'Build' },
+    { key: 'result', label: 'Result' }, { key: 'notes', label: 'Notes' },
+  ];
+  const findCols = [
+    { key: 'raised_on', label: 'Raised' }, { key: 'case_id', label: 'Case' },
+    { key: 'raised_by', label: 'Raised by' }, { key: 'severity', label: 'Severity' },
+    { key: 'summary', label: 'Summary' }, { key: 'detail', label: 'Detail' },
+    { key: 'status', label: 'Status' },
+  ];
+  // Each sheet is one object carrying its own data/sheet-name/columns. Two traps, both silent:
+  // parallel arrays throw "pass an array of sheet objects", and the name key is `sheet`, not
+  // `name` — get it wrong and the tabs come out as "Sheet1"/"Sheet2".
+  const width = (c, wide) => ({ width: wide.includes(c.key) ? 46 : 16 });
+  // The browser build returns { toBlob, toFile } — it does NOT download from a `fileName`
+  // option. Passing one and never calling toFile() silently downloads nothing.
+  await writeXlsxFile([
+    { data: sheet(runCols, runs), sheet: 'Run Log', columns: runCols.map((c) => width(c, ['notes'])) },
+    { data: sheet(findCols, findings), sheet: 'Findings', columns: findCols.map((c) => width(c, ['summary', 'detail'])) },
+  ]).toFile(`nine-dean-test-results-${new Date().toISOString().slice(0, 10)}.xlsx`);
 }
 
-function CsvButton({ onClick, disabled }) {
+function ExcelButton({ onClick, disabled }) {
   return (
-    <button onClick={onClick} disabled={disabled} title="Download as CSV"
-      className="flex items-center gap-1 text-[9px] font-mono px-1.5 py-0.5 rounded border border-hairline text-ink-muted hover:text-brand hover:border-brand/40 transition-colors disabled:opacity-40">
-      <Download className="w-3 h-3" /> csv
+    <button onClick={onClick} disabled={disabled} title="Download both tables as one Excel workbook"
+      className="flex items-center gap-1 text-[9px] font-mono px-1.5 py-0.5 rounded border border-brand/40 text-brand hover:bg-brand/10 transition-colors disabled:opacity-40">
+      <Download className="w-3 h-3" /> .xlsx
     </button>
   );
 }
@@ -165,8 +189,8 @@ export default function TestRunLog({ caseIds = [] }) {
             Run log — one row per case, per run
           </span>
           <span className="ml-auto flex items-center gap-1.5">
-            <CsvButton disabled={!runs.length} onClick={() => downloadCsv('test-run-log.csv',
-              ['run_date', 'case_id', 'tester', 'build', 'result', 'notes'], runs)} />
+            <ExcelButton disabled={!runs.length && !findings.length}
+              onClick={() => downloadWorkbook(runs, findings)} />
             <button onClick={load} className="text-ink-muted hover:text-brand" title="Refresh">
               <RefreshCw className="w-3 h-3" />
             </button>
@@ -255,10 +279,7 @@ export default function TestRunLog({ caseIds = [] }) {
           <span className="text-[10px] font-mono font-semibold tracking-[0.14em] uppercase text-amber/80">
             Findings — defects raised during testing
           </span>
-          <span className="ml-auto">
-            <CsvButton disabled={!findings.length} onClick={() => downloadCsv('test-findings.csv',
-              ['raised_on', 'case_id', 'raised_by', 'severity', 'summary', 'detail', 'status'], findings)} />
-          </span>
+
         </div>
 
         <form onSubmit={(e) => { e.preventDefault(); if (finding.summary && finding.raised_by) add('test_findings', finding, () => setFinding({ ...blankFinding, raised_by: finding.raised_by })); }}

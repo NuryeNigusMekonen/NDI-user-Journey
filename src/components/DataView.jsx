@@ -26,6 +26,20 @@ function CopyButton({ text, label = 'copy' }) {
   );
 }
 
+// Each fixture represents a different fictional acquisition target; the name is stamped into the
+// workbook's own "Company Name:" header cell by scripts/gen_test_datasets.py. Showing it here
+// means a reviewer can tell the files apart before downloading, and recognise one afterwards.
+const COMPANY = {
+  clean_baseline: 'Cedar Ridge Manufacturing, Inc.',
+  edge_ingestion: 'Halstead Logistics Group, LLC',
+  edge_geo: 'Three Rivers Facilities Services, Inc.',
+  edge_fairpay_tax: 'Brightwater Food Processing Co.',
+  edge_psl: 'Kestrel Retail Holdings, Inc.',
+  edge_healthcare: 'Anvil Point Industrial Services, LLC',
+  scale_large: 'Meridian Care Partners, Inc.',
+  all_combined: 'Composite Diligence Target (all edge cases)',
+};
+
 // The generated workbooks ship as static assets, so a download is a plain link — no backend,
 // no auth round-trip, and the file the reviewer gets is byte-identical to what the engines ran on.
 function DownloadLink({ name }) {
@@ -92,6 +106,11 @@ export default function DataView() {
                   <span className="text-[13px] font-mono font-semibold text-ink">{d.name}</span>
                   <span className="text-[9px] font-mono text-brand ml-auto">{d.rows} rows</span>
                 </div>
+                {COMPANY[d.name] && (
+                  <p className="text-[10px] font-mono text-violet/85 mt-1" title="Company Name in the workbook header">
+                    {COMPANY[d.name]}
+                  </p>
+                )}
                 <p className="text-[11px] text-ink-muted mt-1.5">{d.purpose}</p>
                 <p className="text-[10px] font-mono text-teal/80 mt-1">→ {d.outcome}</p>
                 <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-hairline/60">

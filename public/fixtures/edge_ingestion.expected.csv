@@ -1,10 +1,10 @@
-code,edge_id,expected_behavior
-ING-E2,E2,"exempt as single letter 'E' -> exempt, out of scope"
-ING-E2b,E2,"'N' -> non-exempt, in scope"
-,E3,"blank Code but carries data -> FLAGGED+REJECTED, not dropped"
-(blank),E4,fully empty padding row -> skipped as padding
-ING-DUP,E5,duplicate Code (see next) -> disambiguated
-ING-DUP,E5,"duplicate Code -> disambiguated, no silent merge"
-ING-E6,E6,HSA employer contrib present -> NOT counted as medical employer_contribution
-ING-E7,E7,plan-holder missing tier -> defaults single + flag
-ING-E8,E8,unknown exempt -> defaults in-scope + flag
+code,edge_id,expected_behavior,soc_code,title,work_state,residence_zip,employment_classification,exempt,total_comp_2026
+ING-E2,E2,"exempt as single letter 'E' -> exempt, out of scope",51-4062,"Patternmakers, Metal and Plastic",CA,94501,Regular Full time (FT),E,"$41,900.00"
+ING-E2b,E2,"'N' -> non-exempt, in scope",43-3031,"Bookkeeping, Accounting, and Auditing Clerks",CA,94501,Regular Full time (FT),N,"$32,000.00"
+(blank),E3,"blank Code but carries data -> FLAGGED+REJECTED, not dropped",13-1051,Warehouse Lead,TX,75751,Regular Full time (FT),Non-Exempt,"$40,000.00"
+(blank),E4,fully empty padding row -> skipped as padding,,,,,,,
+ING-DUP,E5,duplicate Code (see next) -> disambiguated,51-6011,Laundry and Dry-Cleaning Workers,IL,62311,Regular Full time (FT),Non-Exempt,"$23,800.00"
+ING-DUP,E5,"duplicate Code -> disambiguated, no silent merge",27-2032,Choreographers,IL,62311,Regular Full time (FT),Non-Exempt,"$23,300.00"
+ING-E6,E6,HSA employer contrib present -> NOT counted as medical employer_contribution,11-9179,Spa Managers,WI,53920,Regular Full time (FT),Non-Exempt,"$40,600.00"
+ING-E7,E7,plan-holder missing tier -> defaults single + flag,17-3013,Mechanical Drafters,GA,31513,Regular Full time (FT),Non-Exempt,"$33,300.00"
+ING-E8,E8,unknown exempt -> defaults in-scope + flag,33-9091,Crossing Guards and Flaggers,AZ,84531,Regular Full time (FT),,"$24,000.00"

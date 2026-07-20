@@ -1,4 +1,4 @@
-code,edge_id,expected_behavior
-GEO-E9,E9,"missing ZIP -> home-office fallback, flagged"
-GEO-E11,E11,"cross-border residence NY / work NJ -> county only if state-consistent, else flagged"
-GEO-E12,E12,"uncovered county (OH) -> degraded basket, flagged"
+code,edge_id,expected_behavior,soc_code,title,work_state,residence_zip,employment_classification,exempt,total_comp_2026
+GEO-E9,E9,"missing ZIP -> home-office fallback, flagged",15-2021,Mathematicians,CA,,Regular Full time (FT),Non-Exempt,"$70,100.00"
+GEO-E11,E11,"cross-border residence NY / work NJ -> county only if state-consistent, else flagged",39-3092,Costume Attendants,NJ,12009,Regular Full time (FT),Non-Exempt,"$34,900.00"
+GEO-E12,E12,"uncovered county (OH) -> degraded basket, flagged",11-9081,Lodging Managers,OH,43003,Regular Full time (FT),Non-Exempt,"$38,900.00"

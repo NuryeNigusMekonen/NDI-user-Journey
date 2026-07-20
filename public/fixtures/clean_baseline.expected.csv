@@ -1,6 +1,6 @@
-code,edge_id,expected_behavior
-CLN-1,-,clean; affordable; CA PSL 40h
-CLN-2,-,clean family; NY 56h
-CLN-3,-,clean exempt salaried + 4-yr base-salary history
-CLN-4,-,clean; WA no-cap PSL -> floor 0
-CLN-5,-,rehired employee — termination + rehire dates populated
+code,edge_id,expected_behavior,soc_code,title,work_state,residence_zip,employment_classification,exempt,total_comp_2026
+CLN-1,-,clean; affordable; CA PSL 40h,25-4012,Curators,CA,94501,Regular Full time (FT),Non-Exempt,"$41,000.00"
+CLN-2,-,clean family; NY 56h,13-1041,Coroners,NY,12009,Regular Full time (FT),Non-Exempt,"$41,000.00"
+CLN-3,-,clean exempt salaried + 4-yr base-salary history,29-1124,Radiation Therapists,IL,62311,Regular Full time (FT),Exempt,"$120,000.00"
+CLN-4,-,clean; WA no-cap PSL -> floor 0,21-1015,Rehabilitation Counselors,WA,98832,Regular Full time (FT),Non-Exempt,"$36,000.00"
+CLN-5,-,rehired employee — termination + rehire dates populated,27-3043,Writers and Authors,TX,75751,Regular Full time (FT),Non-Exempt,"$34,800.00"

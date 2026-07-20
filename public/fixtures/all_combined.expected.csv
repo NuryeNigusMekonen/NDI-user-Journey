@@ -1,19 +1,19 @@
-code,edge_id,expected_behavior
-CLN-1,-,clean; affordable; CA PSL 40h
-CLN-2,-,clean family; NY 56h
-CLN-3,-,clean exempt salaried + 4-yr base-salary history
-ING-E2,E2,"exempt as single letter 'E' -> exempt, out of scope"
-ING-E2b,E2,"'N' -> non-exempt, in scope"
-,E3,"blank Code but carries data -> FLAGGED+REJECTED, not dropped"
-GEO-E9,E9,"missing ZIP -> home-office fallback, flagged"
-GEO-E11,E11,"cross-border residence NY / work NJ -> county only if state-consistent, else flagged"
-GEO-E12,E12,"uncovered county (OH) -> degraded basket, flagged"
-FP-E13,E13,"low-wage large family -> gross-up floored at 0, floor >= basket"
-FP-E14a,E14,tier ES -> filing JOINT inferred
-FP-E14b,E14,tier EC -> HEAD_OF_HOUSEHOLD inferred
-PSL-E18,E18,TX preempted -> PSL floor 0
-PSL-E19,E19,WA no-cap -> floor 0
-PSL-E20a,E20,CA 40h floor -> gap costed
-HC-E23,E23,low employer share (50%) -> Benchmark 1 fail -> verdict review
-HC-E24,E24,high employer share (100%) -> affordable
-HC-E25,E25,HDHP choice -> do NOT fail Layer B on it
+code,edge_id,expected_behavior,soc_code,title,work_state,residence_zip,employment_classification,exempt,total_comp_2026
+CLN-1,-,clean; affordable; CA PSL 40h,25-4012,Curators,CA,94501,Regular Full time (FT),Non-Exempt,"$41,000.00"
+CLN-2,-,clean family; NY 56h,13-1041,Coroners,NY,12009,Regular Full time (FT),Non-Exempt,"$41,000.00"
+CLN-3,-,clean exempt salaried + 4-yr base-salary history,29-1124,Radiation Therapists,IL,62311,Regular Full time (FT),Exempt,"$120,000.00"
+ING-E2,E2,"exempt as single letter 'E' -> exempt, out of scope",51-4062,"Patternmakers, Metal and Plastic",CA,94501,Regular Full time (FT),E,"$41,900.00"
+ING-E2b,E2,"'N' -> non-exempt, in scope",43-3031,"Bookkeeping, Accounting, and Auditing Clerks",CA,94501,Regular Full time (FT),N,"$32,000.00"
+(blank),E3,"blank Code but carries data -> FLAGGED+REJECTED, not dropped",13-1051,Warehouse Lead,TX,75751,Regular Full time (FT),Non-Exempt,"$40,000.00"
+GEO-E9,E9,"missing ZIP -> home-office fallback, flagged",15-2021,Mathematicians,CA,,Regular Full time (FT),Non-Exempt,"$70,100.00"
+GEO-E11,E11,"cross-border residence NY / work NJ -> county only if state-consistent, else flagged",39-3092,Costume Attendants,NJ,12009,Regular Full time (FT),Non-Exempt,"$34,900.00"
+GEO-E12,E12,"uncovered county (OH) -> degraded basket, flagged",11-9081,Lodging Managers,OH,43003,Regular Full time (FT),Non-Exempt,"$38,900.00"
+FP-E13,E13,"low-wage large family -> gross-up floored at 0, floor >= basket",43-6011,Executive Secretaries and Executive Administrative Assistants,TX,75751,Regular Full time (FT),Non-Exempt,"$24,960.00"
+FP-E14a,E14,tier ES -> filing JOINT inferred,49-9069,"Precision Instrument and Equipment Repairers, All Other",IL,62311,Regular Full time (FT),Non-Exempt,"$30,500.00"
+FP-E14b,E14,tier EC -> HEAD_OF_HOUSEHOLD inferred,53-7065,Stockers and Order Fillers,IL,62311,Regular Full time (FT),Non-Exempt,"$24,800.00"
+PSL-E18,E18,TX preempted -> PSL floor 0,29-1181,Audiologists,TX,75751,Regular Full time (FT),Non-Exempt,"$60,000.00"
+PSL-E19,E19,WA no-cap -> floor 0,15-1299,Penetration Testers,WA,98832,Regular Full time (FT),Non-Exempt,"$58,100.00"
+PSL-E20a,E20,CA 40h floor -> gap costed,53-3053,Shuttle Drivers and Chauffeurs,CA,94501,Regular Full time (FT),Non-Exempt,"$27,500.00"
+HC-E23,E23,low employer share (50%) -> Benchmark 1 fail -> verdict review,33-9011,Animal Control Workers,WI,53920,Regular Full time (FT),Non-Exempt,"$22,500.00"
+HC-E24,E24,high employer share (100%) -> affordable,49-3092,Recreational Vehicle Service Technicians,NY,12009,Regular Full time (FT),Non-Exempt,"$30,400.00"
+HC-E25,E25,HDHP choice -> do NOT fail Layer B on it,29-1029,"Dentists, All Other Specialists",TX,75751,Regular Full time (FT),Non-Exempt,"$136,600.00"

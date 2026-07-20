@@ -1,6 +1,6 @@
-code,edge_id,expected_behavior
-HC-E23,E23,low employer share (50%) -> Benchmark 1 fail -> verdict review
-HC-E24,E24,high employer share (100%) -> affordable
-HC-E25,E25,HDHP choice -> do NOT fail Layer B on it
-HC-E26,E26,non-compliant/grandfathered -> flagged before benchmarks
-HC-E27,E27,waived enrollee -> not a false healthcare fail
+code,edge_id,expected_behavior,soc_code,title,work_state,residence_zip,employment_classification,exempt,total_comp_2026
+HC-E23,E23,low employer share (50%) -> Benchmark 1 fail -> verdict review,33-9011,Animal Control Workers,WI,53920,Regular Full time (FT),Non-Exempt,"$22,500.00"
+HC-E24,E24,high employer share (100%) -> affordable,49-3092,Recreational Vehicle Service Technicians,NY,12009,Regular Full time (FT),Non-Exempt,"$30,400.00"
+HC-E25,E25,HDHP choice -> do NOT fail Layer B on it,29-1029,"Dentists, All Other Specialists",TX,75751,Regular Full time (FT),Non-Exempt,"$136,600.00"
+HC-E26,E26,non-compliant/grandfathered -> flagged before benchmarks,33-3011,Bailiffs,FL,32044,Regular Full time (FT),Non-Exempt,"$32,600.00"
+HC-E27,E27,waived enrollee -> not a false healthcare fail,53-7065,Stockers and Order Fillers,AZ,84531,Regular Full time (FT),Non-Exempt,"$24,600.00"

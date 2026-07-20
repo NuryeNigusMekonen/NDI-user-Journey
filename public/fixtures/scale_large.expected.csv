@@ -1,301 +1,301 @@
-code,edge_id,expected_behavior
-SCL-001,-,coverage sweep row
-SCL-002,-,coverage sweep row
-SCL-003,-,coverage sweep row
-SCL-004,-,coverage sweep row
-SCL-005,-,coverage sweep row
-SCL-006,-,coverage sweep row
-SCL-007,-,coverage sweep row
-SCL-008,-,coverage sweep row
-SCL-009,-,coverage sweep row
-SCL-010,-,coverage sweep row
-SCL-011,-,coverage sweep row
-SCL-012,-,coverage sweep row
-SCL-013,-,coverage sweep row
-SCL-014,-,coverage sweep row
-SCL-015,-,coverage sweep row
-SCL-016,-,coverage sweep row
-SCL-017,-,coverage sweep row
-SCL-018,-,coverage sweep row
-SCL-019,-,coverage sweep row
-SCL-020,-,coverage sweep row
-SCL-021,-,coverage sweep row
-SCL-022,-,coverage sweep row
-SCL-023,-,coverage sweep row
-SCL-024,-,coverage sweep row
-SCL-025,-,coverage sweep row
-SCL-026,-,coverage sweep row
-SCL-027,-,coverage sweep row
-SCL-028,-,coverage sweep row
-SCL-029,-,coverage sweep row
-SCL-030,-,coverage sweep row
-SCL-031,-,coverage sweep row
-SCL-032,-,coverage sweep row
-SCL-033,-,coverage sweep row
-SCL-034,-,coverage sweep row
-SCL-035,-,coverage sweep row
-SCL-036,-,coverage sweep row
-SCL-037,-,coverage sweep row
-SCL-038,-,coverage sweep row
-SCL-039,-,coverage sweep row
-SCL-040,-,coverage sweep row
-SCL-041,-,coverage sweep row
-SCL-042,-,coverage sweep row
-SCL-043,-,coverage sweep row
-SCL-044,-,coverage sweep row
-SCL-045,-,coverage sweep row
-SCL-046,-,coverage sweep row
-SCL-047,-,coverage sweep row
-SCL-048,-,coverage sweep row
-SCL-049,-,coverage sweep row
-SCL-050,-,coverage sweep row
-SCL-051,-,coverage sweep row
-SCL-052,-,coverage sweep row
-SCL-053,-,coverage sweep row
-SCL-054,-,coverage sweep row
-SCL-055,-,coverage sweep row
-SCL-056,-,coverage sweep row
-SCL-057,-,coverage sweep row
-SCL-058,-,coverage sweep row
-SCL-059,-,coverage sweep row
-SCL-060,-,coverage sweep row
-SCL-061,-,coverage sweep row
-SCL-062,-,coverage sweep row
-SCL-063,-,coverage sweep row
-SCL-064,-,coverage sweep row
-SCL-065,-,coverage sweep row
-SCL-066,-,coverage sweep row
-SCL-067,-,coverage sweep row
-SCL-068,-,coverage sweep row
-SCL-069,-,coverage sweep row
-SCL-070,-,coverage sweep row
-SCL-071,-,coverage sweep row
-SCL-072,-,coverage sweep row
-SCL-073,-,coverage sweep row
-SCL-074,-,coverage sweep row
-SCL-075,-,coverage sweep row
-SCL-076,-,coverage sweep row
-SCL-077,-,coverage sweep row
-SCL-078,-,coverage sweep row
-SCL-079,-,coverage sweep row
-SCL-080,-,coverage sweep row
-SCL-081,-,coverage sweep row
-SCL-082,-,coverage sweep row
-SCL-083,-,coverage sweep row
-SCL-084,-,coverage sweep row
-SCL-085,-,coverage sweep row
-SCL-086,-,coverage sweep row
-SCL-087,-,coverage sweep row
-SCL-088,-,coverage sweep row
-SCL-089,-,coverage sweep row
-SCL-090,-,coverage sweep row
-SCL-091,-,coverage sweep row
-SCL-092,-,coverage sweep row
-SCL-093,-,coverage sweep row
-SCL-094,-,coverage sweep row
-SCL-095,-,coverage sweep row
-SCL-096,-,coverage sweep row
-SCL-097,-,coverage sweep row
-SCL-098,-,coverage sweep row
-SCL-099,-,coverage sweep row
-SCL-100,-,coverage sweep row
-SCL-101,-,coverage sweep row
-SCL-102,-,coverage sweep row
-SCL-103,-,coverage sweep row
-SCL-104,-,coverage sweep row
-SCL-105,-,coverage sweep row
-SCL-106,-,coverage sweep row
-SCL-107,-,coverage sweep row
-SCL-108,-,coverage sweep row
-SCL-109,-,coverage sweep row
-SCL-110,-,coverage sweep row
-SCL-111,-,coverage sweep row
-SCL-112,-,coverage sweep row
-SCL-113,-,coverage sweep row
-SCL-114,-,coverage sweep row
-SCL-115,-,coverage sweep row
-SCL-116,-,coverage sweep row
-SCL-117,-,coverage sweep row
-SCL-118,-,coverage sweep row
-SCL-119,-,coverage sweep row
-SCL-120,-,coverage sweep row
-SCL-121,-,coverage sweep row
-SCL-122,-,coverage sweep row
-SCL-123,-,coverage sweep row
-SCL-124,-,coverage sweep row
-SCL-125,-,coverage sweep row
-SCL-126,-,coverage sweep row
-SCL-127,-,coverage sweep row
-SCL-128,-,coverage sweep row
-SCL-129,-,coverage sweep row
-SCL-130,-,coverage sweep row
-SCL-131,-,coverage sweep row
-SCL-132,-,coverage sweep row
-SCL-133,-,coverage sweep row
-SCL-134,-,coverage sweep row
-SCL-135,-,coverage sweep row
-SCL-136,-,coverage sweep row
-SCL-137,-,coverage sweep row
-SCL-138,-,coverage sweep row
-SCL-139,-,coverage sweep row
-SCL-140,-,coverage sweep row
-SCL-141,-,coverage sweep row
-SCL-142,-,coverage sweep row
-SCL-143,-,coverage sweep row
-SCL-144,-,coverage sweep row
-SCL-145,-,coverage sweep row
-SCL-146,-,coverage sweep row
-SCL-147,-,coverage sweep row
-SCL-148,-,coverage sweep row
-SCL-149,-,coverage sweep row
-SCL-150,-,coverage sweep row
-SCL-151,-,coverage sweep row
-SCL-152,-,coverage sweep row
-SCL-153,-,coverage sweep row
-SCL-154,-,coverage sweep row
-SCL-155,-,coverage sweep row
-SCL-156,-,coverage sweep row
-SCL-157,-,coverage sweep row
-SCL-158,-,coverage sweep row
-SCL-159,-,coverage sweep row
-SCL-160,-,coverage sweep row
-SCL-161,-,coverage sweep row
-SCL-162,-,coverage sweep row
-SCL-163,-,coverage sweep row
-SCL-164,-,coverage sweep row
-SCL-165,-,coverage sweep row
-SCL-166,-,coverage sweep row
-SCL-167,-,coverage sweep row
-SCL-168,-,coverage sweep row
-SCL-169,-,coverage sweep row
-SCL-170,-,coverage sweep row
-SCL-171,-,coverage sweep row
-SCL-172,-,coverage sweep row
-SCL-173,-,coverage sweep row
-SCL-174,-,coverage sweep row
-SCL-175,-,coverage sweep row
-SCL-176,-,coverage sweep row
-SCL-177,-,coverage sweep row
-SCL-178,-,coverage sweep row
-SCL-179,-,coverage sweep row
-SCL-180,-,coverage sweep row
-SCL-181,-,coverage sweep row
-SCL-182,-,coverage sweep row
-SCL-183,-,coverage sweep row
-SCL-184,-,coverage sweep row
-SCL-185,-,coverage sweep row
-SCL-186,-,coverage sweep row
-SCL-187,-,coverage sweep row
-SCL-188,-,coverage sweep row
-SCL-189,-,coverage sweep row
-SCL-190,-,coverage sweep row
-SCL-191,-,coverage sweep row
-SCL-192,-,coverage sweep row
-SCL-193,-,coverage sweep row
-SCL-194,-,coverage sweep row
-SCL-195,-,coverage sweep row
-SCL-196,-,coverage sweep row
-SCL-197,-,coverage sweep row
-SCL-198,-,coverage sweep row
-SCL-199,-,coverage sweep row
-SCL-200,-,coverage sweep row
-SCL-201,-,coverage sweep row
-SCL-202,-,coverage sweep row
-SCL-203,-,coverage sweep row
-SCL-204,-,coverage sweep row
-SCL-205,-,coverage sweep row
-SCL-206,-,coverage sweep row
-SCL-207,-,coverage sweep row
-SCL-208,-,coverage sweep row
-SCL-209,-,coverage sweep row
-SCL-210,-,coverage sweep row
-SCL-211,-,coverage sweep row
-SCL-212,-,coverage sweep row
-SCL-213,-,coverage sweep row
-SCL-214,-,coverage sweep row
-SCL-215,-,coverage sweep row
-SCL-216,-,coverage sweep row
-SCL-217,-,coverage sweep row
-SCL-218,-,coverage sweep row
-SCL-219,-,coverage sweep row
-SCL-220,-,coverage sweep row
-SCL-221,-,coverage sweep row
-SCL-222,-,coverage sweep row
-SCL-223,-,coverage sweep row
-SCL-224,-,coverage sweep row
-SCL-225,-,coverage sweep row
-SCL-226,-,coverage sweep row
-SCL-227,-,coverage sweep row
-SCL-228,-,coverage sweep row
-SCL-229,-,coverage sweep row
-SCL-230,-,coverage sweep row
-SCL-231,-,coverage sweep row
-SCL-232,-,coverage sweep row
-SCL-233,-,coverage sweep row
-SCL-234,-,coverage sweep row
-SCL-235,-,coverage sweep row
-SCL-236,-,coverage sweep row
-SCL-237,-,coverage sweep row
-SCL-238,-,coverage sweep row
-SCL-239,-,coverage sweep row
-SCL-240,-,coverage sweep row
-SCL-241,-,coverage sweep row
-SCL-242,-,coverage sweep row
-SCL-243,-,coverage sweep row
-SCL-244,-,coverage sweep row
-SCL-245,-,coverage sweep row
-SCL-246,-,coverage sweep row
-SCL-247,-,coverage sweep row
-SCL-248,-,coverage sweep row
-SCL-249,-,coverage sweep row
-SCL-250,-,coverage sweep row
-SCL-251,-,coverage sweep row
-SCL-252,-,coverage sweep row
-SCL-253,-,coverage sweep row
-SCL-254,-,coverage sweep row
-SCL-255,-,coverage sweep row
-SCL-256,-,coverage sweep row
-SCL-257,-,coverage sweep row
-SCL-258,-,coverage sweep row
-SCL-259,-,coverage sweep row
-SCL-260,-,coverage sweep row
-SCL-261,-,coverage sweep row
-SCL-262,-,coverage sweep row
-SCL-263,-,coverage sweep row
-SCL-264,-,coverage sweep row
-SCL-265,-,coverage sweep row
-SCL-266,-,coverage sweep row
-SCL-267,-,coverage sweep row
-SCL-268,-,coverage sweep row
-SCL-269,-,coverage sweep row
-SCL-270,-,coverage sweep row
-SCL-271,-,coverage sweep row
-SCL-272,-,coverage sweep row
-SCL-273,-,coverage sweep row
-SCL-274,-,coverage sweep row
-SCL-275,-,coverage sweep row
-SCL-276,-,coverage sweep row
-SCL-277,-,coverage sweep row
-SCL-278,-,coverage sweep row
-SCL-279,-,coverage sweep row
-SCL-280,-,coverage sweep row
-SCL-281,-,coverage sweep row
-SCL-282,-,coverage sweep row
-SCL-283,-,coverage sweep row
-SCL-284,-,coverage sweep row
-SCL-285,-,coverage sweep row
-SCL-286,-,coverage sweep row
-SCL-287,-,coverage sweep row
-SCL-288,-,coverage sweep row
-SCL-289,-,coverage sweep row
-SCL-290,-,coverage sweep row
-SCL-291,-,coverage sweep row
-SCL-292,-,coverage sweep row
-SCL-293,-,coverage sweep row
-SCL-294,-,coverage sweep row
-SCL-295,-,coverage sweep row
-SCL-296,-,coverage sweep row
-SCL-297,-,coverage sweep row
-SCL-298,-,coverage sweep row
-SCL-299,-,coverage sweep row
-SCL-300,-,coverage sweep row
+code,edge_id,expected_behavior,soc_code,title,work_state,residence_zip,employment_classification,exempt,total_comp_2026
+SCL-001,-,coverage sweep row,25-1062,"Area, Ethnic, and Cultural Studies Teachers, Postsecondary",AK,99588,Regular Full time (FT),Non-Exempt,"$79,800.00"
+SCL-002,-,coverage sweep row,19-4071,Forest and Conservation Technicians,AL,36005,Regular Full time (FT),Non-Exempt,"$54,300.00"
+SCL-003,-,coverage sweep row,17-2199,Mechatronics Engineers,AL,36009,Regular Full time (FT),Non-Exempt,"$69,300.00"
+SCL-004,-,coverage sweep row,17-1011,"Architects, Except Landscape and Naval",AL,35010,Regular Full time (FT),Non-Exempt,"$73,000.00"
+SCL-005,-,coverage sweep row,11-9199,Brownfield Redevelopment Specialists and Site Managers,AL,35006,Regular Full time (FT),Non-Exempt,"$116,800.00"
+SCL-006,-,coverage sweep row,19-4051,Nuclear Monitoring Technicians,AL,35552,Regular Full time (FT),Non-Exempt,"$51,700.00"
+SCL-007,-,coverage sweep row,43-4171,Receptionists and Information Clerks,AL,36027,Regular Part time (PT),Non-Exempt,"$27,400.00"
+SCL-008,-,coverage sweep row,39-5094,Skincare Specialists,AL,35053,Regular Full time (FT),Non-Exempt,"$35,700.00"
+SCL-009,-,coverage sweep row,21-1013,Marriage and Family Therapists,AR,72413,Regular Full time (FT),Non-Exempt,"$32,900.00"
+SCL-010,-,coverage sweep row,29-9091,Athletic Trainers,AR,38769,Regular Full time (FT),Non-Exempt,"$48,700.00"
+SCL-011,-,coverage sweep row,29-1124,Radiation Therapists,AR,71831,Regular Full time (FT),Non-Exempt,"$86,700.00"
+SCL-012,-,coverage sweep row,25-1053,"Environmental Science Teachers, Postsecondary",AR,71846,Regular Full time (FT),Non-Exempt,"$41,000.00"
+SCL-013,-,coverage sweep row,49-2022,"Telecommunications Equipment Installers and Repairers, Except Line Installers",AR,71701,Regular Full time (FT),Non-Exempt,"$37,000.00"
+SCL-014,-,coverage sweep row,51-9111,Packaging and Filling Machine Operators and Tenders,AR,72021,Regular Part time (PT),Non-Exempt,"$37,700.00"
+SCL-015,-,coverage sweep row,47-2151,Pipelayers,AR,72703,Regular Full time (FT),Non-Exempt,"$25,000.00"
+SCL-016,-,coverage sweep row,27-4032,Film and Video Editors,AZ,85120,Regular Full time (FT),Non-Exempt,"$46,700.00"
+SCL-017,-,coverage sweep row,51-5113,Print Binding and Finishing Workers,CA,95901,Regular Full time (FT),Non-Exempt,"$43,000.00"
+SCL-018,-,coverage sweep row,29-1291,Acupuncturists,CA,93215,Regular Full time (FT),Non-Exempt,"$34,400.00"
+SCL-019,-,coverage sweep row,51-6061,Textile Bleaching and Dyeing Machine Operators and Tenders,CA,96006,Regular Full time (FT),Non-Exempt,"$37,100.00"
+SCL-020,-,coverage sweep row,39-3031,"Ushers, Lobby Attendants, and Ticket Takers",CA,93210,Regular Full time (FT),Non-Exempt,"$36,000.00"
+SCL-021,-,coverage sweep row,53-6011,Bridge and Lock Tenders,CA,96022,Regular Part time (PT),Non-Exempt,"$38,100.00"
+SCL-022,-,coverage sweep row,37-3012,"Pesticide Handlers, Sprayers, and Applicators, Vegetation",CA,90265,Regular Full time (FT),Non-Exempt,"$37,300.00"
+SCL-023,-,coverage sweep row,43-9081,Proofreaders and Copy Markers,CO,80020,Regular Full time (FT),Non-Exempt,"$53,700.00"
+SCL-024,-,coverage sweep row,49-3021,Automotive Body and Related Repairers,CO,81323,Regular Full time (FT),Non-Exempt,"$32,600.00"
+SCL-025,-,coverage sweep row,51-4199,"Metal Workers and Plastic Workers, All Other",CO,81130,Regular Full time (FT),Non-Exempt,"$40,000.00"
+SCL-026,-,coverage sweep row,13-1161,Search Marketing Strategists,CO,81130,Regular Full time (FT),Non-Exempt,"$80,700.00"
+SCL-027,-,coverage sweep row,47-2031,Carpenters,CO,81041,Regular Full time (FT),Non-Exempt,"$32,000.00"
+SCL-028,-,coverage sweep row,15-1299,Information Technology Project Managers,CO,80816,Regular Part time (PT),Non-Exempt,"$88,500.00"
+SCL-029,-,coverage sweep row,19-3093,Historians,FL,32026,Regular Full time (FT),Non-Exempt,"$84,600.00"
+SCL-030,-,coverage sweep row,17-2081,Environmental Engineers,FL,32561,Regular Full time (FT),Non-Exempt,"$38,800.00"
+SCL-031,-,coverage sweep row,25-1113,"Social Work Teachers, Postsecondary",FL,33825,Regular Full time (FT),Non-Exempt,"$57,300.00"
+SCL-032,-,coverage sweep row,53-7063,Machine Feeders and Offbearers,FL,32321,Regular Full time (FT),Non-Exempt,"$37,700.00"
+SCL-033,-,coverage sweep row,41-4012,"Sales Representatives, Wholesale and Manufacturing, Except Technical and Scientific Products",FL,32703,Regular Full time (FT),Non-Exempt,"$28,200.00"
+SCL-034,-,coverage sweep row,13-1199,Online Merchants,FL,32159,Regular Full time (FT),Non-Exempt,"$55,200.00"
+SCL-035,-,coverage sweep row,43-9051,"Mail Clerks and Mail Machine Operators, Except Postal Service",GA,31510,Regular Part time (PT),Non-Exempt,"$37,900.00"
+SCL-036,-,coverage sweep row,15-1242,Database Administrators,GA,31503,Regular Full time (FT),Non-Exempt,"$39,000.00"
+SCL-037,-,coverage sweep row,19-3011,Economists,GA,30707,Regular Full time (FT),Non-Exempt,"$109,300.00"
+SCL-038,-,coverage sweep row,41-9031,Sales Engineers,GA,30075,Regular Full time (FT),Non-Exempt,"$105,800.00"
+SCL-039,-,coverage sweep row,47-2161,Plasterers and Stucco Masons,GA,30012,Regular Full time (FT),Non-Exempt,"$24,100.00"
+SCL-040,-,coverage sweep row,51-9022,"Grinding and Polishing Workers, Hand",GA,30417,Regular Full time (FT),Non-Exempt,"$32,100.00"
+SCL-041,-,coverage sweep row,15-1255,Web and Digital Interface Designers,GA,30103,Regular Full time (FT),Non-Exempt,"$100,500.00"
+SCL-042,-,coverage sweep row,49-9012,"Control and Valve Installers and Repairers, Except Mechanical Door",GA,30108,Regular Part time (PT),Non-Exempt,"$31,200.00"
+SCL-043,-,coverage sweep row,47-4021,Elevator and Escalator Installers and Repairers,GA,30204,Regular Full time (FT),Non-Exempt,"$49,600.00"
+SCL-044,-,coverage sweep row,29-2057,Ophthalmic Medical Technicians,GA,31323,Regular Full time (FT),Non-Exempt,"$37,900.00"
+SCL-045,-,coverage sweep row,19-3011,Environmental Economists,GA,30721,Regular Full time (FT),Non-Exempt,"$65,300.00"
+SCL-046,-,coverage sweep row,43-3021,Billing and Posting Clerks,GA,30104,Regular Full time (FT),Non-Exempt,"$40,000.00"
+SCL-047,-,coverage sweep row,49-9043,"Maintenance Workers, Machinery",GA,30205,Regular Full time (FT),Non-Exempt,"$55,400.00"
+SCL-048,-,coverage sweep row,19-1029,"Biological Scientists, All Other",GA,31626,Regular Full time (FT),Non-Exempt,"$52,500.00"
+SCL-049,-,coverage sweep row,33-3021,Intelligence Analysts,GA,30707,Regular Part time (PT),Non-Exempt,"$52,000.00"
+SCL-050,-,coverage sweep row,47-2121,Glaziers,GA,31015,Regular Full time (FT),Non-Exempt,"$47,600.00"
+SCL-051,-,coverage sweep row,53-7199,"Material Moving Workers, All Other",IA,50014,Regular Full time (FT),Non-Exempt,"$34,700.00"
+SCL-052,-,coverage sweep row,17-3029,"Engineering Technologists and Technicians, Except Drafters, All Other",IA,51002,Regular Full time (FT),Non-Exempt,"$54,100.00"
+SCL-053,-,coverage sweep row,29-2057,Ophthalmic Medical Technicians,IA,50654,Regular Full time (FT),Non-Exempt,"$44,200.00"
+SCL-054,-,coverage sweep row,25-3031,"Substitute Teachers, Short-Term",IA,50601,Regular Full time (FT),Non-Exempt,"$22,800.00"
+SCL-055,-,coverage sweep row,11-3051,Geothermal Production Managers,IA,52031,Regular Full time (FT),Non-Exempt,"$88,100.00"
+SCL-056,-,coverage sweep row,25-1194,"Career/Technical Education Teachers, Postsecondary",IA,50049,Regular Part time (PT),Non-Exempt,"$60,700.00"
+SCL-057,-,coverage sweep row,11-3111,Compensation and Benefits Managers,IA,50857,Regular Full time (FT),Non-Exempt,"$53,000.00"
+SCL-058,-,coverage sweep row,29-1151,Nurse Anesthetists,IA,50027,Regular Full time (FT),Non-Exempt,"$218,000.00"
+SCL-059,-,coverage sweep row,53-2011,"Airline Pilots, Copilots, and Flight Engineers",IA,52535,Regular Full time (FT),Non-Exempt,"$131,000.00"
+SCL-060,-,coverage sweep row,29-1127,Speech-Language Pathologists,ID,83616,Regular Full time (FT),Non-Exempt,"$20,000.00"
+SCL-061,-,coverage sweep row,43-6014,"Secretaries and Administrative Assistants, Except Legal, Medical, and Executive",ID,83864,Regular Full time (FT),Non-Exempt,"$35,200.00"
+SCL-062,-,coverage sweep row,11-2033,Fundraising Managers,ID,83241,Regular Full time (FT),Non-Exempt,"$87,000.00"
+SCL-063,-,coverage sweep row,49-9094,Locksmiths and Safe Repairers,ID,83524,Regular Part time (PT),Non-Exempt,"$29,200.00"
+SCL-064,-,coverage sweep row,19-3033,Clinical and Counseling Psychologists,ID,83301,Regular Full time (FT),Non-Exempt,"$62,300.00"
+SCL-065,-,coverage sweep row,23-2099,"Legal Support Workers, All Other",IL,61014,Regular Full time (FT),Non-Exempt,"$61,500.00"
+SCL-066,-,coverage sweep row,51-9199,"Production Workers, All Other",IL,61938,Regular Full time (FT),Non-Exempt,"$25,400.00"
+SCL-067,-,coverage sweep row,25-1062,"Area, Ethnic, and Cultural Studies Teachers, Postsecondary",IL,62836,Regular Full time (FT),Non-Exempt,"$71,400.00"
+SCL-068,-,coverage sweep row,51-4062,"Patternmakers, Metal and Plastic",IL,62272,Regular Full time (FT),Non-Exempt,"$80,200.00"
+SCL-069,-,coverage sweep row,13-1131,Fundraisers,IL,60010,Regular Full time (FT),Non-Exempt,"$31,500.00"
+SCL-070,-,coverage sweep row,35-3023,Fast Food and Counter Workers,IL,62002,Regular Part time (PT),Non-Exempt,"$30,000.00"
+SCL-071,-,coverage sweep row,17-2199,"Engineers, All Other",IL,62082,Regular Full time (FT),Non-Exempt,"$109,400.00"
+SCL-072,-,coverage sweep row,51-2021,"Coil Winders, Tapers, and Finishers",IL,62421,Regular Full time (FT),Non-Exempt,"$30,300.00"
+SCL-073,-,coverage sweep row,11-3013,Facilities Managers,IL,61530,Regular Full time (FT),Non-Exempt,"$80,100.00"
+SCL-074,-,coverage sweep row,47-2044,Tile and Stone Setters,IL,62890,Regular Full time (FT),Non-Exempt,"$53,400.00"
+SCL-075,-,coverage sweep row,47-2041,Carpet Installers,IN,46041,Regular Full time (FT),Non-Exempt,"$29,300.00"
+SCL-076,-,coverage sweep row,47-2181,Roofers,IN,46001,Regular Full time (FT),Non-Exempt,"$44,200.00"
+SCL-077,-,coverage sweep row,19-2099,"Physical Scientists, All Other",IN,46031,Regular Part time (PT),Non-Exempt,"$64,300.00"
+SCL-078,-,coverage sweep row,19-2021,Atmospheric and Space Scientists,IN,47043,Regular Full time (FT),Non-Exempt,"$50,900.00"
+SCL-079,-,coverage sweep row,43-5111,"Weighers, Measurers, Checkers, and Samplers, Recordkeeping",IN,46077,Regular Full time (FT),Non-Exempt,"$45,700.00"
+SCL-080,-,coverage sweep row,39-2021,Animal Caretakers,IN,47108,Regular Full time (FT),Non-Exempt,"$28,800.00"
+SCL-081,-,coverage sweep row,49-3091,Bicycle Repairers,IN,46115,Regular Full time (FT),Non-Exempt,"$17,200.00"
+SCL-082,-,coverage sweep row,27-3023,"News Analysts, Reporters, and Journalists",IN,46031,Regular Full time (FT),Non-Exempt,"$33,500.00"
+SCL-083,-,coverage sweep row,11-3031,Treasurers and Controllers,IN,46714,Regular Full time (FT),Non-Exempt,"$132,300.00"
+SCL-084,-,coverage sweep row,27-2012,Producers and Directors,KS,66840,Regular Part time (PT),Non-Exempt,"$27,600.00"
+SCL-085,-,coverage sweep row,29-1123,Physical Therapists,KS,66701,Regular Full time (FT),Non-Exempt,"$80,800.00"
+SCL-086,-,coverage sweep row,19-2031,Chemists,KS,67563,Regular Full time (FT),Non-Exempt,"$66,300.00"
+SCL-087,-,coverage sweep row,11-9121,Water Resource Specialists,KS,67004,Regular Full time (FT),Non-Exempt,"$85,500.00"
+SCL-088,-,coverage sweep row,47-2152,"Plumbers, Pipefitters, and Steamfitters",KS,67028,Regular Full time (FT),Non-Exempt,"$47,800.00"
+SCL-089,-,coverage sweep row,17-3023,Electrical and Electronic Engineering Technologists and Technicians,KS,67837,Regular Full time (FT),Non-Exempt,"$73,100.00"
+SCL-090,-,coverage sweep row,51-4122,"Welding, Soldering, and Brazing Machine Setters, Operators, and Tenders",KS,66402,Regular Full time (FT),Non-Exempt,"$27,800.00"
+SCL-091,-,coverage sweep row,47-2071,"Paving, Surfacing, and Tamping Equipment Operators",KS,67427,Regular Part time (PT),Non-Exempt,"$45,000.00"
+SCL-092,-,coverage sweep row,13-2031,Budget Analysts,KS,67631,Regular Full time (FT),Non-Exempt,"$81,100.00"
+SCL-093,-,coverage sweep row,43-4111,"Interviewers, Except Eligibility and Loan",KS,66412,Regular Full time (FT),Non-Exempt,"$26,000.00"
+SCL-094,-,coverage sweep row,53-2021,Air Traffic Controllers,KY,40311,Regular Full time (FT),Non-Exempt,"$99,500.00"
+SCL-095,-,coverage sweep row,19-1023,Zoologists and Wildlife Biologists,KY,42101,Regular Full time (FT),Non-Exempt,"$56,700.00"
+SCL-096,-,coverage sweep row,49-2095,"Electrical and Electronics Repairers, Powerhouse, Substation, and Relay",KY,40486,Regular Full time (FT),Non-Exempt,"$33,500.00"
+SCL-097,-,coverage sweep row,21-1093,Social and Human Service Assistants,KY,41216,Regular Full time (FT),Non-Exempt,"$31,500.00"
+SCL-098,-,coverage sweep row,25-2011,"Preschool Teachers, Except Special Education",KY,40051,Regular Part time (PT),Non-Exempt,"$30,000.00"
+SCL-099,-,coverage sweep row,11-9031,"Education and Childcare Administrators, Preschool and Daycare",KY,40383,Regular Full time (FT),Non-Exempt,"$27,400.00"
+SCL-100,-,coverage sweep row,15-1251,Computer Programmers,KY,40823,Regular Full time (FT),Non-Exempt,"$84,300.00"
+SCL-101,-,coverage sweep row,31-9091,Dental Assistants,KY,41640,Regular Full time (FT),Non-Exempt,"$46,500.00"
+SCL-102,-,coverage sweep row,51-3091,"Food and Tobacco Roasting, Baking, and Drying Machine Operators and Tenders",KY,40387,Regular Full time (FT),Non-Exempt,"$20,100.00"
+SCL-103,-,coverage sweep row,33-3051,Customs and Border Protection Officers,KY,41514,Regular Full time (FT),Non-Exempt,"$48,800.00"
+SCL-104,-,coverage sweep row,33-3051,Police and Sheriff's Patrol Officers,KY,40008,Regular Full time (FT),Non-Exempt,"$60,200.00"
+SCL-105,-,coverage sweep row,35-2019,"Cooks, All Other",KY,40701,Regular Part time (PT),Non-Exempt,"$18,700.00"
+SCL-106,-,coverage sweep row,29-1151,Nurse Anesthetists,LA,71046,Regular Full time (FT),Non-Exempt,"$209,800.00"
+SCL-107,-,coverage sweep row,15-1299,Geographic Information Systems Technologists and Technicians,LA,70722,Regular Full time (FT),Non-Exempt,"$75,600.00"
+SCL-108,-,coverage sweep row,39-3031,"Ushers, Lobby Attendants, and Ticket Takers",LA,71343,Regular Full time (FT),Non-Exempt,"$14,700.00"
+SCL-109,-,coverage sweep row,27-2023,"Umpires, Referees, and Other Sports Officials",LA,71019,Regular Full time (FT),Non-Exempt,"$41,600.00"
+SCL-110,-,coverage sweep row,49-3023,Automotive Service Technicians and Mechanics,LA,70427,Regular Full time (FT),Non-Exempt,"$46,000.00"
+SCL-111,-,coverage sweep row,53-5011,Sailors and Marine Oilers,LA,71237,Regular Full time (FT),Non-Exempt,"$23,700.00"
+SCL-112,-,coverage sweep row,25-1042,"Biological Science Teachers, Postsecondary",MA,01002,Regular Part time (PT),Non-Exempt,"$64,200.00"
+SCL-113,-,coverage sweep row,47-5023,"Earth Drillers, Except Oil and Gas",MD,21632,Regular Full time (FT),Non-Exempt,"$59,800.00"
+SCL-114,-,coverage sweep row,53-6021,Parking Attendants,MD,20705,Regular Full time (FT),Non-Exempt,"$25,000.00"
+SCL-115,-,coverage sweep row,11-3013,Facilities Managers,ME,04040,Regular Full time (FT),Non-Exempt,"$72,800.00"
+SCL-116,-,coverage sweep row,31-9091,Dental Assistants,MI,48647,Regular Full time (FT),Non-Exempt,"$47,000.00"
+SCL-117,-,coverage sweep row,39-9032,Recreation Workers,MI,49022,Regular Full time (FT),Non-Exempt,"$20,200.00"
+SCL-118,-,coverage sweep row,39-9011,Nannies,MI,49807,Regular Full time (FT),Non-Exempt,"$27,000.00"
+SCL-119,-,coverage sweep row,51-4193,"Plating Machine Setters, Operators, and Tenders, Metal and Plastic",MI,48441,Regular Part time (PT),Non-Exempt,"$36,900.00"
+SCL-120,-,coverage sweep row,29-2036,Medical Dosimetrists,MI,49805,Regular Full time (FT),Non-Exempt,"$87,500.00"
+SCL-121,-,coverage sweep row,11-3031,Financial Managers,MI,49818,Regular Full time (FT),Non-Exempt,"$104,800.00"
+SCL-122,-,coverage sweep row,51-2021,"Coil Winders, Tapers, and Finishers",MI,49303,Regular Full time (FT),Non-Exempt,"$45,300.00"
+SCL-123,-,coverage sweep row,51-9141,Semiconductor Processing Technicians,MI,48415,Regular Full time (FT),Non-Exempt,"$30,500.00"
+SCL-124,-,coverage sweep row,49-1011,"First-Line Supervisors of Mechanics, Installers, and Repairers",MI,49601,Regular Full time (FT),Non-Exempt,"$59,600.00"
+SCL-125,-,coverage sweep row,25-1061,"Anthropology and Archeology Teachers, Postsecondary",MN,55317,Regular Full time (FT),Non-Exempt,"$93,000.00"
+SCL-126,-,coverage sweep row,43-5032,"Dispatchers, Except Police, Fire, and Ambulance",MN,56308,Regular Part time (PT),Non-Exempt,"$31,700.00"
+SCL-127,-,coverage sweep row,29-2033,Nuclear Medicine Technologists,MN,51360,Regular Full time (FT),Non-Exempt,"$99,000.00"
+SCL-128,-,coverage sweep row,39-9011,Nannies,MN,56113,Regular Full time (FT),Non-Exempt,"$33,600.00"
+SCL-129,-,coverage sweep row,17-3027,Automotive Engineering Technicians,MN,55332,Regular Full time (FT),Non-Exempt,"$36,200.00"
+SCL-130,-,coverage sweep row,43-3021,Billing and Posting Clerks,MN,55038,Regular Full time (FT),Non-Exempt,"$47,800.00"
+SCL-131,-,coverage sweep row,29-9092,Genetic Counselors,MN,55320,Regular Full time (FT),Non-Exempt,"$99,100.00"
+SCL-132,-,coverage sweep row,53-6032,Aircraft Service Attendants,MN,56019,Regular Full time (FT),Non-Exempt,"$27,700.00"
+SCL-133,-,coverage sweep row,47-2011,Boilermakers,MO,64748,Regular Part time (PT),Non-Exempt,"$48,200.00"
+SCL-134,-,coverage sweep row,35-3011,Bartenders,MO,63730,Regular Full time (FT),Non-Exempt,"$27,100.00"
+SCL-135,-,coverage sweep row,51-9011,Chemical Equipment Operators and Tenders,MO,65023,Regular Full time (FT),Non-Exempt,"$29,400.00"
+SCL-136,-,coverage sweep row,17-2199,Mechatronics Engineers,MO,63014,Regular Full time (FT),Non-Exempt,"$66,700.00"
+SCL-137,-,coverage sweep row,17-2199,"Energy Engineers, Except Wind and Solar",MO,63620,Regular Full time (FT),Non-Exempt,"$93,000.00"
+SCL-138,-,coverage sweep row,47-2121,Glaziers,MO,63333,Regular Full time (FT),Non-Exempt,"$22,900.00"
+SCL-139,-,coverage sweep row,35-9031,"Hosts and Hostesses, Restaurant, Lounge, and Coffee Shop",MO,63801,Regular Full time (FT),Non-Exempt,"$26,200.00"
+SCL-140,-,coverage sweep row,17-2072,Radio Frequency Identification Device Specialists,MO,63848,Regular Part time (PT),Non-Exempt,"$114,100.00"
+SCL-141,-,coverage sweep row,33-1021,First-Line Supervisors of Firefighting and Prevention Workers,MO,63534,Regular Full time (FT),Non-Exempt,"$34,900.00"
+SCL-142,-,coverage sweep row,11-3031,Treasurers and Controllers,MO,63535,Regular Full time (FT),Non-Exempt,"$101,800.00"
+SCL-143,-,coverage sweep row,11-3021,Computer and Information Systems Managers,MO,64744,Regular Full time (FT),Non-Exempt,"$139,700.00"
+SCL-144,-,coverage sweep row,17-2199,Solar Energy Systems Engineers,MS,39051,Regular Full time (FT),Non-Exempt,"$31,600.00"
+SCL-145,-,coverage sweep row,29-9091,Athletic Trainers,MS,38614,Regular Full time (FT),Non-Exempt,"$49,400.00"
+SCL-146,-,coverage sweep row,53-7061,Cleaners of Vehicles and Equipment,MS,39532,Regular Full time (FT),Non-Exempt,"$29,100.00"
+SCL-147,-,coverage sweep row,25-2051,"Special Education Teachers, Preschool",MS,39168,Regular Part time (PT),Non-Exempt,"$32,800.00"
+SCL-148,-,coverage sweep row,35-3011,Bartenders,MS,39041,Regular Full time (FT),Non-Exempt,"$19,700.00"
+SCL-149,-,coverage sweep row,49-3092,Recreational Vehicle Service Technicians,MS,39426,Regular Full time (FT),Non-Exempt,"$44,000.00"
+SCL-150,-,coverage sweep row,29-1127,Speech-Language Pathologists,MS,39042,Regular Full time (FT),Non-Exempt,"$40,800.00"
+SCL-151,-,coverage sweep row,15-1255,Web and Digital Interface Designers,MS,39183,Regular Full time (FT),Non-Exempt,"$45,900.00"
+SCL-152,-,coverage sweep row,19-2043,Hydrologists,MT,59501,Regular Full time (FT),Non-Exempt,"$80,700.00"
+SCL-153,-,coverage sweep row,47-2131,"Insulation Workers, Floor, Ceiling, and Wall",MT,59032,Regular Full time (FT),Non-Exempt,"$28,000.00"
+SCL-154,-,coverage sweep row,29-2081,"Opticians, Dispensing",MT,59821,Regular Part time (PT),Non-Exempt,"$38,600.00"
+SCL-155,-,coverage sweep row,11-3031,Investment Fund Managers,MT,59032,Regular Full time (FT),Non-Exempt,"$126,200.00"
+SCL-156,-,coverage sweep row,19-5012,Occupational Health and Safety Technicians,MT,59821,Regular Full time (FT),Non-Exempt,"$40,000.00"
+SCL-157,-,coverage sweep row,25-1032,"Engineering Teachers, Postsecondary",MT,59015,Regular Full time (FT),Non-Exempt,"$109,400.00"
+SCL-158,-,coverage sweep row,51-3093,Food Cooking Machine Operators and Tenders,NC,28436,Regular Full time (FT),Non-Exempt,"$37,400.00"
+SCL-159,-,coverage sweep row,53-2021,Air Traffic Controllers,NC,28902,Regular Full time (FT),Non-Exempt,"$68,500.00"
+SCL-160,-,coverage sweep row,47-5099,"Extraction Workers, All Other",NC,28341,Regular Full time (FT),Non-Exempt,"$37,500.00"
+SCL-161,-,coverage sweep row,51-3091,"Food and Tobacco Roasting, Baking, and Drying Machine Operators and Tenders",NC,27843,Regular Part time (PT),Non-Exempt,"$51,800.00"
+SCL-162,-,coverage sweep row,51-6011,Laundry and Dry-Cleaning Workers,NC,28501,Regular Full time (FT),Non-Exempt,"$19,100.00"
+SCL-163,-,coverage sweep row,43-5032,"Dispatchers, Except Police, Fire, and Ambulance",NC,27209,Regular Full time (FT),Non-Exempt,"$39,400.00"
+SCL-164,-,coverage sweep row,49-9081,Wind Turbine Service Technicians,NC,27919,Regular Full time (FT),Non-Exempt,"$65,600.00"
+SCL-165,-,coverage sweep row,51-8099,"Plant and System Operators, All Other",NC,28345,Regular Full time (FT),Non-Exempt,"$38,400.00"
+SCL-166,-,coverage sweep row,49-3022,Automotive Glass Installers and Repairers,NC,27537,Regular Full time (FT),Non-Exempt,"$50,500.00"
+SCL-167,-,coverage sweep row,13-1121,"Meeting, Convention, and Event Planners",ND,58301,Regular Full time (FT),Non-Exempt,"$51,200.00"
+SCL-168,-,coverage sweep row,19-2043,Hydrologists,ND,58601,Regular Part time (PT),Non-Exempt,"$61,000.00"
+SCL-169,-,coverage sweep row,29-2055,Surgical Technologists,ND,58049,Regular Full time (FT),Non-Exempt,"$50,600.00"
+SCL-170,-,coverage sweep row,25-1066,"Psychology Teachers, Postsecondary",ND,58220,Regular Full time (FT),Non-Exempt,"$100,300.00"
+SCL-171,-,coverage sweep row,13-1111,Management Analysts,ND,58620,Regular Full time (FT),Non-Exempt,"$38,500.00"
+SCL-172,-,coverage sweep row,13-2041,Credit Analysts,NE,68883,Regular Full time (FT),Non-Exempt,"$60,800.00"
+SCL-173,-,coverage sweep row,51-9021,"Crushing, Grinding, and Polishing Machine Setters, Operators, and Tenders",NE,51557,Regular Full time (FT),Non-Exempt,"$52,600.00"
+SCL-174,-,coverage sweep row,51-9032,"Cutting and Slicing Machine Setters, Operators, and Tenders",NE,68733,Regular Full time (FT),Non-Exempt,"$29,200.00"
+SCL-175,-,coverage sweep row,17-2199,"Energy Engineers, Except Wind and Solar",NE,68937,Regular Part time (PT),Non-Exempt,"$46,700.00"
+SCL-176,-,coverage sweep row,19-4012,Agricultural Technicians,NE,68949,Regular Full time (FT),Non-Exempt,"$42,400.00"
+SCL-177,-,coverage sweep row,13-1041,Customs Brokers,NE,68759,Regular Full time (FT),Non-Exempt,"$36,300.00"
+SCL-178,-,coverage sweep row,43-4161,"Human Resources Assistants, Except Payroll and Timekeeping",NE,68623,Regular Full time (FT),Non-Exempt,"$39,000.00"
+SCL-179,-,coverage sweep row,17-2021,Agricultural Engineers,NE,69001,Regular Full time (FT),Non-Exempt,"$75,800.00"
+SCL-180,-,coverage sweep row,15-1299,Penetration Testers,NE,57735,Regular Full time (FT),Non-Exempt,"$40,400.00"
+SCL-181,-,coverage sweep row,21-1092,Probation Officers and Correctional Treatment Specialists,NE,68313,Regular Full time (FT),Non-Exempt,"$48,200.00"
+SCL-182,-,coverage sweep row,29-2099,Neurodiagnostic Technologists,NJ,08037,Regular Part time (PT),Non-Exempt,"$56,100.00"
+SCL-183,-,coverage sweep row,43-4161,"Human Resources Assistants, Except Payroll and Timekeeping",NJ,07060,Regular Full time (FT),Non-Exempt,"$30,600.00"
+SCL-184,-,coverage sweep row,11-9199,Wind Energy Operations Managers,NM,87015,Regular Full time (FT),Non-Exempt,"$102,800.00"
+SCL-185,-,coverage sweep row,13-1199,Sustainability Specialists,NM,87711,Regular Full time (FT),Non-Exempt,"$76,500.00"
+SCL-186,-,coverage sweep row,31-9011,Massage Therapists,NM,88101,Regular Full time (FT),Non-Exempt,"$23,700.00"
+SCL-187,-,coverage sweep row,13-1081,Logisticians,NM,87002,Regular Full time (FT),Non-Exempt,"$73,300.00"
+SCL-188,-,coverage sweep row,19-4012,Agricultural Technicians,NV,89010,Regular Full time (FT),Non-Exempt,"$46,000.00"
+SCL-189,-,coverage sweep row,39-2011,Animal Trainers,NY,13730,Regular Part time (PT),Non-Exempt,"$27,700.00"
+SCL-190,-,coverage sweep row,49-9051,Electrical Power-Line Installers and Repairers,NY,10512,Regular Full time (FT),Non-Exempt,"$83,800.00"
+SCL-191,-,coverage sweep row,43-4071,File Clerks,NY,13309,Regular Full time (FT),Non-Exempt,"$43,100.00"
+SCL-192,-,coverage sweep row,41-2021,Counter and Rental Clerks,NY,14432,Regular Full time (FT),Non-Exempt,"$27,700.00"
+SCL-193,-,coverage sweep row,35-2012,"Cooks, Institution and Cafeteria",NY,12010,Regular Full time (FT),Non-Exempt,"$37,900.00"
+SCL-194,-,coverage sweep row,53-7073,Wellhead Pumpers,NY,12406,Regular Full time (FT),Non-Exempt,"$44,700.00"
+SCL-195,-,coverage sweep row,33-1021,First-Line Supervisors of Firefighting and Prevention Workers,OH,43728,Regular Full time (FT),Non-Exempt,"$44,000.00"
+SCL-196,-,coverage sweep row,51-9041,"Extruding, Forming, Pressing, and Compacting Machine Setters, Operators, and Tenders",OH,43930,Regular Part time (PT),Non-Exempt,"$38,500.00"
+SCL-197,-,coverage sweep row,49-2098,Security and Fire Alarm Systems Installers,OH,43016,Regular Full time (FT),Non-Exempt,"$61,000.00"
+SCL-198,-,coverage sweep row,25-3031,"Substitute Teachers, Short-Term",OH,43502,Regular Full time (FT),Non-Exempt,"$22,200.00"
+SCL-199,-,coverage sweep row,53-7031,Dredge Operators,OH,43060,Regular Full time (FT),Non-Exempt,"$47,000.00"
+SCL-200,-,coverage sweep row,51-9021,"Crushing, Grinding, and Polishing Machine Setters, Operators, and Tenders",OH,43716,Regular Full time (FT),Non-Exempt,"$39,600.00"
+SCL-201,-,coverage sweep row,41-9099,"Sales and Related Workers, All Other",OH,45133,Regular Full time (FT),Non-Exempt,"$20,200.00"
+SCL-202,-,coverage sweep row,29-2051,Dietetic Technicians,OH,44201,Regular Full time (FT),Non-Exempt,"$35,100.00"
+SCL-203,-,coverage sweep row,29-2099,"Health Technologists and Technicians, All Other",OH,43406,Regular Part time (PT),Non-Exempt,"$46,700.00"
+SCL-204,-,coverage sweep row,25-1064,"Geography Teachers, Postsecondary",OK,73040,Regular Full time (FT),Non-Exempt,"$48,900.00"
+SCL-205,-,coverage sweep row,19-1013,Soil and Plant Scientists,OK,74010,Regular Full time (FT),Non-Exempt,"$38,300.00"
+SCL-206,-,coverage sweep row,49-9071,"Maintenance and Repair Workers, General",OK,73532,Regular Full time (FT),Non-Exempt,"$40,700.00"
+SCL-207,-,coverage sweep row,31-2022,Physical Therapist Aides,OK,74536,Regular Full time (FT),Non-Exempt,"$16,800.00"
+SCL-208,-,coverage sweep row,43-9071,"Office Machine Operators, Except Computer",OK,73030,Regular Full time (FT),Non-Exempt,"$29,400.00"
+SCL-209,-,coverage sweep row,47-4021,Elevator and Escalator Installers and Repairers,OK,73027,Regular Full time (FT),Non-Exempt,"$102,600.00"
+SCL-210,-,coverage sweep row,19-1031,Park Naturalists,OK,73947,Regular Part time (PT),Non-Exempt,"$31,600.00"
+SCL-211,-,coverage sweep row,43-9199,"Office and Administrative Support Workers, All Other",OR,97002,Regular Full time (FT),Non-Exempt,"$42,200.00"
+SCL-212,-,coverage sweep row,51-6099,"Textile, Apparel, and Furnishings Workers, All Other",OR,97014,Regular Full time (FT),Non-Exempt,"$37,400.00"
+SCL-213,-,coverage sweep row,13-2053,Insurance Underwriters,OR,97002,Regular Full time (FT),Non-Exempt,"$40,800.00"
+SCL-214,-,coverage sweep row,39-5012,"Hairdressers, Hairstylists, and Cosmetologists",OR,97101,Regular Full time (FT),Non-Exempt,"$33,600.00"
+SCL-215,-,coverage sweep row,17-2051,Water/Wastewater Engineers,PA,15044,Regular Full time (FT),Non-Exempt,"$92,500.00"
+SCL-216,-,coverage sweep row,43-9081,Proofreaders and Copy Markers,PA,17011,Regular Full time (FT),Non-Exempt,"$28,400.00"
+SCL-217,-,coverage sweep row,29-9099,Midwives,PA,16657,Regular Part time (PT),Non-Exempt,"$40,000.00"
+SCL-218,-,coverage sweep row,33-3051,Customs and Border Protection Officers,PA,16930,Regular Full time (FT),Non-Exempt,"$86,400.00"
+SCL-219,-,coverage sweep row,33-3051,Police and Sheriff's Patrol Officers,PA,19118,Regular Full time (FT),Non-Exempt,"$40,100.00"
+SCL-220,-,coverage sweep row,17-2071,Electrical Engineers,PA,16347,Regular Full time (FT),Non-Exempt,"$86,000.00"
+SCL-221,-,coverage sweep row,13-1081,Logistics Engineers,SC,29812,Regular Full time (FT),Non-Exempt,"$76,900.00"
+SCL-222,-,coverage sweep row,51-9198,Helpers--Production Workers,SC,29009,Regular Full time (FT),Non-Exempt,"$15,700.00"
+SCL-223,-,coverage sweep row,25-2011,"Preschool Teachers, Except Special Education",SC,29322,Regular Full time (FT),Non-Exempt,"$29,000.00"
+SCL-224,-,coverage sweep row,13-2053,Insurance Underwriters,SC,29565,Regular Part time (PT),Non-Exempt,"$81,100.00"
+SCL-225,-,coverage sweep row,17-2112,Validation Engineers,SC,29031,Regular Full time (FT),Non-Exempt,"$54,500.00"
+SCL-226,-,coverage sweep row,29-2091,Orthotists and Prosthetists,SD,57325,Regular Full time (FT),Non-Exempt,"$71,200.00"
+SCL-227,-,coverage sweep row,29-1215,Family Medicine Physicians,SD,57235,Regular Full time (FT),Non-Exempt,"$217,500.00"
+SCL-228,-,coverage sweep row,25-1126,"Philosophy and Religion Teachers, Postsecondary",SD,57201,Regular Full time (FT),Non-Exempt,"$31,900.00"
+SCL-229,-,coverage sweep row,11-9171,Funeral Home Managers,SD,57017,Regular Full time (FT),Non-Exempt,"$82,100.00"
+SCL-230,-,coverage sweep row,27-2041,Music Directors and Composers,SD,57015,Regular Full time (FT),Non-Exempt,"$37,000.00"
+SCL-231,-,coverage sweep row,49-3092,Recreational Vehicle Service Technicians,SD,57442,Regular Part time (PT),Non-Exempt,"$24,100.00"
+SCL-232,-,coverage sweep row,17-2199,"Energy Engineers, Except Wind and Solar",TN,38317,Regular Full time (FT),Non-Exempt,"$72,300.00"
+SCL-233,-,coverage sweep row,31-9099,"Healthcare Support Workers, All Other",TN,37150,Regular Full time (FT),Non-Exempt,"$42,000.00"
+SCL-234,-,coverage sweep row,19-1023,Zoologists and Wildlife Biologists,TN,38002,Regular Full time (FT),Non-Exempt,"$31,300.00"
+SCL-235,-,coverage sweep row,45-1011,"First-Line Supervisors of Farming, Fishing, and Forestry Workers",TN,37731,Regular Full time (FT),Non-Exempt,"$44,700.00"
+SCL-236,-,coverage sweep row,43-9051,"Mail Clerks and Mail Machine Operators, Except Postal Service",TN,37030,Regular Full time (FT),Non-Exempt,"$34,600.00"
+SCL-237,-,coverage sweep row,27-1013,"Fine Artists, Including Painters, Sculptors, and Illustrators",TN,38044,Regular Full time (FT),Non-Exempt,"$20,300.00"
+SCL-238,-,coverage sweep row,41-9021,Real Estate Brokers,TN,37726,Regular Part time (PT),Non-Exempt,"$57,500.00"
+SCL-239,-,coverage sweep row,51-1011,First-Line Supervisors of Production and Operating Workers,TN,37014,Regular Full time (FT),Non-Exempt,"$63,100.00"
+SCL-240,-,coverage sweep row,27-1027,Set and Exhibit Designers,TN,37022,Regular Full time (FT),Non-Exempt,"$20,800.00"
+SCL-241,-,coverage sweep row,33-2011,Firefighters,TX,75751,Regular Full time (FT),Non-Exempt,"$49,100.00"
+SCL-242,-,coverage sweep row,25-1051,"Atmospheric, Earth, Marine, and Space Sciences Teachers, Postsecondary",TX,76360,Regular Full time (FT),Non-Exempt,"$105,100.00"
+SCL-243,-,coverage sweep row,23-2099,"Legal Support Workers, All Other",TX,79088,Regular Full time (FT),Non-Exempt,"$30,800.00"
+SCL-244,-,coverage sweep row,29-1171,Nurse Practitioners,TX,79036,Regular Full time (FT),Non-Exempt,"$110,600.00"
+SCL-245,-,coverage sweep row,47-3015,"Helpers--Pipelayers, Plumbers, Pipefitters, and Steamfitters",TX,75007,Regular Part time (PT),Non-Exempt,"$38,300.00"
+SCL-246,-,coverage sweep row,29-1011,Chiropractors,TX,79235,Regular Full time (FT),Non-Exempt,"$39,900.00"
+SCL-247,-,coverage sweep row,49-9099,"Installation, Maintenance, and Repair Workers, All Other",TX,78014,Regular Full time (FT),Non-Exempt,"$36,600.00"
+SCL-248,-,coverage sweep row,33-9091,Crossing Guards and Flaggers,TX,75423,Regular Full time (FT),Non-Exempt,"$32,700.00"
+SCL-249,-,coverage sweep row,17-3026,Nanotechnology Engineering Technologists and Technicians,TX,77510,Regular Full time (FT),Non-Exempt,"$34,700.00"
+SCL-250,-,coverage sweep row,33-9099,Retail Loss Prevention Specialists,TX,79041,Regular Full time (FT),Non-Exempt,"$28,500.00"
+SCL-251,-,coverage sweep row,19-1012,Food Scientists and Technologists,TX,78130,Regular Full time (FT),Non-Exempt,"$92,700.00"
+SCL-252,-,coverage sweep row,33-9091,Crossing Guards and Flaggers,TX,79837,Regular Part time (PT),Non-Exempt,"$19,800.00"
+SCL-253,-,coverage sweep row,25-2057,"Special Education Teachers, Middle School",TX,78332,Regular Full time (FT),Non-Exempt,"$59,400.00"
+SCL-254,-,coverage sweep row,39-1013,First-Line Supervisors of Gambling Services Workers,TX,78355,Regular Full time (FT),Non-Exempt,"$48,800.00"
+SCL-255,-,coverage sweep row,17-3011,Architectural and Civil Drafters,TX,75838,Regular Full time (FT),Non-Exempt,"$31,200.00"
+SCL-256,-,coverage sweep row,43-5071,"Shipping, Receiving, and Inventory Clerks",TX,75555,Regular Full time (FT),Non-Exempt,"$34,700.00"
+SCL-257,-,coverage sweep row,27-1029,"Designers, All Other",TX,76225,Regular Full time (FT),Non-Exempt,"$39,500.00"
+SCL-258,-,coverage sweep row,29-1127,Speech-Language Pathologists,TX,79001,Regular Full time (FT),Non-Exempt,"$49,600.00"
+SCL-259,-,coverage sweep row,47-5011,"Derrick Operators, Oil and Gas",TX,75410,Regular Part time (PT),Non-Exempt,"$49,400.00"
+SCL-260,-,coverage sweep row,15-1252,Software Developers,TX,76861,Regular Full time (FT),Non-Exempt,"$130,500.00"
+SCL-261,-,coverage sweep row,43-2099,"Communications Equipment Operators, All Other",TX,75643,Regular Full time (FT),Non-Exempt,"$35,100.00"
+SCL-262,-,coverage sweep row,51-8091,Chemical Plant and System Operators,TX,79519,Regular Full time (FT),Non-Exempt,"$63,100.00"
+SCL-263,-,coverage sweep row,11-9151,Social and Community Service Managers,TX,79706,Regular Full time (FT),Non-Exempt,"$69,700.00"
+SCL-264,-,coverage sweep row,25-1032,"Engineering Teachers, Postsecondary",TX,77420,Regular Full time (FT),Non-Exempt,"$48,000.00"
+SCL-265,-,coverage sweep row,51-1011,First-Line Supervisors of Production and Operating Workers,TX,76372,Regular Full time (FT),Non-Exempt,"$49,300.00"
+SCL-266,-,coverage sweep row,11-3121,Human Resources Managers,UT,84720,Regular Part time (PT),Non-Exempt,"$131,100.00"
+SCL-267,-,coverage sweep row,15-1251,Computer Programmers,UT,84052,Regular Full time (FT),Non-Exempt,"$47,900.00"
+SCL-268,-,coverage sweep row,27-4012,Broadcast Technicians,VA,23958,Regular Full time (FT),Non-Exempt,"$31,200.00"
+SCL-269,-,coverage sweep row,49-9095,Manufactured Building and Mobile Home Installers,VA,23963,Regular Full time (FT),Non-Exempt,"$48,300.00"
+SCL-270,-,coverage sweep row,49-9099,Geothermal Technicians,VA,24217,Regular Full time (FT),Non-Exempt,"$25,000.00"
+SCL-271,-,coverage sweep row,39-5094,Skincare Specialists,VA,23038,Regular Full time (FT),Non-Exempt,"$32,600.00"
+SCL-272,-,coverage sweep row,25-1043,"Forestry and Conservation Science Teachers, Postsecondary",VA,23089,Regular Full time (FT),Non-Exempt,"$127,500.00"
+SCL-273,-,coverage sweep row,39-4031,"Morticians, Undertakers, and Funeral Arrangers",VA,23050,Regular Part time (PT),Non-Exempt,"$34,500.00"
+SCL-274,-,coverage sweep row,51-9031,"Cutters and Trimmers, Hand",VA,24053,Regular Full time (FT),Non-Exempt,"$29,300.00"
+SCL-275,-,coverage sweep row,53-7199,"Material Moving Workers, All Other",VA,22801,Regular Full time (FT),Non-Exempt,"$44,500.00"
+SCL-276,-,coverage sweep row,17-1021,Cartographers and Photogrammetrists,VA,24314,Regular Full time (FT),Non-Exempt,"$35,300.00"
+SCL-277,-,coverage sweep row,17-1022,Surveyors,VA,22901,Regular Full time (FT),Non-Exempt,"$60,400.00"
+SCL-278,-,coverage sweep row,13-1041,Environmental Compliance Inspectors,VA,24333,Regular Full time (FT),Non-Exempt,"$81,000.00"
+SCL-279,-,coverage sweep row,51-2041,Structural Metal Fabricators and Fitters,VA,24273,Regular Full time (FT),Non-Exempt,"$32,500.00"
+SCL-280,-,coverage sweep row,51-9124,"Coating, Painting, and Spraying Machine Setters, Operators, and Tenders",VA,22980,Regular Part time (PT),Non-Exempt,"$44,700.00"
+SCL-281,-,coverage sweep row,15-1252,Software Developers,VT,05060,Regular Full time (FT),Non-Exempt,"$130,700.00"
+SCL-282,-,coverage sweep row,35-3023,Baristas,WA,98331,Regular Full time (FT),Non-Exempt,"$27,500.00"
+SCL-283,-,coverage sweep row,39-1014,"First-Line Supervisors of Entertainment and Recreation Workers, Except Gambling Services",WA,98282,Regular Full time (FT),Non-Exempt,"$47,200.00"
+SCL-284,-,coverage sweep row,21-1019,"Counselors, All Other",WA,83856,Regular Full time (FT),Non-Exempt,"$58,200.00"
+SCL-285,-,coverage sweep row,25-1126,"Philosophy and Religion Teachers, Postsecondary",WA,99348,Regular Full time (FT),Non-Exempt,"$39,800.00"
+SCL-286,-,coverage sweep row,49-9051,Electrical Power-Line Installers and Repairers,WI,54801,Regular Full time (FT),Non-Exempt,"$80,600.00"
+SCL-287,-,coverage sweep row,11-2032,Public Relations Managers,WI,54005,Regular Part time (PT),Non-Exempt,"$106,600.00"
+SCL-288,-,coverage sweep row,51-8013,Biomass Plant Technicians,WI,53036,Regular Full time (FT),Non-Exempt,"$45,400.00"
+SCL-289,-,coverage sweep row,11-3051,Biomass Power Plant Managers,WI,54103,Regular Full time (FT),Non-Exempt,"$95,900.00"
+SCL-290,-,coverage sweep row,51-4033,"Grinding, Lapping, Polishing, and Buffing Machine Tool Setters, Operators, and Tenders, Metal and Plastic",WI,54002,Regular Full time (FT),Non-Exempt,"$46,600.00"
+SCL-291,-,coverage sweep row,19-3099,Transportation Planners,WI,54517,Regular Full time (FT),Non-Exempt,"$50,200.00"
+SCL-292,-,coverage sweep row,29-9092,Genetic Counselors,WI,54170,Regular Full time (FT),Non-Exempt,"$82,100.00"
+SCL-293,-,coverage sweep row,29-2099,Neurodiagnostic Technologists,WV,25141,Regular Full time (FT),Non-Exempt,"$49,000.00"
+SCL-294,-,coverage sweep row,19-4099,Quality Control Analysts,WV,26330,Regular Part time (PT),Non-Exempt,"$32,000.00"
+SCL-295,-,coverage sweep row,29-2036,Medical Dosimetrists,WV,25082,Regular Full time (FT),Non-Exempt,"$37,800.00"
+SCL-296,-,coverage sweep row,51-4033,"Grinding, Lapping, Polishing, and Buffing Machine Tool Setters, Operators, and Tenders, Metal and Plastic",WV,24986,Regular Full time (FT),Non-Exempt,"$37,500.00"
+SCL-297,-,coverage sweep row,35-3023,Fast Food and Counter Workers,WV,26146,Regular Full time (FT),Non-Exempt,"$15,400.00"
+SCL-298,-,coverage sweep row,19-3034,School Psychologists,WY,82701,Regular Full time (FT),Non-Exempt,"$78,700.00"
+SCL-299,-,coverage sweep row,15-1243,Data Warehousing Specialists,WY,82620,Regular Full time (FT),Non-Exempt,"$62,800.00"
+SCL-300,-,coverage sweep row,43-5071,"Shipping, Receiving, and Inventory Clerks",AK,99503,Regular Full time (FT),Non-Exempt,"$28,600.00"

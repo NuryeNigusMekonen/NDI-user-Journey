@@ -31,7 +31,7 @@ export const PATH_FILTERS = [
 // kind: spine (green happy path) | branch (reality intervenes) | merge-back into the spine
 export const NODES = [
   {
-    id: 'upload', lane: 'upload', kind: 'spine', row: 0,
+    id: 'upload', col: 0, cy: 0, lane: 'upload', kind: 'spine', row: 0,
     title: 'Upload census', sub: 'file in, versioned',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'An NDI deal-team member uploads the target workforce census. The file is versioned '
@@ -52,7 +52,7 @@ export const NODES = [
     cases: ['TC-M1 Login fail-closed', 'TC-M2 Upload and verbatim preview'],
   },
   {
-    id: 'validate', lane: 'upload', kind: 'spine', row: 0,
+    id: 'validate', col: 1, cy: 0, lane: 'upload', kind: 'spine', row: 0,
     title: 'Schema + row validation', sub: 'tiered · flag, never drop',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'Headers are matched against the alias catalogue two-pass — exact first, then substring, '
@@ -76,7 +76,7 @@ export const NODES = [
     edges: ['E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8'],
   },
   {
-    id: 'flag', lane: 'upload', kind: 'branch', row: 1,
+    id: 'flag', col: 0, cy: 1, lane: 'upload', kind: 'branch', row: 1,
     title: 'Flag & surface defects', sub: 'issues shown for edit',
     paths: [PATHS.MESSY],
     what: 'Record-level defects are surfaced to the reviewer with a reason a non-engineer can act '
@@ -91,7 +91,7 @@ export const NODES = [
     cases: ['TC-M3 Flagged rows are visible and readable'],
   },
   {
-    id: 'edit', lane: 'upload', kind: 'branch', row: 1, loop: true,
+    id: 'edit', col: 1, cy: 1, lane: 'upload', kind: 'branch', row: 1, loop: true,
     title: 'Edit & re-validate', sub: 'loop until clean',
     paths: [PATHS.MESSY],
     what: 'The reviewer corrects a flagged field and the record re-derives. The loop repeats until '
@@ -107,7 +107,7 @@ export const NODES = [
     cases: ['TC-M4 Correction flow'],
   },
   {
-    id: 'prep', lane: 'prep', kind: 'spine', row: 0,
+    id: 'prep', col: 2, cy: 0, lane: 'prep', kind: 'spine', row: 0,
     title: 'Normalize + geocode', sub: 'ZIP → county · title → SOC',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'Clean records are normalized. Residence ZIP resolves to a county, and job title resolves '
@@ -130,7 +130,7 @@ export const NODES = [
     edges: ['E9', 'E11', 'E28'],
   },
   {
-    id: 'geo-fail', lane: 'prep', kind: 'branch', row: 1,
+    id: 'geo-fail', col: 2, cy: 1, lane: 'prep', kind: 'branch', row: 1,
     title: 'Location unresolvable', sub: 'no county can be chosen',
     paths: [PATHS.GEO],
     what: 'The ZIP does not resolve, or resolves across states inconsistently with the work state. '
@@ -146,7 +146,7 @@ export const NODES = [
     edges: ['E9', 'E12'],
   },
   {
-    id: 'review-queue', lane: 'prep', kind: 'branch', row: 1,
+    id: 'review-queue', col: 3, cy: 1, lane: 'prep', kind: 'branch', row: 1,
     title: 'NDI review queue', sub: 'human decision, audited',
     paths: [PATHS.GEO],
     what: 'A case the rules refuse to decide goes to a person. The reviewer\'s choice is recorded '
@@ -161,7 +161,7 @@ export const NODES = [
     cases: ['TC-M13 Methodology versioning'],
   },
   {
-    id: 'engine-a', lane: 'engines', kind: 'spine', row: 0,
+    id: 'engine-a', col: 3, cy: 0, lane: 'engines', kind: 'spine', row: 0,
     title: 'Engine A — Fair Pay', sub: 'basket → tax → floor → gap',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'The foundation engine. It assembles a county-level cost basket from the public rulers, '
@@ -186,7 +186,7 @@ export const NODES = [
     edges: ['E13', 'E14', 'E15', 'E16', 'E17'],
   },
   {
-    id: 'engine-b', lane: 'engines', kind: 'spine', row: 0,
+    id: 'engine-b', col: 4, cy: 0.6, lane: 'engines', kind: 'spine', row: 0,
     title: 'Engine B — Paid Sick Leave', sub: "consumes A's adjusted wages",
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'Pure calculation, no document parsing. Costs the gap between what the target grants and '
@@ -209,7 +209,7 @@ export const NODES = [
       + 'research/11 row B2, target phase 6. A majority-concentration footprint is understated.',
   },
   {
-    id: 'engine-c', lane: 'engines', kind: 'spine', row: 0,
+    id: 'engine-c', col: 4, cy: -0.6, lane: 'engines', kind: 'spine', row: 0,
     title: 'Engine C — Healthcare', sub: "consumes A's adjusted wages",
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'Returns pass/fail per plan, never a remediation cost — plan design is too dependent on '
@@ -235,7 +235,7 @@ export const NODES = [
       + '— a data-loading gap for DE, not an engine defect.',
   },
   {
-    id: 'out-a', lane: 'outputs', kind: 'spine', row: 0,
+    id: 'out-a', col: 5, cy: 0, lane: 'outputs', kind: 'spine', row: 0,
     title: 'Output A — Fair Pay', sub: 'cost + adjusted wages',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'Per-employee remediation cost and the wage-adjusted compensation that B and C consumed.',
@@ -248,7 +248,7 @@ export const NODES = [
     cases: ['TC-M5 Verdict readability'],
   },
   {
-    id: 'out-b', lane: 'outputs', kind: 'spine', row: 0,
+    id: 'out-b', col: 5, cy: 1.2, lane: 'outputs', kind: 'spine', row: 0,
     title: 'Output B — PSL', sub: 'remediation cost',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'The cost of lifting the target to the PSL floor, on A\'s raised wages.',
@@ -258,7 +258,7 @@ export const NODES = [
     cases: ['TC-M5 Verdict readability'],
   },
   {
-    id: 'out-c', lane: 'outputs', kind: 'spine', row: 0,
+    id: 'out-c', col: 5, cy: -1.2, lane: 'outputs', kind: 'spine', row: 0,
     title: 'Output C — Healthcare', sub: 'pass / fail per plan',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'A verdict per plan — affordable, review, or fail — with the benchmark that decided it.',
@@ -271,7 +271,7 @@ export const NODES = [
     cases: ['TC-M7 Degraded run is visible'],
   },
   {
-    id: 'model', lane: 'outputs', kind: 'spine', row: 0,
+    id: 'model', col: 6, cy: 0, lane: 'outputs', kind: 'spine', row: 0,
     title: 'NDI acquisition model', sub: 'A + B cost · C verdicts',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'The deliverable. Total remediation (A + B) plus the healthcare verdicts, exported into '

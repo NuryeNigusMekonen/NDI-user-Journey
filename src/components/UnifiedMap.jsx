@@ -14,6 +14,47 @@ import { LANES, NODES, LINKS, PATHS, PATH_FILTERS } from '../data/unifiedMap';
  * meaning (row 0 is the happy-path spine, row 1 is where reality intervenes) and an ELK pass would
  * reorder it into something prettier but less legible.
  */
+const NODE_W = 168;
+const NODE_H = 74;
+const COL_W = 210;          // horizontal pitch between columns
+const ROW_H = 104;          // vertical pitch for one `cy` unit
+const PAD_X = 24;
+const MID_Y = 210;          // y of the spine (cy = 0)
+const CANVAS_W = PAD_X * 2 + COL_W * 6 + NODE_W;
+const CANVAS_H = 430;
+
+// One absolute point per node, derived from its col/cy. Kept here rather than in the data file:
+// these are presentation coordinates, not facts about the platform.
+const POS = Object.fromEntries(NODES.map((n) => [n.id, {
+  x: PAD_X + n.col * COL_W + NODE_W / 2,
+  y: MID_Y + n.cy * ROW_H,
+}]));
+
+const LANE_BOUNDS = [
+  { id: 'upload', label: 'UPLOAD & VALIDATION', x: PAD_X, w: COL_W * 2 - 16 },
+  { id: 'prep', label: 'DATA PRE-PROCESSING', x: PAD_X + COL_W * 2, w: COL_W - 16 },
+  { id: 'engines', label: 'ENGINES', x: PAD_X + COL_W * 3, w: COL_W * 2 - 16 },
+  { id: 'outputs', label: 'OUTPUTS', x: PAD_X + COL_W * 5, w: COL_W * 2 - 16 },
+];
+
+/** An orthogonal-ish connector. A backward link bows below the row so it cannot be mistaken for
+ *  forward flow; everything else is a gentle S-curve between box edges. */
+function pathFor(a, b, l) {
+  if (l.back) {
+    const y = Math.max(a.y, b.y) + NODE_H / 2 + 26;
+    return `M ${a.x} ${a.y + NODE_H / 2} C ${a.x} ${y}, ${b.x} ${y}, ${b.x} ${b.y + NODE_H / 2}`;
+  }
+  const x1 = a.x + NODE_W / 2;
+  const x2 = b.x - NODE_W / 2;
+  const mx = (x1 + x2) / 2;
+  return `M ${x1} ${a.y} C ${mx} ${a.y}, ${mx} ${b.y}, ${x2} ${b.y}`;
+}
+
+function labelPt(a, b, l) {
+  if (l.back) return { x: (a.x + b.x) / 2, y: Math.max(a.y, b.y) + NODE_H / 2 + 40 };
+  return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 - 8 };
+}
+
 export default function UnifiedMap() {
   const [path, setPath] = useState(PATHS.ALL);
   const [openId, setOpenId] = useState(null);
@@ -77,74 +118,71 @@ export default function UnifiedMap() {
           ))}
         </div>
 
-        {/* the map */}
-        <div className="mt-5 overflow-x-auto pb-2">
-          <div className="min-w-[1080px]">
-            <div className="grid grid-cols-4 gap-3">
-              {LANES.map((lane) => {
-                const spine = visible.filter((n) => n.lane === lane.id && n.row === 0);
-                const branch = visible.filter((n) => n.lane === lane.id && n.row === 1);
+        {/* The drawn map. Fixed canvas coordinates (col/cy on each node) rather than a
+            responsive grid: connectors are SVG paths between exact points, so the boxes must not
+            reflow underneath them. The canvas scrolls horizontally instead of wrapping. */}
+        <div className="mt-5 overflow-x-auto pb-3">
+          <div className="relative" style={{ width: CANVAS_W, height: CANVAS_H }}>
+            {/* lane headers */}
+            {LANE_BOUNDS.map((b) => (
+              <div key={b.id} className="absolute top-0 text-[9px] font-mono font-semibold
+                tracking-[0.14em] uppercase text-ink-muted/45"
+                style={{ left: b.x, width: b.w }}>
+                <span className="pb-1 border-b border-hairline block">{b.label}</span>
+              </div>
+            ))}
+
+            {/* connectors, drawn UNDER the cards */}
+            <svg className="absolute inset-0 pointer-events-none" width={CANVAS_W} height={CANVAS_H}>
+              <defs>
+                <marker id="ar-teal" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7"
+                  markerHeight="7" orient="auto">
+                  <path d="M0,0 L8,4 L0,8 z" className="fill-teal" />
+                </marker>
+                <marker id="ar-amber" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7"
+                  markerHeight="7" orient="auto">
+                  <path d="M0,0 L8,4 L0,8 z" className="fill-amber" />
+                </marker>
+              </defs>
+              {links.map((l, i) => {
+                const a = POS[l.from];
+                const b = POS[l.to];
+                if (!a || !b) return null;
+                const amber = l.back || !!NODES.find((n) => n.id === l.to && n.kind === 'branch');
                 return (
-                  <div key={lane.id}>
-                    <p className="text-[9px] font-mono font-semibold tracking-[0.14em] uppercase
-                      text-ink-muted/50 mb-2 pb-1.5 border-b border-hairline">
-                      {lane.label}
-                    </p>
-                    <div className="space-y-2">
-                      {spine.map((n) => (
-                        <NodeCard key={n.id} node={n} active={openId === n.id}
-                          onClick={() => setOpenId(openId === n.id ? null : n.id)} />
-                      ))}
-                    </div>
-                    {branch.length > 0 && (
-                      <div className="mt-3 pt-3 border-t border-dashed border-hairline space-y-2">
-                        <p className="text-[9px] font-mono text-amber/70 uppercase tracking-wider">
-                          branch
-                        </p>
-                        {branch.map((n) => (
-                          <NodeCard key={n.id} node={n} active={openId === n.id}
-                            onClick={() => setOpenId(openId === n.id ? null : n.id)} />
-                        ))}
-                      </div>
+                  <g key={i}>
+                    <path d={pathFor(a, b, l)} fill="none"
+                      className={amber ? 'stroke-amber/70' : 'stroke-teal/70'}
+                      strokeWidth="1.6"
+                      strokeDasharray={l.back || amber ? '5 4' : undefined}
+                      markerEnd={`url(#${amber ? 'ar-amber' : 'ar-teal'})`} />
+                    {l.label && (
+                      <text className={`text-[8px] font-mono ${amber ? 'fill-amber' : 'fill-teal'}`}
+                        x={labelPt(a, b, l).x} y={labelPt(a, b, l).y} textAnchor="middle">
+                        {l.label}
+                      </text>
                     )}
-                  </div>
+                  </g>
                 );
               })}
-            </div>
+            </svg>
+
+            {/* the cards */}
+            {visible.map((n) => (
+              <div key={n.id} className="absolute" style={{ left: POS[n.id].x - NODE_W / 2,
+                top: POS[n.id].y - NODE_H / 2, width: NODE_W }}>
+                <NodeCard node={n} active={openId === n.id}
+                  onClick={() => setOpenId(openId === n.id ? null : n.id)} />
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* transitions: the links as readable sentences. A hand-drawn SVG of arrows across a
-            responsive grid breaks the moment a card wraps; the relationships are the payload, so
-            state them in text where they cannot drift out of alignment. */}
-        <div className="mt-5">
-          <p className="text-[9px] font-mono font-semibold tracking-[0.14em] uppercase text-brand/70 mb-2">
-            Transitions
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-            {links.map((l, i) => {
-              const from = NODES.find((n) => n.id === l.from);
-              const to = NODES.find((n) => n.id === l.to);
-              const Icon = l.back ? RotateCcw : l.merge ? GitMerge : null;
-              return (
-                <div key={i} className={`flex items-start gap-2 p-2 rounded-md border text-[10px] ${
-                  l.back ? 'border-amber/25 bg-amber/5'
-                    : l.merge ? 'border-teal/25 bg-teal/5'
-                      : 'border-hairline bg-surface'}`}>
-                  {Icon && <Icon className={`w-3 h-3 mt-0.5 shrink-0 ${l.back ? 'text-amber' : 'text-teal'}`} />}
-                  <span className="font-mono text-ink">{from?.title}</span>
-                  <span className="text-ink-muted/50">→</span>
-                  <span className="font-mono text-ink">{to?.title}</span>
-                  {l.label && <span className="text-ink-muted italic ml-auto">{l.label}</span>}
-                </div>
-              );
-            })}
-          </div>
-          <p className="text-[10px] text-ink-muted/70 mt-2">
-            <RotateCcw className="w-3 h-3 inline text-amber" /> a loop — repeats until clean ·{' '}
-            <GitMerge className="w-3 h-3 inline text-teal" /> rejoins the happy path
-          </p>
-        </div>
+        <p className="text-[10px] text-ink-muted/70 mt-1">
+          Solid teal = the happy path flowing forward · dashed amber = a branch where a rule or a
+          person intervenes · an arrow returning to an earlier node is a loop that repeats until
+          clean · a dashed line rejoining the spine is a merge. Scroll the map sideways.
+        </p>
 
         {open && <Detail node={open} onClose={() => setOpenId(null)} />}
 

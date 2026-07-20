@@ -207,10 +207,18 @@ export default function TestRunLog({ caseIds: propCaseIds = [], onCaseIds }) {
     <th className="text-left px-2 py-1.5 font-semibold uppercase tracking-wider">{children}</th>
   );
 
+  // Each tab owns a colour so the three read as distinct destinations rather than plain text.
+  // Findings is amber on purpose — it is the one that means something went wrong.
   const TABS = [
-    { key: 'cases', label: 'Manual cases', icon: Hand, count: caseIds.length, cls: 'text-amber' },
-    { key: 'runs', label: 'Run log', icon: ClipboardCheck, count: runs.length, cls: 'text-teal' },
-    { key: 'findings', label: 'Findings', icon: Bug, count: findings.length, cls: 'text-amber' },
+    { key: 'cases', label: 'Manual cases', icon: Hand, count: caseIds.length,
+      on: 'border-violet text-violet bg-violet/10', icon_on: 'text-violet',
+      chip: 'bg-violet/20 text-violet', hover: 'hover:text-violet hover:bg-violet/5' },
+    { key: 'runs', label: 'Run log', icon: ClipboardCheck, count: runs.length,
+      on: 'border-teal text-teal bg-teal/10', icon_on: 'text-teal',
+      chip: 'bg-teal/20 text-teal', hover: 'hover:text-teal hover:bg-teal/5' },
+    { key: 'findings', label: 'Findings', icon: Bug, count: findings.length,
+      on: 'border-amber text-amber bg-amber/10', icon_on: 'text-amber',
+      chip: 'bg-amber/20 text-amber', hover: 'hover:text-amber hover:bg-amber/5' },
   ];
 
   return (
@@ -219,19 +227,20 @@ export default function TestRunLog({ caseIds: propCaseIds = [], onCaseIds }) {
 
       {/* One surface, three tables — swapped in place rather than stacked, so the page stays
           short and a tester works in one spot. */}
-      <div className="flex items-center gap-1 mb-3 border-b border-hairline">
+      <div className="flex items-center gap-1.5 mb-3 p-1 rounded-lg bg-surface-raised border border-hairline">
         {TABS.map((t) => {
           const on = tab === t.key;
           const Icon = t.icon;
           return (
             <button key={t.key} onClick={() => setTab(t.key)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-[11px] font-mono -mb-px border-b-2
-                transition-colors ${on
-                  ? 'border-brand text-ink font-semibold'
-                  : 'border-transparent text-ink-muted hover:text-ink'}`}>
-              <Icon className={`w-3.5 h-3.5 ${on ? t.cls : ''}`} strokeWidth={2.25} />
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-[11px] font-mono
+                border transition-all ${on
+                  ? `${t.on} font-semibold shadow-sm`
+                  : `border-transparent text-ink-muted ${t.hover}`}`}>
+              <Icon className={`w-3.5 h-3.5 ${on ? t.icon_on : ''}`} strokeWidth={2.25} />
               {t.label}
-              <span className={`px-1 rounded text-[9px] ${on ? 'bg-brand/15 text-brand' : 'text-ink-muted/50'}`}>
+              <span className={`px-1.5 rounded text-[9px] font-bold ${
+                on ? t.chip : 'bg-hairline/60 text-ink-muted/70'}`}>
                 {t.count}
               </span>
             </button>

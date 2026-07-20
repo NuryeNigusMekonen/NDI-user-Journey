@@ -4,7 +4,11 @@ import { Plus, Loader2, RefreshCw, Pencil, Trash2, Check, X, Download,
 import { supabase } from '../lib/supabase';
 
 const PRIORITIES = ['High', 'Medium', 'Low'];
-const AREAS = ['Auth', 'Upload', 'Review', 'Output', 'Access', 'Reference'];
+// App-behaviour areas plus the three engines: rule-verification cases (M-14+) check a NUMBER
+// against the Technical Brief, which is a different kind of testing from "does the screen work".
+// A value missing here renders as a blank select when the row is edited.
+const AREAS = ['Auth', 'Upload', 'Review', 'Output', 'Access', 'Reference',
+  'Engine A', 'Engine B', 'Engine C'];
 
 const PRI_CLS = {
   High: 'text-amber bg-amber/10 border-amber/30',

@@ -114,7 +114,7 @@ export default function DataView() {
                 {/* Inline preview: enough to answer "is this the file I want?" without downloading.
                     Carries each row's expected behaviour, which used to live only in the .csv. */}
                 {openPreview === d.name && previews?.[d.name] && (
-                  <div className="mt-2 overflow-x-auto rounded-md border border-hairline bg-canvas/60">
+                  <div className="mt-2 overflow-x-auto max-h-[320px] overflow-y-auto rounded-md border border-hairline bg-canvas/60">
                     <table className="text-[9px] font-mono whitespace-nowrap w-full">
                       <thead>
                         <tr className="border-b border-hairline">
@@ -138,7 +138,7 @@ export default function DataView() {
                       </tbody>
                     </table>
                     <p className="text-[9px] font-mono text-ink-muted/60 px-1.5 py-1">
-                      first {previews[d.name].rows.length} of {d.rows} rows · download the .xlsx for all 59 columns
+                      first {previews[d.name].rows.length} of {d.rows} rows · all {previews[d.name].headers.length - 2} template columns, scroll right · download the .xlsx for every row
                     </p>
                   </div>
                 )}

@@ -94,7 +94,12 @@ export default function DataView() {
           </div>
           <div>
             <h2 className="font-display text-[19px] font-bold text-ink tracking-tight leading-none">Simulated Census Data</h2>
-            <p className="text-[10px] font-mono text-ink-muted mt-1.5">{datasetMeta.source}</p>
+            {/* The authored `source` string used to carry its own row count, which drifted from
+                the per-file numbers rendered below it — 349 in the header against 351 on the
+                badge. Strip any embedded count so there is ONE derived figure on the page. */}
+            <p className="text-[10px] font-mono text-ink-muted mt-1.5">
+              {String(datasetMeta.source || '').replace(/\s*·?\s*\d[\d,]*\s+rows?\s+across\s+\d+\s+datasets?/i, '')}
+            </p>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2 mt-3">

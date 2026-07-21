@@ -181,9 +181,12 @@ export default function UnifiedMap() {
         </div>
 
         <p className="text-[10px] text-ink-muted/70 mt-1">
-          Solid teal = the happy path flowing forward · dashed amber = a branch where a rule or a
-          person intervenes · an arrow returning to an earlier node is a loop that repeats until
-          clean · a dashed line rejoining the spine is a merge. Scroll the map sideways.
+          <strong>Lines:</strong> solid teal = the happy path flowing forward · dashed amber = a
+          branch where a rule or a person intervenes · an arrow returning to an earlier node is a
+          loop that repeats until clean · a dashed line rejoining the spine is a merge.{' '}
+          <strong>Badges:</strong> <span className="text-teal">tested ✓</span> = a manual case
+          passed against staging · <span className="text-amber">gap found</span> = manual testing
+          found a defect or unbuilt rule, described on the node. Scroll the map sideways.
         </p>
 
         {open && <Detail node={open} onClose={() => setOpenId(null)} />}
@@ -226,11 +229,13 @@ function NodeCard({ node, active, onClick }) {
         )}
         {node.behavior && (
           <span className="text-[9px] font-mono px-1 rounded bg-hairline/60 text-ink-muted">
-            {node.behavior.length} rules
+            {node.behavior.length} rule{node.behavior.length === 1 ? '' : 's'}
           </span>
         )}
         {n > 0 && (
-          <span className="text-[9px] font-mono px-1 rounded bg-teal/15 text-teal">{n} tests</span>
+          <span className="text-[9px] font-mono px-1 rounded bg-teal/15 text-teal">
+            {n} test{n === 1 ? '' : 's'}
+          </span>
         )}
       </div>
     </button>

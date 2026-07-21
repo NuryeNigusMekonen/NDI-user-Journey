@@ -1,9 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 // Aliased: lucide's Map icon would shadow the global Map constructor used below (new Map()),
 // which threw at render and blanked the page.
-import { Map as MapIcon, X, AlertTriangle, CheckCircle2, RotateCcw, GitMerge } from 'lucide-react';
-import { LANES, NODES, LINKS, PATHS, PATH_FILTERS } from '../data/unifiedMap';
+import { Map as MapIcon, X, AlertTriangle, CheckCircle2, RotateCcw, GitMerge,
+  Pencil, Save, RotateCcw as Reset, Loader2 } from 'lucide-react';
+import { LANES, NODES as GENERATED, LINKS, PATHS, PATH_FILTERS } from '../data/unifiedMap';
+import { MapOverlay, applyOverlay } from '../services/MapOverlay';
+import { supabase } from '../lib/supabase';
 
 /**
  * One map, every path — the whole platform as a single graph.
@@ -31,7 +34,7 @@ const CANVAS_H = MID_Y + MAX_CY * ROW_H + NODE_H;
 
 // One absolute point per node, derived from its col/cy. Kept here rather than in the data file:
 // these are presentation coordinates, not facts about the platform.
-const POS = Object.fromEntries(NODES.map((n) => [n.id, {
+const posFor = (nodes) => Object.fromEntries(nodes.map((n) => [n.id, {
   x: PAD_X + n.col * COL_W + NODE_W / 2,
   y: MID_Y + n.cy * ROW_H,
 }]));
@@ -66,9 +69,45 @@ export default function UnifiedMap() {
   const [path, setPath] = useState(PATHS.ALL);
   const [openId, setOpenId] = useState(null);
 
+  // Edits live as an overlay over the generated data (see services/MapOverlay): a node nobody
+  // touched keeps tracking the repo, and an edited field is marked so a hand-written figure is
+  // never mistaken for a generated one.
+  const [overlay, setOverlay] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [dirty, setDirty] = useState(null);       // pending patches, keyed by node id
+  const [saving, setSaving] = useState(false);
+  const [who, setWho] = useState('');
+
+  useEffect(() => {
+    MapOverlay.load().then((o) => o && setOverlay(o)).catch(() => {});
+    supabase.auth.getSession().then(({ data }) => setWho(data?.session?.user?.email || ''));
+  }, []);
+
+  const patches = dirty || overlay?.nodes || {};
+  const nodes = useMemo(() => applyOverlay(GENERATED, { nodes: patches }), [patches]);
+  const POS = useMemo(() => posFor(nodes), [nodes]);
+
+  const patch = (id, field, value) =>
+    setDirty((d) => ({ ...(d || overlay?.nodes || {}),
+      [id]: { ...((d || overlay?.nodes || {})[id] || {}), [field]: value } }));
+
+  const saveEdits = async () => {
+    setSaving(true);
+    try {
+      const saved = await MapOverlay.save(patches, who);
+      setOverlay(saved); setDirty(null); setEditing(false);
+    } finally { setSaving(false); }
+  };
+
+  const resetNode = (id) => {
+    const next = { ...(dirty || overlay?.nodes || {}) };
+    delete next[id];
+    setDirty(next);
+  };
+
   const visible = useMemo(
-    () => (path === PATHS.ALL ? NODES : NODES.filter((n) => n.paths.includes(path))),
-    [path],
+    () => (path === PATHS.ALL ? nodes : nodes.filter((n) => n.paths.includes(path))),
+    [path, nodes],
   );
   const visibleIds = useMemo(() => new Set(visible.map((n) => n.id)), [visible]);
   const links = useMemo(
@@ -77,12 +116,12 @@ export default function UnifiedMap() {
     [path, visibleIds],
   );
 
-  const open = NODES.find((n) => n.id === openId) || null;
+  const open = nodes.find((n) => n.id === openId) || null;
   // Count DISTINCT test files: test_engines.py is cited on four nodes, and summing every citation
   // turned a real 166-test suite into a fictional 293.
   const totalTests = useMemo(() => {
     const seen = new Map();
-    NODES.forEach((n) => (n.tests || []).forEach((t) => seen.set(t.id, t.n || 0)));
+    GENERATED.forEach((n) => (n.tests || []).forEach((t) => seen.set(t.id, t.n || 0)));
     return [...seen.values()].reduce((a, b) => a + b, 0);
   }, []);
 
@@ -124,7 +163,40 @@ export default function UnifiedMap() {
               {f.label}
             </button>
           ))}
+          <span className="ml-auto flex items-center gap-1.5">
+            {editing ? (
+              <>
+                <button onClick={saveEdits} disabled={saving || !dirty}
+                  className="flex items-center gap-1 text-[10px] font-mono px-2 py-1 rounded-md
+                    border border-teal/50 text-teal bg-teal/10 hover:bg-teal/20
+                    disabled:opacity-40 transition-colors">
+                  {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
+                  save
+                </button>
+                <button onClick={() => { setDirty(null); setEditing(false); }}
+                  className="text-[10px] font-mono px-2 py-1 rounded-md border border-hairline
+                    text-ink-muted hover:text-ink transition-colors">
+                  discard
+                </button>
+              </>
+            ) : (
+              <button onClick={() => setEditing(true)}
+                className="flex items-center gap-1 text-[10px] font-mono px-2 py-1 rounded-md
+                  border border-hairline text-ink-muted hover:text-brand hover:border-brand/40
+                  transition-colors">
+                <Pencil className="w-3 h-3" /> edit map
+              </button>
+            )}
+          </span>
         </div>
+
+        {editing && (
+          <p className="text-[10px] text-ink-muted mt-2 p-2 rounded bg-brand/5 border border-brand/20">
+            Editing. Click a node to change its title, summary, rules or findings; use the arrows to
+            move it. Anything you change is marked <span className="text-amber">edited</span> and
+            overrides the generated value — everything you leave alone keeps tracking the repo.
+          </p>
+        )}
 
         {/* The drawn map. Fixed canvas coordinates (col/cy on each node) rather than a
             responsive grid: connectors are SVG paths between exact points, so the boxes must not
@@ -156,7 +228,7 @@ export default function UnifiedMap() {
                 const a = POS[l.from];
                 const b = POS[l.to];
                 if (!a || !b) return null;
-                const amber = l.back || !!NODES.find((n) => n.id === l.to && n.kind === 'branch');
+                const amber = l.back || !!nodes.find((n) => n.id === l.to && n.kind === 'branch');
                 return (
                   <g key={i}>
                     <path d={pathFor(a, b, l)} fill="none"
@@ -195,10 +267,14 @@ export default function UnifiedMap() {
           found a defect or unbuilt rule, described on the node. Scroll the map sideways.
         </p>
 
-        {open && <Detail node={open} onClose={() => setOpenId(null)} />}
+        {open && (
+          <Detail node={open} onClose={() => setOpenId(null)} editing={editing}
+            onPatch={(f, v) => patch(open.id, f, v)}
+            onReset={() => resetNode(open.id)} />
+        )}
 
         <p className="text-[10px] font-mono text-ink-muted/50 mt-6 pt-4 border-t border-hairline">
-          {NODES.length} nodes · {links.length} transitions shown · {totalTests} tests across the
+          {nodes.length} nodes · {links.length} transitions shown · {totalTests} tests across the
           {' '}files cited here, of 239 in the version1 suite (real counts from backend/tests/)
         </p>
       </div>
@@ -248,7 +324,10 @@ function NodeCard({ node, active, onClick }) {
   );
 }
 
-function Detail({ node, onClose }) {
+const EDIT_INPUT = 'w-full px-2 py-1 rounded bg-canvas border border-brand/40 text-[12px] ' +
+  'text-ink focus:outline-none focus:border-brand';
+
+function Detail({ node, onClose, editing, onPatch, onReset }) {
   return (
     <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
       className="mt-5 p-4 rounded-xl bg-surface border border-brand/30">
@@ -257,14 +336,51 @@ function Detail({ node, onClose }) {
           <p className="text-[9px] font-mono uppercase tracking-wider text-brand/70">
             {node.kind === 'spine' ? 'Happy path' : 'Branch'} · {node.lane.replace('-', ' ')}
           </p>
-          <h3 className="text-[16px] font-bold text-ink mt-0.5">{node.title}</h3>
+          {editing
+            ? <input className={`${EDIT_INPUT} mt-1 font-bold`} value={node.title}
+                onChange={(e) => onPatch('title', e.target.value)} />
+            : <h3 className="text-[16px] font-bold text-ink mt-0.5">{node.title}</h3>}
+          {editing && (
+            <input className={`${EDIT_INPUT} mt-1.5 text-[11px]`} value={node.sub || ''}
+              placeholder="one-line summary"
+              onChange={(e) => onPatch('sub', e.target.value)} />
+          )}
         </div>
+        {editing && (
+          <div className="flex items-center gap-1 ml-auto mr-2">
+            <span className="text-[9px] font-mono text-ink-muted/60 mr-1">move</span>
+            {[['←', 'col', -1], ['→', 'col', 1], ['↑', 'cy', -1], ['↓', 'cy', 1]].map(([g, f, d]) => (
+              <button key={g} title={`move ${g}`}
+                onClick={() => onPatch(f, (node[f] ?? 0) + d)}
+                className="w-6 h-6 rounded border border-hairline text-ink-muted
+                  hover:text-brand hover:border-brand/40 text-[11px] leading-none">
+                {g}
+              </button>
+            ))}
+            {node.edited?.length > 0 && (
+              <button onClick={onReset} title="Discard this node's edits — back to the generated value"
+                className="ml-1 flex items-center gap-1 text-[9px] font-mono px-1.5 py-1 rounded
+                  border border-amber/40 text-amber hover:bg-amber/10">
+                <Reset className="w-3 h-3" /> reset
+              </button>
+            )}
+          </div>
+        )}
         <button onClick={onClose} className="ml-auto text-ink-muted hover:text-ink">
           <X className="w-4 h-4" />
         </button>
       </div>
 
-      <p className="text-[12px] text-ink-muted mt-3 leading-relaxed max-w-3xl">{node.what}</p>
+      {node.edited?.length > 0 && (
+        <p className="text-[9px] font-mono text-amber mt-2">
+          edited: {node.edited.join(', ')} — these override the generated values
+        </p>
+      )}
+
+      {editing
+        ? <textarea rows={4} className={`${EDIT_INPUT} mt-3`} value={node.what || ''}
+            onChange={(e) => onPatch('what', e.target.value)} />
+        : <p className="text-[12px] text-ink-muted mt-3 leading-relaxed max-w-3xl">{node.what}</p>}
 
       {node.warn && (
         <p className="text-[11px] text-amber mt-3 p-2.5 rounded-lg bg-amber/5 border border-amber/25">
@@ -288,6 +404,12 @@ function Detail({ node, onClose }) {
           <p className="text-[9px] font-mono font-semibold uppercase tracking-wider text-ink-muted/60 mb-1.5">
             Rules it applies
           </p>
+          {editing ? (
+            <textarea rows={7} className={`${EDIT_INPUT} text-[11px]`}
+              value={(node.behavior || []).join('\n')}
+              placeholder="one rule per line"
+              onChange={(e) => onPatch('behavior', e.target.value.split('\n').filter(Boolean))} />
+          ) : (
           <ul className="space-y-1">
             {node.behavior.map((b) => (
               <li key={b} className="flex items-start gap-1.5 text-[11px] text-ink">
@@ -295,6 +417,7 @@ function Detail({ node, onClose }) {
               </li>
             ))}
           </ul>
+          )}
           <p className="text-[10px] font-mono text-ink-muted/70 mt-2">
             <span className="text-ink-muted/50">continues → </span>{node.next}
           </p>

@@ -20,7 +20,7 @@ const COL_W = 210;          // horizontal pitch between columns
 const ROW_H = 104;          // vertical pitch for one `cy` unit
 const PAD_X = 24;
 const MID_Y = 210;          // y of the spine (cy = 0)
-const CANVAS_W = PAD_X * 2 + COL_W * 6 + NODE_W;
+const CANVAS_W = PAD_X * 2 + COL_W * 9 + NODE_W;   // 10 columns after the pipeline lane
 const CANVAS_H = 430;
 
 // One absolute point per node, derived from its col/cy. Kept here rather than in the data file:
@@ -31,10 +31,11 @@ const POS = Object.fromEntries(NODES.map((n) => [n.id, {
 }]));
 
 const LANE_BOUNDS = [
-  { id: 'upload', label: 'UPLOAD & VALIDATION', x: PAD_X, w: COL_W * 2 - 16 },
-  { id: 'prep', label: 'DATA PRE-PROCESSING', x: PAD_X + COL_W * 2, w: COL_W - 16 },
-  { id: 'engines', label: 'ENGINES', x: PAD_X + COL_W * 3, w: COL_W * 2 - 16 },
-  { id: 'outputs', label: 'OUTPUTS', x: PAD_X + COL_W * 5, w: COL_W * 2 - 16 },
+  { id: 'refdata', label: 'REFERENCE DATA (DE)', x: PAD_X, w: COL_W * 3 - 16 },
+  { id: 'upload', label: 'UPLOAD & VALIDATION', x: PAD_X + COL_W * 3, w: COL_W * 2 - 16 },
+  { id: 'prep', label: 'DATA PRE-PROCESSING', x: PAD_X + COL_W * 5, w: COL_W - 16 },
+  { id: 'engines', label: 'ENGINES', x: PAD_X + COL_W * 6, w: COL_W * 2 - 16 },
+  { id: 'outputs', label: 'OUTPUTS', x: PAD_X + COL_W * 8, w: COL_W * 2 - 16 },
 ];
 
 /** An orthogonal-ish connector. A backward link bows below the row so it cannot be mistaken for
@@ -98,7 +99,8 @@ export default function UnifiedMap() {
         <p className="text-[12px] text-ink-muted mt-3 max-w-3xl leading-relaxed">
           One map, every path. The <span className="text-teal">teal spine</span> is the happy path;
           branches fork where reality intervenes, run their course, and merge back. Click any node
-          for what it does, the rules it applies, and the tests that prove them.
+          for what it does, the rules it applies, and the tests that prove them. Baselined against
+          the <span className="font-mono text-ink">version1</span> branch — what staging runs.
         </p>
 
         {/* focus filter */}
@@ -187,8 +189,8 @@ export default function UnifiedMap() {
         {open && <Detail node={open} onClose={() => setOpenId(null)} />}
 
         <p className="text-[10px] font-mono text-ink-muted/50 mt-6 pt-4 border-t border-hairline">
-          {NODES.length} nodes · {links.length} transitions shown ·{' '}
-          {totalTests} backend tests across the cited files (real counts from backend/tests/)
+          {NODES.length} nodes · {links.length} transitions shown · {totalTests} tests across the
+          {' '}files cited here, of 239 in the version1 suite (real counts from backend/tests/)
         </p>
       </div>
     </div>

@@ -4,10 +4,15 @@
 // census, end to end, including when it goes wrong". The green spine is the happy path; branches
 // fork where reality intervenes, run their course, and merge back.
 //
-// Every `tests` count and file name below is REAL — taken from backend/tests/ on this branch, not
+// Baselined against the `version1` branch — what stage-ninedean.gettenacious.com actually runs.
+// An earlier revision documented `db-replacing`, which omitted the whole reference-data pipeline
+// and cited 166 tests where version1 has 239.
+//
+// Every `tests` count and file name below is REAL — read from backend/tests/ on version1, not
 // illustrative. A node that claims proof it does not have is the same failure as a wrong number.
 
 export const LANES = [
+  { id: 'refdata', label: 'REFERENCE DATA (DE)' },
   { id: 'upload', label: 'UPLOAD & VALIDATION' },
   { id: 'prep', label: 'DATA PRE-PROCESSING' },
   { id: 'engines', label: 'ENGINES' },
@@ -19,6 +24,7 @@ export const PATHS = {
   HAPPY: 'happy',
   MESSY: 'messy',
   GEO: 'geo',
+  REFDATA: 'refdata',
 };
 
 export const PATH_FILTERS = [
@@ -26,12 +32,75 @@ export const PATH_FILTERS = [
   { id: PATHS.HAPPY, label: 'Happy path' },
   { id: PATHS.MESSY, label: 'Messy census' },
   { id: PATHS.GEO, label: 'Unresolvable location' },
+  { id: PATHS.REFDATA, label: 'Reference-data refresh' },
 ];
 
 // kind: spine (green happy path) | branch (reality intervenes) | merge-back into the spine
 export const NODES = [
   {
-    id: 'upload', col: 0, cy: 0, lane: 'upload', kind: 'spine', row: 0,
+    id: 'fetch', col: 0, cy: 0, lane: 'refdata', kind: 'spine', row: 0,
+    title: 'Fetch external sources', sub: 'scheduled · raw file to S3',
+    paths: [PATHS.REFDATA],
+    what: 'A timer runs the connectors against the eleven public sources — MIT, EPI, ACS, CNT, BLS '
+      + 'OEWS, O*NET, Census, A Better Balance, KFF, Peterson-KFF. Each fetch writes the RAW file to '
+      + 'S3 for provenance and records the attempt in fetch_log, so a value can always be traced '
+      + 'back to the document it came from and the day it was retrieved.',
+    behavior: [
+      'Sources are seeded from source_manifest, never hardcoded in a connector',
+      'The raw fetched file is archived to S3 before anything is parsed',
+      'Every attempt lands in fetch_log — a failed fetch is visible, not silent',
+    ],
+    next: 'Validate & stage',
+    tests: [
+      { id: 'test_pipeline_run.py', n: 9, what: 'the scheduled run, per-source' },
+      { id: 'test_pipeline_connectors_rulers.py', n: 7, what: 'KFF / ABB / Peterson connectors' },
+      { id: 'test_pipeline_connectors_cost.py', n: 6, what: 'MIT / EPI / ACS / CNT cost connectors' },
+      { id: 'test_pipeline_storage.py', n: 5, what: 'raw file lands in S3 with its key' },
+    ],
+    cases: ['TC-M12 Reference data screen'],
+  },
+  {
+    id: 'stage-validate', col: 1, cy: 0, lane: 'refdata', kind: 'spine', row: 0,
+    title: 'Validate & stage', sub: 'candidate rows held pending',
+    paths: [PATHS.REFDATA],
+    what: 'A fetched refresh is parsed into staging tables and validated. It does NOT touch the '
+      + 'live reference tables — it becomes a pending_update awaiting a human. This is the gate '
+      + 'that stops a bad upstream scrape silently moving every remediation number.',
+    behavior: [
+      'Candidate rows land in staging_*, never directly in production reference tables',
+      'Validation failures are attached to the pending update, not swallowed',
+      'The live rulers keep serving the previous approved vintage until promotion',
+    ],
+    next: 'Human review — approve, hold or reject',
+    tests: [
+      { id: 'test_validation.py', n: 12, what: 'the validation rules on candidate rows' },
+      { id: 'test_pipeline_db.py', n: 7, what: 'staging tables + migrations' },
+      { id: 'test_pipeline_census_and_abb.py', n: 6, what: 'census + ABB source staging' },
+    ],
+  },
+  {
+    id: 'review-gate', col: 2, cy: 0, lane: 'refdata', kind: 'spine', row: 0,
+    title: 'Human review gate', sub: 'approve · hold · reject',
+    paths: [PATHS.REFDATA],
+    what: 'A person reviews the pending update and decides. Approving promotes the staged rows into '
+      + 'the live reference tables and appends a NEW immutable methodology_version — so a run made '
+      + 'before the refresh still reproduces against the vintage it actually used.',
+    behavior: [
+      'APPROVE promotes staged rows and appends an immutable methodology_version',
+      'HOLD leaves the pending update in place; the live rulers are unchanged',
+      'REJECT discards the candidate; the raw S3 file is kept for the audit trail',
+      'An older run keeps its frozen version — a promotion never rewrites history',
+    ],
+    next: 'Promoted rulers — consumed by Engine A, B and C',
+    tests: [
+      { id: 'test_pipeline_promote.py', n: 10, what: 'promote / hold / reject + version append' },
+      { id: 'test_pipeline_admin_api.py', n: 2, what: 'the review endpoints and their authz' },
+      { id: 'test_pipeline_health.py', n: 3, what: 'pipeline health surface' },
+    ],
+    cases: ['TC-M13 Methodology versioning'],
+  },
+  {
+    id: 'upload', col: 3, cy: 0, lane: 'upload', kind: 'spine', row: 0,
     title: 'Upload census', sub: 'file in, versioned',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'An NDI deal-team member uploads the target workforce census. The file is versioned '
@@ -52,7 +121,7 @@ export const NODES = [
     cases: ['TC-M1 Login fail-closed', 'TC-M2 Upload and verbatim preview'],
   },
   {
-    id: 'validate', col: 1, cy: 0, lane: 'upload', kind: 'spine', row: 0,
+    id: 'validate', col: 4, cy: 0, lane: 'upload', kind: 'spine', row: 0,
     title: 'Schema + row validation', sub: 'tiered · flag, never drop',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'Headers are matched against the alias catalogue two-pass — exact first, then substring, '
@@ -76,7 +145,7 @@ export const NODES = [
     edges: ['E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8'],
   },
   {
-    id: 'flag', col: 0, cy: 1, lane: 'upload', kind: 'branch', row: 1,
+    id: 'flag', col: 3, cy: 1, lane: 'upload', kind: 'branch', row: 1,
     title: 'Flag & surface defects', sub: 'issues shown for edit',
     paths: [PATHS.MESSY],
     what: 'Record-level defects are surfaced to the reviewer with a reason a non-engineer can act '
@@ -91,7 +160,7 @@ export const NODES = [
     cases: ['TC-M3 Flagged rows are visible and readable'],
   },
   {
-    id: 'edit', col: 1, cy: 1, lane: 'upload', kind: 'branch', row: 1, loop: true,
+    id: 'edit', col: 4, cy: 1, lane: 'upload', kind: 'branch', row: 1, loop: true,
     title: 'Edit & re-validate', sub: 'loop until clean',
     paths: [PATHS.MESSY],
     what: 'The reviewer corrects a flagged field and the record re-derives. The loop repeats until '
@@ -107,7 +176,7 @@ export const NODES = [
     cases: ['TC-M4 Correction flow'],
   },
   {
-    id: 'prep', col: 2, cy: 0, lane: 'prep', kind: 'spine', row: 0,
+    id: 'prep', col: 5, cy: 0, lane: 'prep', kind: 'spine', row: 0,
     title: 'Normalize + geocode', sub: 'ZIP → county · title → SOC',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'Clean records are normalized. Residence ZIP resolves to a county, and job title resolves '
@@ -130,7 +199,7 @@ export const NODES = [
     edges: ['E9', 'E11', 'E28'],
   },
   {
-    id: 'geo-fail', col: 2, cy: 1, lane: 'prep', kind: 'branch', row: 1,
+    id: 'geo-fail', col: 5, cy: 1, lane: 'prep', kind: 'branch', row: 1,
     title: 'Location unresolvable', sub: 'no county can be chosen',
     paths: [PATHS.GEO],
     what: 'The ZIP does not resolve, or resolves across states inconsistently with the work state. '
@@ -146,7 +215,7 @@ export const NODES = [
     edges: ['E9', 'E12'],
   },
   {
-    id: 'review-queue', col: 3, cy: 1, lane: 'prep', kind: 'branch', row: 1,
+    id: 'review-queue', col: 6, cy: 1, lane: 'prep', kind: 'branch', row: 1,
     title: 'NDI review queue', sub: 'human decision, audited',
     paths: [PATHS.GEO],
     what: 'A case the rules refuse to decide goes to a person. The reviewer\'s choice is recorded '
@@ -161,7 +230,7 @@ export const NODES = [
     cases: ['TC-M13 Methodology versioning'],
   },
   {
-    id: 'engine-a', col: 3, cy: 0, lane: 'engines', kind: 'spine', row: 0,
+    id: 'engine-a', col: 6, cy: 0, lane: 'engines', kind: 'spine', row: 0,
     title: 'Engine A — Fair Pay', sub: 'basket → tax → floor → gap',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'The foundation engine. It assembles a county-level cost basket from the public rulers, '
@@ -186,7 +255,7 @@ export const NODES = [
     edges: ['E13', 'E14', 'E15', 'E16', 'E17'],
   },
   {
-    id: 'engine-b', col: 4, cy: 0.6, lane: 'engines', kind: 'spine', row: 0,
+    id: 'engine-b', col: 7, cy: 0.6, lane: 'engines', kind: 'spine', row: 0,
     title: 'Engine B — Paid Sick Leave', sub: "consumes A's adjusted wages",
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'Pure calculation, no document parsing. Costs the gap between what the target grants and '
@@ -209,7 +278,7 @@ export const NODES = [
       + 'research/11 row B2, target phase 6. A majority-concentration footprint is understated.',
   },
   {
-    id: 'engine-c', col: 4, cy: -0.6, lane: 'engines', kind: 'spine', row: 0,
+    id: 'engine-c', col: 7, cy: -0.6, lane: 'engines', kind: 'spine', row: 0,
     title: 'Engine C — Healthcare', sub: "consumes A's adjusted wages",
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'Returns pass/fail per plan, never a remediation cost — plan design is too dependent on '
@@ -235,7 +304,7 @@ export const NODES = [
       + '— a data-loading gap for DE, not an engine defect.',
   },
   {
-    id: 'out-a', col: 5, cy: 0, lane: 'outputs', kind: 'spine', row: 0,
+    id: 'out-a', col: 8, cy: 0, lane: 'outputs', kind: 'spine', row: 0,
     title: 'Output A — Fair Pay', sub: 'cost + adjusted wages',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'Per-employee remediation cost and the wage-adjusted compensation that B and C consumed.',
@@ -248,7 +317,7 @@ export const NODES = [
     cases: ['TC-M5 Verdict readability'],
   },
   {
-    id: 'out-b', col: 5, cy: 1.2, lane: 'outputs', kind: 'spine', row: 0,
+    id: 'out-b', col: 8, cy: 1.2, lane: 'outputs', kind: 'spine', row: 0,
     title: 'Output B — PSL', sub: 'remediation cost',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'The cost of lifting the target to the PSL floor, on A\'s raised wages.',
@@ -258,7 +327,7 @@ export const NODES = [
     cases: ['TC-M5 Verdict readability'],
   },
   {
-    id: 'out-c', col: 5, cy: -1.2, lane: 'outputs', kind: 'spine', row: 0,
+    id: 'out-c', col: 8, cy: -1.2, lane: 'outputs', kind: 'spine', row: 0,
     title: 'Output C — Healthcare', sub: 'pass / fail per plan',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'A verdict per plan — affordable, review, or fail — with the benchmark that decided it.',
@@ -271,7 +340,7 @@ export const NODES = [
     cases: ['TC-M7 Degraded run is visible'],
   },
   {
-    id: 'model', col: 6, cy: 0, lane: 'outputs', kind: 'spine', row: 0,
+    id: 'model', col: 9, cy: 0, lane: 'outputs', kind: 'spine', row: 0,
     title: 'NDI acquisition model', sub: 'A + B cost · C verdicts',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'The deliverable. Total remediation (A + B) plus the healthcare verdicts, exported into '
@@ -295,6 +364,10 @@ export const NODES = [
 
 // from → to, with the label shown on the connector. `back: true` draws a loop.
 export const LINKS = [
+  { from: 'fetch', to: 'stage-validate', paths: [PATHS.REFDATA] },
+  { from: 'stage-validate', to: 'review-gate', paths: [PATHS.REFDATA] },
+  { from: 'review-gate', to: 'stage-validate', label: 'hold → re-validate', back: true, paths: [PATHS.REFDATA] },
+  { from: 'review-gate', to: 'engine-a', label: 'approved rulers', merge: true, paths: [PATHS.REFDATA] },
   { from: 'upload', to: 'validate', paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO] },
   { from: 'upload', to: 'upload', label: 'wrong document → re-upload', back: true, paths: [PATHS.MESSY] },
   { from: 'validate', to: 'prep', label: 'clean records', paths: [PATHS.HAPPY] },

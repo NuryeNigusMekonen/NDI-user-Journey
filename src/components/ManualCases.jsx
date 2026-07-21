@@ -8,7 +8,7 @@ const PRIORITIES = ['High', 'Medium', 'Low'];
 // against the Technical Brief, which is a different kind of testing from "does the screen work".
 // A value missing here renders as a blank select when the row is edited.
 const AREAS = ['Auth', 'Upload', 'Review', 'Output', 'Access', 'Reference',
-  'Engine A', 'Engine B', 'Engine C'];
+  'Engine A', 'Engine B', 'Engine C', 'Pipeline'];
 
 const PRI_CLS = {
   High: 'text-amber bg-amber/10 border-amber/30',

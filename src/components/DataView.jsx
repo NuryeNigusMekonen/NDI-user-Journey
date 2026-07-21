@@ -311,7 +311,8 @@ export default function DataView() {
               {edgeVariations.reduce((n, g) => n + (g.items?.length || 0), 0)} input variations,
               each paired with the behaviour the platform must produce.{' '}
               <span className="text-amber/90">
-                Two (E1, E10) have no generated row and are proven by engine tests instead.
+                E1 and E10 have no generated row and are proven by engine tests instead; E12 cannot
+                currently fire at all — see its note.
               </span>{' '}
               They are
               grouped by <span className="text-ink">where a failure would occur</span> — two pipeline

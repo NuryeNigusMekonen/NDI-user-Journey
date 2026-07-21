@@ -148,7 +148,7 @@ export const NODES = [
     edges: ['E2', 'E3', 'E4', 'E5', 'E6', 'E7', 'E8'],
   },
   {
-    id: 'flag', col: 3, cy: 1, lane: 'upload', kind: 'branch', row: 1,
+    id: 'flag', col: 3, cy: 3, lane: 'upload', kind: 'branch', row: 1,
     title: 'Flag & surface defects', sub: 'issues shown for edit',
     paths: [PATHS.MESSY],
     what: 'Record-level defects are surfaced to the reviewer with a reason a non-engineer can act '
@@ -163,7 +163,7 @@ export const NODES = [
     cases: ['TC-M3 Flagged rows are visible and readable'],
   },
   {
-    id: 'edit', col: 4, cy: 1, lane: 'upload', kind: 'branch', row: 1, loop: true,
+    id: 'edit', col: 4, cy: 3, lane: 'upload', kind: 'branch', row: 1, loop: true,
     title: 'Edit & re-validate', sub: 'loop until clean',
     paths: [PATHS.MESSY],
     what: 'The reviewer corrects a flagged field and the record re-derives. The loop repeats until '
@@ -203,7 +203,7 @@ export const NODES = [
     edges: ['E9', 'E11', 'E28'],
   },
   {
-    id: 'geo-fail', col: 5, cy: 1, lane: 'prep', kind: 'branch', row: 1,
+    id: 'geo-fail', col: 5, cy: 3, lane: 'prep', kind: 'branch', row: 1,
     title: 'Location unresolvable', sub: 'no county can be chosen',
     paths: [PATHS.GEO],
     what: 'The ZIP does not resolve, or resolves across states inconsistently with the work state. '
@@ -219,7 +219,7 @@ export const NODES = [
     edges: ['E9', 'E12'],
   },
   {
-    id: 'review-queue', col: 6, cy: 1, lane: 'prep', kind: 'branch', row: 1,
+    id: 'review-queue', col: 6, cy: 3, lane: 'prep', kind: 'branch', row: 1,
     title: 'NDI review queue', sub: 'human decision, audited',
     paths: [PATHS.GEO],
     what: 'A case the rules refuse to decide goes to a person. The reviewer\'s choice is recorded '
@@ -261,7 +261,7 @@ export const NODES = [
   },
   {
     tested: 'TC-M17 passed on the rules that ARE built: TX/WA floor 0, CA 40h, NY 56h, part-time halved, exempt out of scope - and the cascade proved, priced at A\'s raised $38.52/hr not the census $28.80/hr',
-    id: 'engine-b', col: 7, cy: 0.6, lane: 'engines', kind: 'spine', row: 0,
+    id: 'engine-b', col: 7, cy: 1, lane: 'engines', kind: 'spine', row: 0,
     title: 'Engine B — Paid Sick Leave', sub: "consumes A's adjusted wages",
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'Pure calculation, no document parsing. Costs the gap between what the target grants and '
@@ -290,7 +290,7 @@ export const NODES = [
   },
   {
     tested: 'TC-M18 mostly correct: 50% employer share fails B1 with verdict \'review\'; HDHP judged on real exposure not plan type; waived enrollee not a false fail. The ACA pre-check is the failure',
-    id: 'engine-c', col: 7, cy: -0.6, lane: 'engines', kind: 'spine', row: 0,
+    id: 'engine-c', col: 7, cy: -1, lane: 'engines', kind: 'spine', row: 0,
     title: 'Engine C — Healthcare', sub: "consumes A's adjusted wages",
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'Returns pass/fail per plan, never a remediation cost — plan design is too dependent on '
@@ -333,7 +333,7 @@ export const NODES = [
     cases: ['TC-M5 Verdict readability'],
   },
   {
-    id: 'out-b', col: 8, cy: 1.2, lane: 'outputs', kind: 'spine', row: 0,
+    id: 'out-b', col: 8, cy: 2, lane: 'outputs', kind: 'spine', row: 0,
     title: 'Output B — PSL', sub: 'remediation cost',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'The cost of lifting the target to the PSL floor, on A\'s raised wages.',
@@ -343,7 +343,7 @@ export const NODES = [
     cases: ['TC-M5 Verdict readability'],
   },
   {
-    id: 'out-c', col: 8, cy: -1.2, lane: 'outputs', kind: 'spine', row: 0,
+    id: 'out-c', col: 8, cy: -2, lane: 'outputs', kind: 'spine', row: 0,
     title: 'Output C — Healthcare', sub: 'pass / fail per plan',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
     what: 'A verdict per plan — affordable, review, or fail — with the benchmark that decided it.',

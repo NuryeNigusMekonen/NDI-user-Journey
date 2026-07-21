@@ -14,14 +14,20 @@ import { LANES, NODES, LINKS, PATHS, PATH_FILTERS } from '../data/unifiedMap';
  * meaning (row 0 is the happy-path spine, row 1 is where reality intervenes) and an ELK pass would
  * reorder it into something prettier but less legible.
  */
-const NODE_W = 168;
-const NODE_H = 74;
-const COL_W = 210;          // horizontal pitch between columns
-const ROW_H = 104;          // vertical pitch for one `cy` unit
+// Geometry. Rows run cy = -2 (Output C) to +3 (the branch lane), so the canvas must clear six
+// bands. ROW_H is deliberately larger than NODE_H: at the old 104 against a 74-tall card, the
+// engine fan-out sat ~42px from the branch lane and the cards collided.
+const NODE_W = 176;
+const NODE_H = 82;
+const COL_W = 216;          // horizontal pitch between columns
+const ROW_H = 132;          // vertical pitch for one `cy` unit — 50px of air between cards
 const PAD_X = 24;
-const MID_Y = 210;          // y of the spine (cy = 0)
+const PAD_TOP = 42;         // room for the lane headers
+const MIN_CY = -2;
+const MAX_CY = 3;
+const MID_Y = PAD_TOP + NODE_H / 2 + Math.abs(MIN_CY) * ROW_H;   // y of the spine (cy = 0)
 const CANVAS_W = PAD_X * 2 + COL_W * 9 + NODE_W;   // 10 columns after the pipeline lane
-const CANVAS_H = 430;
+const CANVAS_H = MID_Y + MAX_CY * ROW_H + NODE_H;
 
 // One absolute point per node, derived from its col/cy. Kept here rather than in the data file:
 // these are presentation coordinates, not facts about the platform.

@@ -211,7 +211,19 @@ function NodeCard({ node, active, onClick }) {
         {node.warn && <AlertTriangle className="w-3 h-3 text-amber shrink-0 mt-0.5" />}
       </div>
       <p className="text-[10px] font-mono text-ink-muted mt-0.5">{node.sub}</p>
-      <div className="flex items-center gap-1.5 mt-1.5">
+      <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+        {/* What MANUAL testing found, at a glance: a reader should not have to open a node to see
+            that an engine carries a defect. */}
+        {node.verdict === 'gap' && (
+          <span className="text-[9px] font-mono px-1 rounded bg-amber/20 text-amber font-semibold">
+            gap found
+          </span>
+        )}
+        {node.tested && node.verdict !== 'gap' && (
+          <span className="text-[9px] font-mono px-1 rounded bg-teal/20 text-teal font-semibold">
+            tested ✓
+          </span>
+        )}
         {node.behavior && (
           <span className="text-[9px] font-mono px-1 rounded bg-hairline/60 text-ink-muted">
             {node.behavior.length} rules
@@ -247,6 +259,17 @@ function Detail({ node, onClose }) {
         <p className="text-[11px] text-amber mt-3 p-2.5 rounded-lg bg-amber/5 border border-amber/25">
           <AlertTriangle className="w-3.5 h-3.5 inline mr-1" />{node.warn}
         </p>
+      )}
+
+      {node.tested && (
+        <div className={`mt-3 p-3 rounded-lg border ${node.verdict === 'gap'
+          ? 'bg-amber/5 border-amber/25' : 'bg-teal/5 border-teal/25'}`}>
+          <p className="text-[9px] font-mono font-semibold uppercase tracking-wider mb-1
+            text-ink-muted/70">
+            What manual testing on staging found
+          </p>
+          <p className="text-[11px] text-ink leading-relaxed">{node.tested}</p>
+        </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">

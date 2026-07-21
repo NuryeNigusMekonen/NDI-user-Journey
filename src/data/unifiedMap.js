@@ -79,6 +79,7 @@ export const NODES = [
     ],
   },
   {
+    tested: 'TC-M20, TC-M21 passed: dashboard figures reconcile with the runs beneath them; a schema-drift halt staged NOTHING. TC-M22/23/24 remain UNRUN - actioning live pipeline data needs sign-off (FF-011)',
     id: 'review-gate', col: 2, cy: 0, lane: 'refdata', kind: 'spine', row: 0,
     title: 'Human review gate', sub: 'approve · hold · reject',
     paths: [PATHS.REFDATA],
@@ -100,6 +101,7 @@ export const NODES = [
     cases: ['TC-M13 Methodology versioning'],
   },
   {
+    tested: 'TC-M1, TC-M2 passed: fail-closed access; 300 rows x 59 columns previewed verbatim',
     id: 'upload', col: 3, cy: 0, lane: 'upload', kind: 'spine', row: 0,
     title: 'Upload census', sub: 'file in, versioned',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
@@ -121,6 +123,7 @@ export const NODES = [
     cases: ['TC-M1 Login fail-closed', 'TC-M2 Upload and verbatim preview'],
   },
   {
+    tested: 'TC-M3 passed: 9 rows = 8 flagged + 1 rejected, fully accounted; the blank-Code row is rejected in plain sight, never dropped; E/N exempt coding read correctly',
     id: 'validate', col: 4, cy: 0, lane: 'upload', kind: 'spine', row: 0,
     title: 'Schema + row validation', sub: 'tiered · flag, never drop',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
@@ -176,6 +179,7 @@ export const NODES = [
     cases: ['TC-M4 Correction flow'],
   },
   {
+    tested: 'TC-M16 passed: an ambiguous ZIP resolved to the HIGHEST-COST candidate county (40% land area chosen over 60%). TC-M7 could NOT be run - no reachable ZIP currently degrades (FF-008)',
     id: 'prep', col: 5, cy: 0, lane: 'prep', kind: 'spine', row: 0,
     title: 'Normalize + geocode', sub: 'ZIP → county · title → SOC',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
@@ -230,6 +234,7 @@ export const NODES = [
     cases: ['TC-M13 Methodology versioning'],
   },
   {
+    tested: 'TC-M14, TC-M15 passed: basket rules verified across 4 counties (ACS won housing on Alameda; transportation is a CNT override, not a MAX); basket $66,375 + tax $13,747 = floor $80,122 exactly',
     id: 'engine-a', col: 6, cy: 0, lane: 'engines', kind: 'spine', row: 0,
     title: 'Engine A — Fair Pay', sub: 'basket → tax → floor → gap',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
@@ -255,6 +260,7 @@ export const NODES = [
     edges: ['E13', 'E14', 'E15', 'E16', 'E17'],
   },
   {
+    tested: 'TC-M17 passed on the rules that ARE built: TX/WA floor 0, CA 40h, NY 56h, part-time halved, exempt out of scope - and the cascade proved, priced at A\'s raised $38.52/hr not the census $28.80/hr',
     id: 'engine-b', col: 7, cy: 0.6, lane: 'engines', kind: 'spine', row: 0,
     title: 'Engine B — Paid Sick Leave', sub: "consumes A's adjusted wages",
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
@@ -274,10 +280,16 @@ export const NODES = [
     ],
     cases: ['TC-M17 PSL cost scope and proration', 'TC-M19 KNOWN GAP — state lift'],
     edges: ['E18', 'E19', 'E20', 'E21', 'E22'],
-    warn: 'Known gap: the most-favorable-state lift (brief §7.2) is not implemented — '
-      + 'research/11 row B2, target phase 6. A majority-concentration footprint is understated.',
+    warn: 'TWO GAPS found in manual testing (FR-018, FR-012). (1) The most-favorable-state lift '
+      + '(brief §7.2) is not implemented — a state holding ≥50% of the workforce should lift its '
+      + 'standard enterprise-wide, but there is no concentration logic at all. (2) 17 city and 2 '
+      + 'county PSL ordinances are LOADED and shown on the Reference screen, yet the engine reads '
+      + 'state rows only — Berkeley requires 48h where California requires 40h, so a Berkeley '
+      + 'employee is costed at the lower figure. Both UNDERSTATE remediation.',
+    verdict: 'gap',
   },
   {
+    tested: 'TC-M18 mostly correct: 50% employer share fails B1 with verdict \'review\'; HDHP judged on real exposure not plan type; waived enrollee not a false fail. The ACA pre-check is the failure',
     id: 'engine-c', col: 7, cy: -0.6, lane: 'engines', kind: 'spine', row: 0,
     title: 'Engine C — Healthcare', sub: "consumes A's adjusted wages",
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],
@@ -300,8 +312,12 @@ export const NODES = [
     ],
     cases: ['TC-M18 Healthcare benchmarks use the right thresholds'],
     edges: ['E23', 'E24', 'E25', 'E26', 'E27'],
-    warn: 'Peterson-KFF holds only 2 rows in the warehouse, so the OOP cost-sharing input is thin '
-      + '— a data-loading gap for DE, not an engine defect.',
+    warn: 'DEFECT found in manual testing (FR-010): the ACA compliance pre-check required by '
+      + 'brief §8.1 is not implemented. A plan named "Grandfathered Legacy Plan" returned '
+      + 'AFFORDABLE with no flag — a grandfathered plan can be legally non-compliant however '
+      + 'affordable it looks. Separately, Peterson-KFF holds only 2 rows, so the bad-year OOP '
+      + 'screen rests on a 2023 figure while every other ruler is 2025–26 (a DE loading gap).',
+    verdict: 'gap',
   },
   {
     id: 'out-a', col: 8, cy: 0, lane: 'outputs', kind: 'spine', row: 0,
@@ -340,6 +356,7 @@ export const NODES = [
     cases: ['TC-M7 Degraded run is visible'],
   },
   {
+    tested: 'TC-M5, TC-M6, TC-M13 passed: A+B reconciles to the total, healthcare stays separate; the Word report carries real tables; and a live config change did NOT move a completed run ($91,878 held)',
     id: 'model', col: 9, cy: 0, lane: 'outputs', kind: 'spine', row: 0,
     title: 'NDI acquisition model', sub: 'A + B cost · C verdicts',
     paths: [PATHS.HAPPY, PATHS.MESSY, PATHS.GEO],

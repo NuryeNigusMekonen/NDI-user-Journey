@@ -62,11 +62,12 @@ const LANE_BOUNDS = [
  */
 const HALF_W = NODE_W / 2;
 const HALF_H = NODE_H / 2;
+const HEAD = 10;            // arrowhead length: paths stop this far short so the TIP meets the edge
 
 function pathFor(a, b, l) {
   if (l.back) {                                   // a loop bows below both cards
     const y = Math.max(a.y, b.y) + HALF_H + 26;
-    return `M ${a.x} ${a.y + HALF_H} C ${a.x} ${y}, ${b.x} ${y}, ${b.x} ${b.y + HALF_H}`;
+    return `M ${a.x} ${a.y + HALF_H} C ${a.x} ${y}, ${b.x} ${y}, ${b.x} ${b.y + HALF_H + HEAD}`;
   }
 
   const dx = b.x - a.x;
@@ -76,7 +77,7 @@ function pathFor(a, b, l) {
   // Straight down or up, same column: bottom face to top face.
   if (sameCol) {
     const y1 = dy > 0 ? a.y + HALF_H : a.y - HALF_H;
-    const y2 = dy > 0 ? b.y - HALF_H : b.y + HALF_H;
+    const y2 = dy > 0 ? b.y - HALF_H - HEAD : b.y + HALF_H + HEAD;
     return `M ${a.x} ${y1} L ${b.x} ${y2}`;
   }
 
@@ -86,10 +87,10 @@ function pathFor(a, b, l) {
   // instead and drops into the target's top face.
   if (Math.abs(dy) < 1) {
     const x1 = dx > 0 ? a.x + HALF_W : a.x - HALF_W;
-    const x2 = dx > 0 ? b.x - HALF_W : b.x + HALF_W;
+    const x2 = dx > 0 ? b.x - HALF_W - HEAD : b.x + HALF_W + HEAD;
     if (Math.abs(dx) > COL_W * 1.5) {
       const arc = a.y - ROW_H / 2;                 // the free band above this row
-      return `M ${a.x} ${a.y - HALF_H} C ${a.x} ${arc}, ${b.x} ${arc}, ${b.x} ${b.y - HALF_H}`;
+      return `M ${a.x} ${a.y - HALF_H} C ${a.x} ${arc}, ${b.x} ${arc}, ${b.x} ${b.y - HALF_H - HEAD}`;
     }
     const mx = (x1 + x2) / 2;
     return `M ${x1} ${a.y} C ${mx} ${a.y}, ${mx} ${b.y}, ${x2} ${b.y}`;
@@ -101,7 +102,7 @@ function pathFor(a, b, l) {
   // Routing to the target's SIDE was what drove connectors through the cards in between.
   const y1 = dy > 0 ? a.y + HALF_H : a.y - HALF_H;
   const band = dy > 0 ? a.y + ROW_H / 2 : a.y - ROW_H / 2;   // the gap next to the source row
-  const y2 = dy > 0 ? b.y - HALF_H : b.y + HALF_H;           // enter the target top/bottom, not its side
+  const y2 = dy > 0 ? b.y - HALF_H - HEAD : b.y + HALF_H + HEAD;   // stop short; the head spans the rest
   return `M ${a.x} ${y1} C ${a.x} ${band}, ${b.x} ${band}, ${b.x} ${y2}`;
 }
 
@@ -281,13 +282,17 @@ export default function UnifiedMap() {
             {/* connectors, drawn UNDER the cards */}
             <svg className="absolute inset-0 pointer-events-none" width={CANVAS_W} height={CANVAS_H}>
               <defs>
-                <marker id="ar-teal" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7"
-                  markerHeight="7" orient="auto">
-                  <path d="M0,0 L8,4 L0,8 z" className="fill-teal" />
+                {/* refX MUST equal the tip's x (10), so the tip sits exactly on the path's end point.
+                    It was 7 against a tip at 8, which parked the arrowhead a unit past the line and
+                    read as a detached, wrongly-aimed head. markerUnits=userSpaceOnUse keeps the
+                    head a fixed size instead of scaling with strokeWidth. */}
+                <marker id="ar-teal" viewBox="0 0 10 10" refX="10" refY="5"
+                  markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto">
+                  <path d="M0,1 L10,5 L0,9 z" className="fill-teal" />
                 </marker>
-                <marker id="ar-amber" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7"
-                  markerHeight="7" orient="auto">
-                  <path d="M0,0 L8,4 L0,8 z" className="fill-amber" />
+                <marker id="ar-amber" viewBox="0 0 10 10" refX="10" refY="5"
+                  markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" orient="auto">
+                  <path d="M0,1 L10,5 L0,9 z" className="fill-amber" />
                 </marker>
               </defs>
               {links.map((l, i) => {

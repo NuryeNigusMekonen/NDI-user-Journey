@@ -65,7 +65,16 @@ const HALF_H = NODE_H / 2;
 const HEAD = 10;            // arrowhead length: paths stop this far short so the TIP meets the edge
 
 function pathFor(a, b, l) {
-  if (l.back) {                                   // a loop bows below both cards
+  if (l.back) {
+    // A SELF-loop (source === target, e.g. "wrong document -> re-upload") has no span to bow
+    // across: the old curve collapsed into a hook that ended ABOVE where it started, so the
+    // arrowhead pointed up into the very node it left. Draw it as a visible loop out of the
+    // bottom-left and back into the bottom-right instead.
+    if (Math.abs(a.x - b.x) < 1 && Math.abs(a.y - b.y) < 1) {
+      const y0 = a.y + HALF_H;
+      const dip = y0 + 34;
+      return `M ${a.x - 34} ${y0} C ${a.x - 34} ${dip}, ${a.x + 34} ${dip}, ${a.x + 34} ${y0 + HEAD}`;
+    }
     const y = Math.max(a.y, b.y) + HALF_H + 26;
     return `M ${a.x} ${a.y + HALF_H} C ${a.x} ${y}, ${b.x} ${y}, ${b.x} ${b.y + HALF_H + HEAD}`;
   }

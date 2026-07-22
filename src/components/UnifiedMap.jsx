@@ -47,36 +47,88 @@ const LANE_BOUNDS = [
   { id: 'outputs', label: 'OUTPUTS', x: PAD_X + COL_W * 8, w: COL_W * 2 - 16 },
 ];
 
-/** An orthogonal-ish connector. A backward link bows below the row so it cannot be mistaken for
- *  forward flow; everything else is a gentle S-curve between box edges. */
+/** Route a connector between the correct FACES of two cards.
+ *
+ *  The previous version always left the right edge and entered the left edge, whatever the
+ *  geometry. When the target sat below rather than beside, that produced an arrowhead on the
+ *  target's LEFT face pointing inward-left (visibly wrong on "Flag & surface defects" and
+ *  "Location unresolvable"), and a curve that cut straight through any card in between —
+ *  "clean records merge" ran through Normalize + geocode.
+ *
+ *  Now the exit and entry faces are chosen from the actual offset: mostly-vertical links use the
+ *  top/bottom faces, mostly-horizontal ones use the sides, and a link that is both drops out of
+ *  the source's bottom, runs along the gap BETWEEN two card rows, then rises into the target's
+ *  correct side — so it never crosses a box.
+ */
+const HALF_W = NODE_W / 2;
+const HALF_H = NODE_H / 2;
+
 function pathFor(a, b, l) {
-  if (l.back) {
-    const y = Math.max(a.y, b.y) + NODE_H / 2 + 26;
-    return `M ${a.x} ${a.y + NODE_H / 2} C ${a.x} ${y}, ${b.x} ${y}, ${b.x} ${b.y + NODE_H / 2}`;
+  if (l.back) {                                   // a loop bows below both cards
+    const y = Math.max(a.y, b.y) + HALF_H + 26;
+    return `M ${a.x} ${a.y + HALF_H} C ${a.x} ${y}, ${b.x} ${y}, ${b.x} ${b.y + HALF_H}`;
   }
-  const x1 = a.x + NODE_W / 2;
-  const x2 = b.x - NODE_W / 2;
-  const mx = (x1 + x2) / 2;
-  return `M ${x1} ${a.y} C ${mx} ${a.y}, ${mx} ${b.y}, ${x2} ${b.y}`;
+
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const sameCol = Math.abs(dx) < 1;
+
+  // Straight down or up, same column: bottom face to top face.
+  if (sameCol) {
+    const y1 = dy > 0 ? a.y + HALF_H : a.y - HALF_H;
+    const y2 = dy > 0 ? b.y - HALF_H : b.y + HALF_H;
+    return `M ${a.x} ${y1} L ${b.x} ${y2}`;
+  }
+
+  // Level with each other. A neighbouring pair goes side to side, but a LONG link on the same row
+  // would drive straight through every card between them — "approved rulers" spans four columns
+  // and crossed Upload census and Schema validation. Anything beyond one column arcs over the row
+  // instead and drops into the target's top face.
+  if (Math.abs(dy) < 1) {
+    const x1 = dx > 0 ? a.x + HALF_W : a.x - HALF_W;
+    const x2 = dx > 0 ? b.x - HALF_W : b.x + HALF_W;
+    if (Math.abs(dx) > COL_W * 1.5) {
+      const arc = a.y - ROW_H / 2;                 // the free band above this row
+      return `M ${a.x} ${a.y - HALF_H} C ${a.x} ${arc}, ${b.x} ${arc}, ${b.x} ${b.y - HALF_H}`;
+    }
+    const mx = (x1 + x2) / 2;
+    return `M ${x1} ${a.y} C ${mx} ${a.y}, ${mx} ${b.y}, ${x2} ${b.y}`;
+  }
+
+  // Diagonal. Rows are contiguous, so the only card-free horizontal space is the BAND between
+  // two rows. Drop out of the source's vertical face into the band immediately beside it, run
+  // along that band to the target's column, then turn into the target's near vertical face.
+  // Routing to the target's SIDE was what drove connectors through the cards in between.
+  const y1 = dy > 0 ? a.y + HALF_H : a.y - HALF_H;
+  const band = dy > 0 ? a.y + ROW_H / 2 : a.y - ROW_H / 2;   // the gap next to the source row
+  const y2 = dy > 0 ? b.y - HALF_H : b.y + HALF_H;           // enter the target top/bottom, not its side
+  return `M ${a.x} ${y1} C ${a.x} ${band}, ${b.x} ${band}, ${b.x} ${y2}`;
 }
 
-/** Where an edge label can actually sit without landing on a card.
- *  A label at the plain midpoint overflowed the 40px gap between adjacent cards and printed over
- *  both of them. Now: a loop sits below its bow; a link between nodes in the SAME column (there is
- *  no horizontal gap at all) sits beside the vertical run; everything else centres in the gap
- *  between the two card edges, which the wider COL_W now makes big enough. */
 function labelPt(a, b, l) {
   if (l.back) return { x: (a.x + b.x) / 2, y: Math.max(a.y, b.y) + NODE_H / 2 + 40, anchor: 'middle' };
-  if (Math.abs(a.x - b.x) < 1) {
-    return { x: a.x + NODE_W / 2 + 8, y: (a.y + b.y) / 2, anchor: 'start' };
+
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+
+  // Same column: beside the vertical run.
+  if (Math.abs(dx) < 1) return { x: a.x + HALF_W + 8, y: (a.y + b.y) / 2, anchor: 'start' };
+
+  // Long level link: it arcs over the row, so sit the label on the arc.
+  if (Math.abs(dy) < 1 && Math.abs(dx) > COL_W * 1.5) {
+    return { x: (a.x + b.x) / 2, y: a.y - ROW_H / 2 - 4, anchor: 'middle' };
   }
-  const x1 = Math.min(a.x, b.x) + NODE_W / 2;
-  const x2 = Math.max(a.x, b.x) - NODE_W / 2;
-  // A long link passes OVER intervening cards, so its midpoint is not free space —
-  // 'approved rulers' spans four columns and landed on the validation card. Anchor a long
-  // label just after the source instead, where the run is still in open gap.
-  if (x2 - x1 > COL_W) return { x: x1 + 10, y: a.y - 7, anchor: 'start' };
-  return { x: (x1 + x2) / 2, y: (a.y + b.y) / 2 - 7, anchor: 'middle' };
+
+  // Short level link: centred in the gap between the two cards.
+  if (Math.abs(dy) < 1) {
+    const x1 = Math.min(a.x, b.x) + HALF_W;
+    const x2 = Math.max(a.x, b.x) - HALF_W;
+    return { x: (x1 + x2) / 2, y: a.y - 7, anchor: 'middle' };
+  }
+
+  // Diagonal: on the band it travels along, offset from the source so it clears the turn.
+  const band = dy > 0 ? a.y + ROW_H / 2 : a.y - ROW_H / 2;
+  return { x: (a.x + b.x) / 2, y: band - 5, anchor: 'middle' };
 }
 
 export default function UnifiedMap() {

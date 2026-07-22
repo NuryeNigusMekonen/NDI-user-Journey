@@ -22,7 +22,7 @@ import { supabase } from '../lib/supabase';
 // engine fan-out sat ~42px from the branch lane and the cards collided.
 const NODE_W = 176;
 const NODE_H = 82;
-const COL_W = 216;          // horizontal pitch between columns
+const COL_W = 268;          // horizontal pitch — 92px of gap for the edge labels
 const ROW_H = 132;          // vertical pitch for one `cy` unit — 50px of air between cards
 const PAD_X = 24;
 const PAD_TOP = 42;         // room for the lane headers
@@ -60,9 +60,23 @@ function pathFor(a, b, l) {
   return `M ${x1} ${a.y} C ${mx} ${a.y}, ${mx} ${b.y}, ${x2} ${b.y}`;
 }
 
+/** Where an edge label can actually sit without landing on a card.
+ *  A label at the plain midpoint overflowed the 40px gap between adjacent cards and printed over
+ *  both of them. Now: a loop sits below its bow; a link between nodes in the SAME column (there is
+ *  no horizontal gap at all) sits beside the vertical run; everything else centres in the gap
+ *  between the two card edges, which the wider COL_W now makes big enough. */
 function labelPt(a, b, l) {
-  if (l.back) return { x: (a.x + b.x) / 2, y: Math.max(a.y, b.y) + NODE_H / 2 + 40 };
-  return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 - 8 };
+  if (l.back) return { x: (a.x + b.x) / 2, y: Math.max(a.y, b.y) + NODE_H / 2 + 40, anchor: 'middle' };
+  if (Math.abs(a.x - b.x) < 1) {
+    return { x: a.x + NODE_W / 2 + 8, y: (a.y + b.y) / 2, anchor: 'start' };
+  }
+  const x1 = Math.min(a.x, b.x) + NODE_W / 2;
+  const x2 = Math.max(a.x, b.x) - NODE_W / 2;
+  // A long link passes OVER intervening cards, so its midpoint is not free space —
+  // 'approved rulers' spans four columns and landed on the validation card. Anchor a long
+  // label just after the source instead, where the run is still in open gap.
+  if (x2 - x1 > COL_W) return { x: x1 + 10, y: a.y - 7, anchor: 'start' };
+  return { x: (x1 + x2) / 2, y: (a.y + b.y) / 2 - 7, anchor: 'middle' };
 }
 
 export default function UnifiedMap() {
@@ -236,12 +250,20 @@ export default function UnifiedMap() {
                       strokeWidth="1.6"
                       strokeDasharray={l.back || amber ? '5 4' : undefined}
                       markerEnd={`url(#${amber ? 'ar-amber' : 'ar-teal'})`} />
-                    {l.label && (
-                      <text className={`text-[8px] font-mono ${amber ? 'fill-amber' : 'fill-teal'}`}
-                        x={labelPt(a, b, l).x} y={labelPt(a, b, l).y} textAnchor="middle">
-                        {l.label}
-                      </text>
-                    )}
+                    {l.label && (() => {
+                      // A backing plate behind the text: a label still crosses its own connector,
+                      // and unpainted text on a line is unreadable. paint-order draws the stroke
+                      // first, so the halo sits UNDER the glyphs rather than over them.
+                      const lp = labelPt(a, b, l);
+                      return (
+                        <text x={lp.x} y={lp.y} textAnchor={lp.anchor}
+                          className={`text-[8px] font-mono ${amber ? 'fill-amber' : 'fill-teal'}`}
+                          stroke="var(--color-canvas, #fff)" strokeWidth="3"
+                          style={{ paintOrder: 'stroke' }}>
+                          {l.label}
+                        </text>
+                      );
+                    })()}
                   </g>
                 );
               })}
